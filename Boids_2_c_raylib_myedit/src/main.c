@@ -2,7 +2,6 @@
 #include "draw.h"
 #include <stdio.h>
 #include <stdlib.h>
-// #include "subgen.h"
 
 int main(void)
 {
@@ -12,7 +11,8 @@ int main(void)
     Game_Init();
 	Draw_Init();
 
-	while (true)
+	//while (true)
+    for (size_t i = 0; i < 100; i++)
     {
         if (Draw_ShouldExit()) break;
         double time1 = GetTime();

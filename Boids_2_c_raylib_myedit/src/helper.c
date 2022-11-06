@@ -1,14 +1,11 @@
 #include "helper.h"
-
+#include "subgen.h"
 
 
 
 #define PRECISION1 1000
 #define PRECISION2 PRECISION1*2
-float   HelperRandFactorUnsigned()         { return (float) (GetRandomValue(0, PRECISION1))              / PRECISION1; }
-float   HelperRandFactorSigned()           { return (float) (GetRandomValue(0, PRECISION2) - PRECISION1) / PRECISION1; }
-float   HelperRange(float min, float max)  { return min + ((max - min) * HelperRandFactorUnsigned()); }
-Vector2 HelperRandNormDir()                { return Vector2Normalize( (Vector2){ HelperRandFactorSigned(), HelperRandFactorSigned() } ); }
+Vector2 HelperRandNormDir()                { return Vector2Normalize( (Vector2){ Subgen_FractionSigned(), Subgen_FractionSigned() } ); }
 Vector2 HelperAdd(Vector2 v1, Vector2 v2)  { return Vector2Add(v1,v2); }
 Vector2 HelperSub(Vector2 v1, Vector2 v2)  { return Vector2Subtract(v1,v2); }
 Vector2 HelperMul(Vector2 v1, float value) { return (Vector2) { v1.x * value, v1.y * value }; }
