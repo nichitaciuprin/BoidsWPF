@@ -21,10 +21,5 @@ Vector2 HelperRandNormDir()
     float x = Subgen_FractionSigned();
     float y = Subgen_FractionSigned();
     Vector2 result = Vector2Normalize( (Vector2) { x,y } );
-    // PrintVector2Hex(result);
-    // printf("=");
-    // PrintFloatHex(x);
-    // PrintFloatHex(y);
-    // PrintEmptyLine();
     return result;
 }

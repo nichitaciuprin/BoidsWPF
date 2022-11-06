@@ -30,10 +30,6 @@ Boid CreateBoidRand(AABB aabb)
     Vector2 pos = AABB_RandPointInside(aabb);
     Vector2 vel = HelperMul(randDirection,randSpeed);
 
-    // PrintFloatHex(randSpeed);
-    // PrintVector2Hex(randDirection);
-    // PrintEmptyLine();
-
     Boid boid;
     boid.pos = pos;
     boid.vel = vel;

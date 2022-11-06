@@ -1,6 +1,6 @@
 #include "boid.h"
 
-#define GAME_BOIDSCOUNT 100
+#define GAME_BOIDSCOUNT 5
 
 AABB aabb;
 Boid boids[GAME_BOIDSCOUNT];

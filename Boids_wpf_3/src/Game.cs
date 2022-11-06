@@ -3,7 +3,7 @@ using System.Numerics;
 
 public static class Game
 {
-    private static int boidsCount = 100;
+    private static int boidsCount = 5;
     private static Boid[] boids = new Boid[boidsCount];
     private static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
     // private static Calc a1 = new Calc(boids,0, 25);
@@ -15,7 +15,6 @@ public static class Game
         Subgen.Init(0);
         for (int i = 0; i < boidsCount; i++)
             boids[i] = new Boid(aabb);
-        // Boid.Print(ref boids[0]);
     }
     public static void Update()
     {
