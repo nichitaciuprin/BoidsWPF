@@ -21,5 +21,6 @@ void Game_Update(bool debug)
 }
 void Game_End()
 {
-    Print(&boids[0]);
+    for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+        Print(&boids[i]);
 }

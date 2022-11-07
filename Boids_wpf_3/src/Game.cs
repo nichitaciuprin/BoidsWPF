@@ -41,7 +41,8 @@ public static class Game
         // a2.Finish();
         // a3.Finish();
         // a4.Finish();
-        Boid.Print(ref boids[0]);
+        for (int i = 0; i < boids.Length; i++)
+            Boid.Print(ref boids[i]);
     }
 }
 public class Calc
