@@ -43,6 +43,11 @@ void UpdateVelocity(Boid* boid, Boid* boids, int boidsLength, bool debug)
     Vector2 vec_3 = Vector2Zero();
     int count_1 = 0;
     int count_2 = 0;
+    // if (debug)
+    // {
+    //     PrintVector2Hex(boid->vel);
+    //     printf("\n");
+    // }
 
     for (int i = 0; i < boidsLength; i++)
     {
@@ -52,6 +57,11 @@ void UpdateVelocity(Boid* boid, Boid* boids, int boidsLength, bool debug)
 
         Vector2 diff = HelperSub(boid->pos,otherBoid->pos);
         float dist = Vector2Length(diff);
+        if (debug)
+        {
+            PrintVector2Hex(otherBoid->pos);
+            printf("\n");
+        }
 
         // COHESION
         if (dist < range_1)
@@ -93,6 +103,12 @@ void UpdateVelocity(Boid* boid, Boid* boids, int boidsLength, bool debug)
     vec_3 = HelperMul(vec_3,power3);
 
     Vector2 result = boid->vel;
+    if (debug)
+    {
+        // printf("%i",count_1);
+        // PrintVector2Hex(vec_1);
+        // printf("\n");
+    }
     result = HelperAdd(HelperAdd(HelperAdd(result,vec_1),vec_2),vec_3);
     result = Vector2ClampValue(result,minSpeed,maxSpeed);
     boid->vel = result;
@@ -106,8 +122,8 @@ void UpdatePosition(Boid* boid, AABB aabb, float deltaTime)
 void Update(Boid* boids, int boidsLength, AABB aabb, float deltaTime, bool debug)
 {
     for (int i = 0; i < boidsLength; i++)
-    {
         UpdateVelocity(&boids[i],boids,boidsLength,debug);
+
+    for (int i = 0; i < boidsLength; i++)
         UpdatePosition(&boids[i],aabb,deltaTime);
-    }
 }

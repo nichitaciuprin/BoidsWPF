@@ -1,6 +1,6 @@
 #include "boid.h"
 
-#define GAME_BOIDSCOUNT 5
+#define GAME_BOIDSCOUNT 100
 
 AABB aabb;
 Boid boids[GAME_BOIDSCOUNT];
@@ -17,10 +17,15 @@ void Game_Init()
 }
 void Game_Update(bool debug)
 {
-    Update(boids,GAME_BOIDSCOUNT,aabb,0.02,debug);
+    for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+        UpdateVelocity(&boids[i],boids,GAME_BOIDSCOUNT,debug);
+
+    for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+        UpdatePosition(&boids[i],aabb,0.02);
 }
 void Game_End()
 {
-    for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-        Print(&boids[i]);
+    // for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+    //     Print(&boids[i]);
+    Print(&boids[0]);
 }

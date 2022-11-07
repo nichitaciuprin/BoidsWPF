@@ -20,13 +20,19 @@ public struct Boid
         this.position = aabb.RandPointInside;
         this.velocity = Helper.Mul(randDirection,randSpeed);
     }
-    public static void UpdateVelocity(int thisBoidIndex, Boid[] boids)
+    public static void UpdateVelocity(int thisBoidIndex, Boid[] boids, bool debug)
     {
         Vector2 vec_1 = Vector2.Zero;
         Vector2 vec_2 = Vector2.Zero;
         Vector2 vec_3 = Vector2.Zero;
         int count_1 = 0;
         int count_2 = 0;
+
+        // if (debug)
+        // {
+        //     Helper.PrintVector2Hex(boids[thisBoidIndex].velocity);
+        //     System.Console.WriteLine();
+        // }
 
         var boid = boids[thisBoidIndex];
         for (int i = 0; i < boids.Length; i++)
@@ -36,6 +42,12 @@ public struct Boid
 
             var diff = Helper.Sub(boid.position,otherBoid.position);
             var dist = Helper.Length(diff);
+
+            if (debug)
+            {
+                Helper.PrintVector2Hex(otherBoid.position);
+                System.Console.WriteLine();
+            }
 
             // COHESION
             if (dist < range_1)
@@ -77,6 +89,12 @@ public struct Boid
         vec_3 = Helper.Mul(vec_3,power3);
 
         Vector2 result = boid.velocity;
+        if (debug)
+        {
+            // System.Console.Write(count_1);
+            // Helper.PrintVector2Hex(vec_1);
+            // System.Console.WriteLine();
+        }
         result = Helper.Add(Helper.Add(Helper.Add(result,vec_1),vec_2),vec_3);
         result = Vector2Ext.ClampLength(result,minSpeed,maxSpeed);
         boid.velocity = result;

@@ -3,7 +3,7 @@ using System.Numerics;
 
 public static class Game
 {
-    private static int boidsCount = 5;
+    private static int boidsCount = 100;
     private static Boid[] boids = new Boid[boidsCount];
     private static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
     // private static Calc a1 = new Calc(boids,0, 25);
@@ -16,12 +16,12 @@ public static class Game
         for (int i = 0; i < boidsCount; i++)
             boids[i] = new Boid(aabb);
     }
-    public static void Update()
+    public static void Update(bool debug)
     {
         // Parallel.For(0,boids.Length,x => { Boid.UpdateVelocity(x,boids); });
 
         for (int i = 0; i < boids.Length; i++)
-            Boid.UpdateVelocity(i,boids);
+            Boid.UpdateVelocity(i,boids,debug);
 
         // a1.Set();
         // a2.Set();
@@ -41,8 +41,9 @@ public static class Game
         // a2.Finish();
         // a3.Finish();
         // a4.Finish();
-        for (int i = 0; i < boids.Length; i++)
-            Boid.Print(ref boids[i]);
+        // for (int i = 0; i < boids.Length; i++)
+        //     Boid.Print(ref boids[i]);
+        Boid.Print(ref boids[0]);
     }
 }
 public class Calc
@@ -76,9 +77,9 @@ public class Calc
             if (finish) return;
             if (working)
             {
-                for (int i = startIndex; i < length; i++)
-                    Boid.UpdateVelocity(i,boids);
-                working = false;
+                // for (int i = startIndex; i < length; i++)
+                //     Boid.UpdateVelocity(i,boids);
+                // working = false;
             }
             Thread.Yield();
         }
