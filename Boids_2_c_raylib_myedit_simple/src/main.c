@@ -13,9 +13,7 @@ int main(void)
     Game_Init();
 
     long time1 = clock();
-    // for (int i = 0; i < 18; i++) Game_Update(false);
-    // for (int i = 0; i < 1; i++) Game_Update(true);
-    for (int i = 0; i < 1000; i++) Game_Update(false);
+    for (int i = 0; i < 2; i++) Game_Update(false);
     long time2 = clock();
 
     printf("%li\n",time2-time1);
@@ -24,3 +22,9 @@ int main(void)
 
 	return 0;
 }
+/*
+3FF3C65B 41964E32 410F4FF3 41258155
+-------
+0
+3FF3C65A 41964E33 410F4FEA 41258157
+*/

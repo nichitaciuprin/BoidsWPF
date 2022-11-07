@@ -43,11 +43,11 @@ public struct Boid
             var diff = Helper.Sub(boid.position,otherBoid.position);
             var dist = Helper.Length(diff);
 
-            if (debug)
-            {
-                Helper.PrintVector2Hex(otherBoid.position);
-                System.Console.WriteLine();
-            }
+            // if (debug)
+            // {
+            //     Helper.PrintVector2Hex(otherBoid.position);
+            //     System.Console.WriteLine();
+            // }
 
             // COHESION
             if (dist < range_1)
@@ -89,12 +89,12 @@ public struct Boid
         vec_3 = Helper.Mul(vec_3,power3);
 
         Vector2 result = boid.velocity;
-        if (debug)
-        {
-            // System.Console.Write(count_1);
-            // Helper.PrintVector2Hex(vec_1);
-            // System.Console.WriteLine();
-        }
+        // if (debug)
+        // {
+        //     // System.Console.Write(count_1);
+        //     // Helper.PrintVector2Hex(vec_1);
+        //     // System.Console.WriteLine();
+        // }
         result = Helper.Add(Helper.Add(Helper.Add(result,vec_1),vec_2),vec_3);
         result = Vector2Ext.ClampLength(result,minSpeed,maxSpeed);
         boid.velocity = result;

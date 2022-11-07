@@ -13,7 +13,6 @@ void Game_Init()
     aabb.p1 = (Vector2){ 50, 50 };
 	for (int i = 0; i < GAME_BOIDSCOUNT; i++)
 		boids[i] = CreateBoidRand(aabb);
-    // Print(&boids[0]);
 }
 void Game_Update(bool debug)
 {
@@ -25,7 +24,5 @@ void Game_Update(bool debug)
 }
 void Game_End()
 {
-    // for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-    //     Print(&boids[i]);
     Print(&boids[0]);
 }
