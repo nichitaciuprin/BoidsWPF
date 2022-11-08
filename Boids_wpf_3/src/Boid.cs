@@ -89,6 +89,9 @@ public struct Boid
         vec_3 = Helper.Mul(vec_3,power3);
 
         Vector2 result = boid.velocity;
+        System.Console.Write(count_1);
+        // Helper.PrintVector2Hex(vec_1);
+        System.Console.WriteLine();
         // if (debug)
         // {
         //     // System.Console.Write(count_1);

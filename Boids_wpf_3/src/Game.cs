@@ -3,11 +3,11 @@ using System.Numerics;
 
 public static class Game
 {
-    private static int boidsCount = 100;
+    private static int boidsCount = 2;
     private static Boid[] boids = new Boid[boidsCount];
     private static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
-    private static Calc a1 = new Calc(boids,0, 50);
-    private static Calc a2 = new Calc(boids,50,50);
+    private static Calc a1 = new Calc(boids,aabb,0,1,1);
+    private static Calc a2 = new Calc(boids,aabb,1,1,2);
     // private static Calc a3 = new Calc(boids,50,25);
     // private static Calc a4 = new Calc(boids,75,25);
     public static unsafe void Init()
@@ -22,18 +22,17 @@ public static class Game
 
         // for (int i = 0; i < boids.Length; i++)
         //     Boid.UpdateVelocity(i,boids,debug);
+        // for (int i = 0; i < boids.Length; i++)
+        //     Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);
 
+        // var oldBoid = boids[0];
+        // Boid.Print(ref boids[0]);
         a1.Set();
-        a2.Set();
-        // a3.Set();
-        // a4.Set();
         while(a1.working) { Thread.Yield(); }
+        a2.Set();
         while(a2.working) { Thread.Yield(); }
-        // while(a3.working) Thread.Yield();
-        // while(a4.working) Thread.Yield();
-
-        for (int i = 0; i < boids.Length; i++)
-            Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);
+        // System.Console.Write(',');
+        // var newBoid = boids[0];
     }
     public static void End()
     {
@@ -41,7 +40,9 @@ public static class Game
         a2.Finish();
         // a3.Finish();
         // a4.Finish();
-        Boid.Print(ref boids[0]);
+        // Boid.Print(ref boids[0]);
+        for (int i = 0; i < boids.Length; i++)
+            Boid.Print(ref boids[i]);
     }
 }
 public class Calc
@@ -49,13 +50,17 @@ public class Calc
     private int startIndex;
     private int length;
     private Boid[] boids;
+    private AABB aabb;
     private Thread thread;
     public bool working;
     private bool finish;
     public int count;
-    public Calc(Boid[] boids, int startIndex, int length)
+    private int id;
+    public Calc(Boid[] boids, AABB aabb, int startIndex, int length, int id)
     {
+        this.id = id;
         this.boids = boids;
+        this.aabb = aabb;
         this.startIndex = startIndex;
         this.length = length;
         this.thread = new Thread(Duno);
@@ -80,9 +85,12 @@ public class Calc
                 var length2 = startIndex+length;
                 for (int i = startIndex; i < length2; i++)
                     Boid.UpdateVelocity(i,boids,false);
+                for (int i = startIndex; i < length2; i++)
+                    Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);
                 working = false;
             }
             Thread.Yield();
         }
     }
+    // public static object lockObj = new();
 }
