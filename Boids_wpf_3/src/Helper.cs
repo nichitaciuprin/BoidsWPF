@@ -27,10 +27,8 @@ public static class Helper
         var hex = result.ToString("X");
         System.Console.Write(hex);
     }
-    public static string ToHex(float value)
-    {
-        return System.BitConverter.SingleToUInt32Bits(value).ToString("X");
-    }
+    public static string ToHex(float value) => System.BitConverter.SingleToUInt32Bits(value).ToString("X");
+    public static string ToHex(Vector2 value) => ToHex(value.X) + ToHex(value.Y);
     public static void PrintVector2Hex(Vector2 value)
     {
         PrintFloatHex(value.X);

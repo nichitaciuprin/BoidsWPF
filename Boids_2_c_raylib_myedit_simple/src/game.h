@@ -1,6 +1,6 @@
 #include "boid.h"
 
-#define GAME_BOIDSCOUNT 2
+#define GAME_BOIDSCOUNT 100
 
 AABB aabb;
 Boid boids[GAME_BOIDSCOUNT];
@@ -16,31 +16,33 @@ void Game_Init()
 }
 void Game_Update(bool debug)
 {
-    // printf("?\n");
-    // Print(&boids[0]);
+    Boid boids2[GAME_BOIDSCOUNT];
+
     for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-        UpdateVelocity(&boids[i],boids,GAME_BOIDSCOUNT,debug);
+        boids2[i] = UpdateVelocity(i,boids,GAME_BOIDSCOUNT,debug);
+
+    // if (debug)
+    // {
+    //     for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+    //         PrintBoid(&boids2[i]);
+    // }
+
+    for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+        boids[i] = boids2[i];
 
     for (int i = 0; i < GAME_BOIDSCOUNT; i++)
         UpdatePosition(&boids[i],aabb,0.02);
 }
 void Game_End()
 {
-    for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-        Print(&boids[i]);
+    Print(&boids[0]);
+    // for (int i = 0; i < GAME_BOIDSCOUNT; i++)
+    //     Print(&boids[i]);
 }
 /*
-417F1F53420751AD40CB613E40D08617
-3FE5B43B4142EAEEC081A248C100966C
-409F1515422979BD408A9CE04100F09A
-41D277764226E840C1406CAFC0C0FACC
-41B9DB5041068C5CBDB2DB29C12C4582
-420CBB6441E59711C1532FB1C02EB636
+40A6909E41B49C924110C3F741259639
+4106D8B541C88A20C0A845F6C111035E
 -------
-417F1F53420751AD40CB613E40D08617
-3FE5B43B4142EAEEC081A248C100966C
-409F1515422979BD408A9CE04100F09A
-41D277764226E840C1406CAFC0C0FACC
-41B9DB5041068C5CBDB2DB29C12C4582
-420CBB6441E59711C1532FB1C02EB636
+40A6909E41B49C924110C3F741259639
+4106D8B541C88A20C0A845F6C111035E
 */
