@@ -1,21 +1,19 @@
-﻿Game.Init();
+﻿public unsafe static class Programm
+{
+    public unsafe static void Main()
+    {
+        System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+        Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
-var watch = System.Diagnostics.Stopwatch.StartNew();
+        Game.Init();
 
-for (int i = 0; i < 2000; i++) Game.Update(false);
+        var watch = System.Diagnostics.Stopwatch.StartNew();
 
-// for (int i = 0; i < 19; i++) Game.Update(false);
-// for (int i = 0; i < 1; i++) Game.Update(true);
+        for (int i = 0; i < 2000; i++) Game.Update(false);
 
-watch.Stop();
-System.Console.WriteLine(watch.ElapsedMilliseconds);
+        watch.Stop();
+        System.Console.WriteLine(watch.ElapsedMilliseconds);
 
-Game.End();
-
-/*
-C0ABCC8BC113B664
-411287424128493F
--------
-C0ABCC8BC113B664
-4110C3F741259639
-*/
+        Game.End();
+    }
+}
