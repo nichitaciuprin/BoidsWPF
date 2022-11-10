@@ -36,22 +36,14 @@ Boid CreateBoidRand(AABB aabb)
 
     return boid;
 }
-// void UpdateVelocity(Boid* boids, int boidsLength, bool debug)
-// {
-// }
-Boid UpdateVelocity(int boidIndex, Boid* boids, int boidsLength, bool debug)
+Boid UpdateVelocity(int boidIndex, Boid* boids, int boidsLength)
 {
     Vector2 vec_1 = Vector2Zero();
     Vector2 vec_2 = Vector2Zero();
     Vector2 vec_3 = Vector2Zero();
     int count_1 = 0;
     int count_2 = 0;
-    // if (debug)
-    // {
-    //     PrintVector2Hex(boid->pos);
-    //     PrintVector2Hex(boid->vel);
-    //     printf("\n");
-    // }
+
     Boid duno = boids[boidIndex];
     Boid* boid = &duno;
 
@@ -61,28 +53,8 @@ Boid UpdateVelocity(int boidIndex, Boid* boids, int boidsLength, bool debug)
 
         if (boidIndex == i) continue;
 
-        // if (debug)
-        // {
-        //     PrintVector2Hex(otherBoid->vel);
-        //     // printf(" = ");
-        //     // PrintVector2Hex(boid->pos);
-        //     // printf(" - ");
-        //     // PrintVector2Hex(otherBoid->pos);
-        //     printf("\n");
-        // }
-
         Vector2 diff = HelperSub(boid->pos,otherBoid->pos);
         float dist = Vector2Length(diff);
-
-        // if (debug)
-        // {
-        //     PrintVector2Hex(diff);
-        //     printf(" = ");
-        //     PrintVector2Hex(boid->pos);
-        //     printf(" - ");
-        //     PrintVector2Hex(otherBoid->pos);
-        //     printf("\n");
-        // }
 
         // COHESION
         if (dist < range_1)
@@ -108,16 +80,6 @@ Boid UpdateVelocity(int boidIndex, Boid* boids, int boidsLength, bool debug)
         }
     }
 
-    // if (debug)
-    // {
-    //     PrintVector2Hex(vec_2);
-    //     // printf(" = ");
-    //     // PrintVector2Hex(boid->pos);
-    //     // printf(" - ");
-    //     // PrintVector2Hex(otherBoid->pos);
-    //     printf("\n");
-    // }
-
     if (count_1 != 0)
     {
         vec_1 = HelperDiv(vec_1,count_1);
@@ -133,23 +95,7 @@ Boid UpdateVelocity(int boidIndex, Boid* boids, int boidsLength, bool debug)
     vec_2 = HelperMul(vec_2,power2);
     vec_3 = HelperMul(vec_3,power3);
 
-    // if (debug)
-    // {
-    //     PrintVector2Hex(vec_2);
-    //     // printf(" = ");
-    //     // PrintVector2Hex(boid->pos);
-    //     // printf(" - ");
-    //     // PrintVector2Hex(otherBoid->pos);
-    //     printf("\n");
-    // }
-
     Vector2 result = boid->vel;
-    // if (debug)
-    // {
-    //     printf("%i",count_1);
-    //     PrintVector2Hex(vec_1);
-    //     printf("\n");
-    // }
     result = HelperAdd(HelperAdd(HelperAdd(result,vec_1),vec_2),vec_3);
     result = Vector2ClampValue(result,minSpeed,maxSpeed);
     boid->vel = result;
@@ -168,19 +114,3 @@ void PrintBoid(Boid* boid)
     PrintVector2Hex(boid->vel);
     printf("\n");
 }
-// void Update(Boid* boids, int boidsLength, AABB aabb, float deltaTime, bool debug)
-// {
-//     for (int i = 0; i < boidsLength; i++)
-//         UpdateVelocity(&boids[i],boids,boidsLength,debug);
-
-//     for (int i = 0; i < boidsLength; i++)
-//         UpdatePosition(&boids[i],aabb,deltaTime);
-// }
-
-/*
-C0C3F54BC0CDE538 = 40580C5641A3CF5B - C0ABCC8BC113B664
-40BE18D840C729F8 = 4117FDBB41D748A9 - 411287424128493F
--------
-C0C3F54BC0CDE538 = 40580C5641A3CF5B - 4117FDBB41D748A9
-40C3F54B40CDE538 = 4117FDBB41D748A9 - 40580C5641A3CF5B
-*/

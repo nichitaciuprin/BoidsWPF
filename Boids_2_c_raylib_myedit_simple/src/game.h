@@ -14,18 +14,12 @@ void Game_Init()
 	for (int i = 0; i < GAME_BOIDSCOUNT; i++)
 		boids[i] = CreateBoidRand(aabb);
 }
-void Game_Update(bool debug)
+void Game_Update()
 {
     Boid boids2[GAME_BOIDSCOUNT];
 
     for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-        boids2[i] = UpdateVelocity(i,boids,GAME_BOIDSCOUNT,debug);
-
-    // if (debug)
-    // {
-    //     for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-    //         PrintBoid(&boids2[i]);
-    // }
+        boids2[i] = UpdateVelocity(i,boids,GAME_BOIDSCOUNT);
 
     for (int i = 0; i < GAME_BOIDSCOUNT; i++)
         boids[i] = boids2[i];
@@ -36,13 +30,4 @@ void Game_Update(bool debug)
 void Game_End()
 {
     Print(&boids[0]);
-    // for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-    //     Print(&boids[i]);
 }
-/*
-40A6909E41B49C924110C3F741259639
-4106D8B541C88A20C0A845F6C111035E
--------
-40A6909E41B49C924110C3F741259639
-4106D8B541C88A20C0A845F6C111035E
-*/

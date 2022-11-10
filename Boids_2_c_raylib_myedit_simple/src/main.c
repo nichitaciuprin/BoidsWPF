@@ -3,17 +3,12 @@
 #include <pthread.h>
 #include "game.h"
 
-/*
-C0F6CC3F *   41100000 / 410D9257   = C0FB07F7
-C0F6CC3F * ( 41100000 / 410D9257 ) = C0FB07F9
-*/
-
 int main(void)
 {
     Game_Init();
 
     long time1 = clock();
-    for (int i = 0; i < 2000; i++) Game_Update(false);
+    for (int i = 0; i < 2000; i++) Game_Update();
     long time2 = clock();
 
     printf("%li\n",time2-time1);
@@ -22,5 +17,3 @@ int main(void)
 
 	return 0;
 }
-/*
-*/
