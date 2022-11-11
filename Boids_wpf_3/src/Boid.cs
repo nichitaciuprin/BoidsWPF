@@ -41,12 +41,6 @@ public struct Boid
     }
     public static Boid UpdateVelocity(int thisBoidIndex, Boid[] boids)
     {
-        var vec_1 = Vector2.Zero;
-        var vec_2 = Vector2.Zero;
-        var vec_3 = Vector2.Zero;
-        var count_1 = 0;
-        var count_2 = 0;
-
         var boid = boids[thisBoidIndex];
         for (int i = 0; i < boids.Length; i++)
         {
@@ -60,15 +54,15 @@ public struct Boid
             // COHESION
             if (dist < range_1)
             {
-                vec_1 = Vector2.Add(vec_1,otherBoid.pos);
-                count_1++;
+                boid.vec_1 = Vector2.Add(boid.vec_1,otherBoid.pos);
+                boid.count_1++;
             }
 
             // ALIGHMENT
             if (dist < range_2)
             {
-                vec_2 = Vector2.Add(vec_2,otherBoid.vel);
-                count_2++;
+                boid.vec_2 = Vector2.Add(boid.vec_2,otherBoid.vel);
+                boid.count_2++;
             }
 
             // SEPARATION
@@ -77,29 +71,36 @@ public struct Boid
                 var normDiff = diff.Normalized();
                 var d2 = range_3 - dist;
                 normDiff = Vector2.Mul(normDiff,d2);
-                vec_3 = Vector2.Add(vec_3,normDiff);
+                boid.vec_3 = Vector2.Add(boid.vec_3,normDiff);
             }
         }
 
-        if (count_1 != 0)
+        if (boid.count_1 != 0)
         {
-            vec_1 = Vector2.Div(vec_1,count_1);
-            vec_1 = Vector2.Sub(vec_1,boid.pos);
+            boid.vec_1 = Vector2.Div(boid.vec_1,boid.count_1);
+            boid.vec_1 = Vector2.Sub(boid.vec_1,boid.pos);
         }
-        if (count_2 != 0)
+        if (boid.count_2 != 0)
         {
-            vec_2 = Vector2.Div(vec_2,count_2);
-            vec_2 = Vector2.Sub(vec_2,boid.vel);
+            boid.vec_2 = Vector2.Div(boid.vec_2,boid.count_2);
+            boid.vec_2 = Vector2.Sub(boid.vec_2,boid.vel);
         }
 
-        vec_1 = Vector2.Mul(vec_1,power1);
-        vec_2 = Vector2.Mul(vec_2,power2);
-        vec_3 = Vector2.Mul(vec_3,power3);
+        boid.vec_1 = Vector2.Mul(boid.vec_1,power1);
+        boid.vec_2 = Vector2.Mul(boid.vec_2,power2);
+        boid.vec_3 = Vector2.Mul(boid.vec_3,power3);
 
         var result = boid.vel;
-        result = Vector2.Add(Vector2.Add(Vector2.Add(result,vec_1),vec_2),vec_3);
+        result = Vector2.Add(Vector2.Add(Vector2.Add(result,boid.vec_1),boid.vec_2),boid.vec_3);
         result = result.ClampLength(minSpeed,maxSpeed);
         boid.vel = result;
+
+        boid.vec_1 = Vector2.Zero;
+        boid.vec_2 = Vector2.Zero;
+        boid.vec_3 = Vector2.Zero;
+        boid.count_1 = 0;
+        boid.count_2 = 0;
+
         return boid;
     }
     public static void UpdatePosition(Boid[] boids, ref AABB aabb, float deltaTime)
@@ -113,8 +114,9 @@ public struct Boid
     }
     public static void UpdateVelocity_0(Boid[] boids)
     {
-        // ALL UNIQUE PAIRS
         var length = boids.Length;
+
+        // ALL UNIQUE PAIRS
         for (int i = 0;   i < length; i++)
         for (int j = i+1; j < length; j++)
             UpdateVelocity_1(ref boids[i], ref boids[j]);
