@@ -18,7 +18,7 @@ void PrintFloatHex(float f)
 {
     unsigned int ui;
     memcpy(&ui, &f, sizeof (ui));
-    printf("%x", ui);
+    printf("%X", ui);
     // printf("%X", *(unsigned int *)&f);
 }
 void PrintVector2(Vector2 v1) { printf("<%f,%f>\n",v1.x,v1.y); }

@@ -13,7 +13,7 @@ public static class Game
     }
     public static void Update()
     {
-        Boid.Update(boids,ref aabb);
+        Boid.Update(boids,ref aabb,0.02f);
     }
     public static void End()
     {
