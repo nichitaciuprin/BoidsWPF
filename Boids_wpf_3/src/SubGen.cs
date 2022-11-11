@@ -32,36 +32,14 @@ public static class Subgen
     }
     public static float FractionUnsigned()
     {
-        var next = Next();
-        // System.Console.WriteLine(next);
-        return next / (float)MAX;
+        return Next() / (float)MAX;
     }
     public static float FractionSigned()
     {
-        float result = FractionUnsigned() * 2 - 1;
-        // Helper.PrintFloatHex(result);
-        // System.Console.WriteLine();
-        return result;
+        return FractionUnsigned() * 2 - 1;
     }
     public static float Range(float min, float max)
     {
-        float result = min + ((max - min) * FractionUnsigned());
-        // Helper.PrintFloatHex(result);
-        // System.Console.WriteLine();
-        return result;
+        return min + ((max - min) * FractionUnsigned());
     }
 }
-
-/*
-0.824359 = 824358983 / 1000000000.000000
-0.925189 = 925189384 / 1000000000.000000
-0.988325 = 988325069 / 1000000000.000000
-0.030883 = 30882955 / 1000000000.000000
-0.367453 = 367453453 / 1000000000.000000
-
-0.824359 = 824358983 / 1E+09
-0.9251894 = 925189384 / 1E+09
-0.98832506 = 988325069 / 1E+09
-0.030882956 = 30882955 / 1E+09
-0.36745343 = 367453453 / 1E+09
-*/

@@ -1,4 +1,3 @@
-using System;
 using System.Numerics;
 
 public struct AABB
@@ -10,7 +9,7 @@ public struct AABB
     }
     public Vector2 p0;
     public Vector2 p1;
-    public Vector2 Size => (p0 - p1).Abs();
+    public Vector2 Size => Vector2Ext.Abs(p0 - p1);
     public float MinX => MathF.Min(p0.X,p1.X);
     public float MinY => MathF.Min(p0.Y,p1.Y);
     public float MaxX => MathF.Max(p0.X,p1.X);

@@ -1,5 +1,4 @@
 using System.Numerics;
-// using System.Runtime.InteropServices;
 
 public static class Game
 {
@@ -13,13 +12,10 @@ public static class Game
         for (int i = 0; i < boidsCount; i++)
             boids[i] = new Boid(aabb);
     }
-    public static void Update(bool debug)
+    public static void Update()
     {
-        // Parallel.For(0,boids.Length,i => { boids2[i] = Boid.UpdateVelocity(i,boids,false); });
-        // boids2.CopyTo(boids,0);
-
         for (int i = 0; i < boids.Length; i++)
-            boids2[i] = Boid.UpdateVelocity(i,boids,debug);
+            boids2[i] = Boid.UpdateVelocity(i,boids);
 
         boids2.CopyTo(boids,0);
 
