@@ -35,9 +35,10 @@ public struct Boid
             span2[i] = Boid.UpdateVelocity(i,boids);
         span2.CopyTo(span1);
 
-        // UpdateVelocity_0(boids);
+        for (int i = 0; i < boids.Length; i++)
+            Update_2(ref boids[i]);
 
-        UpdatePosition(boids, ref aabb, 0.02f);
+        Update_3(boids, ref aabb, 0.02f);
     }
     public static Boid UpdateVelocity(int thisBoidIndex, Boid[] boids)
     {
@@ -76,23 +77,21 @@ public struct Boid
             }
         }
 
-        UpdateVelocity_2(ref boid);
-
         return boid;
     }
-    private static void UpdateVelocity_0(Boid[] boids)
+    private static void Update(Boid[] boids)
     {
         var length = boids.Length;
 
         // ALL UNIQUE PAIRS
         for (int i = 0;   i < length; i++)
         for (int j = i+1; j < length; j++)
-            UpdateVelocity_1(ref boids[i], ref boids[j]);
+            Update_1(ref boids[i], ref boids[j]);
 
         for (int i = 0;   i < length; i++)
-            UpdateVelocity_2(ref boids[i]);
+            Update_2(ref boids[i]);
     }
-    private static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
+    private static void Update_1(ref Boid boid1, ref Boid boid2)
     {
         var diff = Vector2.Sub(boid1.pos,boid2.pos);
         var dist = diff.Length();
@@ -118,7 +117,7 @@ public struct Boid
         boid1.vec_3 = Vector2.Add(boid1.vec_3,normDiff);
         boid2.vec_3 = Vector2.Add(boid2.vec_3,normDiff.Negate);
     }
-    private static void UpdateVelocity_2(ref Boid boid)
+    private static void Update_2(ref Boid boid)
     {
         if (boid.count_1 != 0)
         {
@@ -146,7 +145,7 @@ public struct Boid
         boid.count_1 = 0;
         boid.count_2 = 0;
     }
-    private static void UpdatePosition(Boid[] boids, ref AABB aabb, float deltaTime)
+    private static void Update_3(Boid[] boids, ref AABB aabb, float deltaTime)
     {
         for (int i = 0; i < boids.Length; i++)
         {
