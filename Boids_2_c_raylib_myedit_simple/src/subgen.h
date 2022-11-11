@@ -31,26 +31,8 @@ int Subgen_Next()
 	if (!sj--) sj = 54;
     x = state[si] - state[sj];
 	if (x < 0) x += MAX;
-    // printf("%i\n",x);
 	return state[si] = x;
 }
-float Subgen_FractionUnsigned()
-{
-	int next = Subgen_Next();
-	// printf("%i\n",next);
-    return next / (float)MAX;
-}
-float Subgen_FractionSigned()
-{
-	float result = Subgen_FractionUnsigned() * 2 - 1;
-	// printf("%X", *(unsigned int *)&result);
-	// printf("\n");
-    return result;
-}
-float Subgen_Range(float min, float max)
-{
-	float result = min + ((max - min) * Subgen_FractionUnsigned());
-	// printf("%X", *(unsigned int *)&result);
-	// printf("\n");
-    return result;
-}
+float Subgen_FractionUnsigned()          { return Subgen_Next() / (float)MAX; }
+float Subgen_FractionSigned()            { return Subgen_FractionUnsigned() * 2 - 1; }
+float Subgen_Range(float min, float max) { return min + ((max - min) * Subgen_FractionUnsigned()); }

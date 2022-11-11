@@ -5,6 +5,11 @@ typedef struct Boid
 {
     Vector2 pos;
     Vector2 vel;
+    Vector2 vec_1;
+    Vector2 vec_2;
+    Vector2 vec_3;
+    int count_1;
+    int count_2;
 } Boid;
 
 float minSpeed = 9;
@@ -12,23 +17,20 @@ float maxSpeed = 15;
 float range_1 = 5;
 float range_2 = 5;
 float range_3 = 2;
+// float range_1 = 25;
+// float range_2 = 25;
+// float range_3 = 4;
 float power1 = 0.01;
 float power2 = 0.01;
 float power3 = 0.04;
 
-void Print(Boid* boid)
-{
-    PrintVector2Hex(boid->pos);
-    PrintVector2Hex(boid->vel);
-    PrintEmptyLine();
-}
-Boid CreateBoidRand(AABB aabb)
+Boid CreateBoidRand(AABB* aabb)
 {
     float randSpeed = Subgen_Range(minSpeed,maxSpeed);
-    Vector2 randDirection = HelperRandNormDir();
+    Vector2 randDirection = Helper_RandNormDir();
 
     Vector2 pos = AABB_RandPointInside(aabb);
-    Vector2 vel = HelperMul(randDirection,randSpeed);
+    Vector2 vel = Helper_Mul(randDirection,randSpeed);
 
     Boid boid;
     boid.pos = pos;
@@ -36,81 +38,87 @@ Boid CreateBoidRand(AABB aabb)
 
     return boid;
 }
-Boid UpdateVelocity(int boidIndex, Boid* boids, int boidsLength)
+void UpdateVelocity_1(Boid* boid1, Boid* boid2)
 {
-    Vector2 vec_1 = Vector2Zero();
-    Vector2 vec_2 = Vector2Zero();
-    Vector2 vec_3 = Vector2Zero();
-    int count_1 = 0;
-    int count_2 = 0;
+    Vector2 diff = Helper_Sub(boid1->pos,boid2->pos);
+    float dist1Squared = diff.x*diff.x + diff.y*diff.y;
+    float dist1 = sqrtf(dist1Squared);
 
-    Boid duno = boids[boidIndex];
-    Boid* boid = &duno;
+    // COHESION
+    if (dist1 >= range_1) return;
 
-    for (int i = 0; i < boidsLength; i++)
-    {
-        Boid* otherBoid = &boids[i];
+    boid1->vec_1 = Helper_Add(boid1->vec_1,boid2->pos); boid1->count_1++;
+    boid2->vec_1 = Helper_Add(boid2->vec_1,boid1->pos); boid2->count_1++;
 
-        if (boidIndex == i) continue;
+    // ALIGHMENT
+    if (dist1 >= range_2) return;
 
-        Vector2 diff = HelperSub(boid->pos,otherBoid->pos);
-        float dist = Vector2Length(diff);
+    boid1->vec_2 = Helper_Add(boid1->vec_2,boid2->vel); boid1->count_2++;
+    boid2->vec_2 = Helper_Add(boid2->vec_2,boid1->vel); boid2->count_2++;
 
-        // COHESION
-        if (dist < range_1)
-        {
-            vec_1 = HelperAdd(vec_1,otherBoid->pos);
-            count_1++;
-        }
+    // SEPARATION
+    if (dist1 >= range_3) return;
 
-        // ALIGHMENT
-        if (dist < range_2)
-        {
-            vec_2 = HelperAdd(vec_2,otherBoid->vel);
-            count_2++;
-        }
-
-        // SEPARATION
-        if (dist < range_3)
-        {
-            Vector2 normDiff = Vector2Normalize(diff);
-            float d2 = range_3 - dist;
-            normDiff = HelperMul(normDiff,d2);
-            vec_3 = HelperAdd(vec_3,normDiff);
-        }
-    }
-
-    if (count_1 != 0)
-    {
-        vec_1 = HelperDiv(vec_1,count_1);
-        vec_1 = HelperSub(vec_1,boid->pos);
-    }
-    if (count_2 != 0)
-    {
-        vec_2 = HelperDiv(vec_2,count_2);
-        vec_2 = HelperSub(vec_2,boid->vel);
-    }
-
-    vec_1 = HelperMul(vec_1,power1);
-    vec_2 = HelperMul(vec_2,power2);
-    vec_3 = HelperMul(vec_3,power3);
-
-    Vector2 result = boid->vel;
-    result = HelperAdd(HelperAdd(HelperAdd(result,vec_1),vec_2),vec_3);
-    result = Vector2ClampValue(result,minSpeed,maxSpeed);
-    boid->vel = result;
-
-    return duno;
+    float ilength = 1.0f/dist1;
+    Vector2 normDiff = (Vector2) { diff.x*ilength, diff.y*ilength };
+    float dist2 = range_3 - dist1;
+    normDiff = Helper_Mul(normDiff,dist2);
+    boid1->vec_3 = Helper_Add(boid1->vec_3,normDiff);
+    boid2->vec_3 = Helper_Add(boid2->vec_3,Vector2Negate(normDiff));
 }
-void UpdatePosition(Boid* boid, AABB aabb, float deltaTime)
+void UpdateVelocity_2(Boid* boid)
 {
-    Vector2 velocityDelta = HelperMul(boid->vel,deltaTime);
-    boid->pos = HelperAdd(boid->pos,velocityDelta);
+    if (boid->count_1 != 0)
+    {
+        boid->vec_1 = Helper_Div(boid->vec_1,boid->count_1);
+        boid->vec_1 = Helper_Sub(boid->vec_1,boid->pos);
+    }
+    if (boid->count_2 != 0)
+    {
+        boid->vec_2 = Helper_Div(boid->vec_2,boid->count_2);
+        boid->vec_2 = Helper_Sub(boid->vec_2,boid->vel);
+    }
+
+    boid->vec_1 = Helper_Mul(boid->vec_1,power1);
+    boid->vec_2 = Helper_Mul(boid->vec_2,power2);
+    boid->vec_3 = Helper_Mul(boid->vec_3,power3);
+
+    boid->vel = Helper_Add(boid->vel,boid->vec_1);
+    boid->vel = Helper_Add(boid->vel,boid->vec_2);
+    boid->vel = Helper_Add(boid->vel,boid->vec_3);
+
+    boid->vel = Vector2ClampValue(boid->vel,minSpeed,maxSpeed);
+
+    boid->vec_1 = Vector2Zero();
+    boid->vec_2 = Vector2Zero();
+    boid->vec_3 = Vector2Zero();
+    boid->count_1 = 0;
+    boid->count_2 = 0;
+}
+void UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+{
+    Vector2 velocityDelta = Helper_Mul(boid->vel,deltaTime);
+    boid->pos = Helper_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
+}
+void Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
+{
+    int length = boidsLength;
+
+    // ALL UNIQUE PAIRS
+    for (int i = 0;   i < length; i++)
+    for (int j = i+1; j < length; j++)
+        UpdateVelocity_1(&boids[i], &boids[j]);
+
+    for (int i = 0;   i < length; i++)
+        UpdateVelocity_2(&boids[i]);
+
+    for (int i = 0; i < length; i++)
+        UpdatePosition(&boids[i],aabb,deltaTime);
 }
 void PrintBoid(Boid* boid)
 {
-    PrintVector2Hex(boid->pos);
-    PrintVector2Hex(boid->vel);
-    printf("\n");
+    Helper_PrintVector2Hex(boid->pos);
+    Helper_PrintVector2Hex(boid->vel);
+    Helper_PrintEmptyLine();
 }

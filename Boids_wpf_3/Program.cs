@@ -10,10 +10,10 @@ public unsafe static class Programm
         Game.Init();
 
         var watch = Stopwatch.StartNew();
-        for (int i = 0; i < 2000; i++) Game.Update();
+        for (int i = 0; i < 3000; i++) Game.Update();
         watch.Stop();
 
-        Console.WriteLine(watch.ElapsedMilliseconds);
+        Console.WriteLine($"ms: {watch.ElapsedMilliseconds}");
 
         Game.End();
     }

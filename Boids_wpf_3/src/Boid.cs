@@ -45,26 +45,28 @@ public struct Boid
     private static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
     {
         var diff = Vector2.Sub(boid1.pos,boid2.pos);
-        var dist1 = diff.Length();
-
-        if (dist1 >= range_1) return;
+        var dist1Squared = diff.x*diff.x + diff.y*diff.y;
+        var dist1 = MathF.Sqrt(dist1Squared);
 
         // COHESION
+        if (dist1 >= range_1) return;
+
         boid1.vec_1 = Vector2.Add(boid1.vec_1,boid2.pos); boid1.count_1++;
         boid2.vec_1 = Vector2.Add(boid2.vec_1,boid1.pos); boid2.count_1++;
 
+        // ALIGHMENT
         if (dist1 >= range_2) return;
 
-        // ALIGHMENT
         boid1.vec_2 = Vector2.Add(boid1.vec_2,boid2.vel); boid1.count_2++;
         boid2.vec_2 = Vector2.Add(boid2.vec_2,boid1.vel); boid2.count_2++;
 
-        if (dist1 >= range_3) return;
-
         // SEPARATION
-        var normDiff = diff.Normalized();
+        if (dist1 >= range_3) return;
+        var ilength = 1.0f/dist1;
+        var normDiff = new Vector2(diff.x*ilength, diff.y*ilength);
         var dist2 = range_3 - dist1;
         normDiff = Vector2.Mul(normDiff,dist2);
+
         boid1.vec_3 = Vector2.Add(boid1.vec_3,normDiff);
         boid2.vec_3 = Vector2.Add(boid2.vec_3,normDiff.Negate);
     }

@@ -17,6 +17,7 @@ public static class Game
     }
     public static void End()
     {
+        System.Console.Write("First boid: ");
         System.Console.WriteLine(boids[0].ToString());
     }
 }
