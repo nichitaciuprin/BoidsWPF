@@ -17,7 +17,7 @@ namespace MyVector2
         public static Vector2 Div    (Vector2 v1, float value) => new Vector2( v1.x / value , v1.y / value );
         public static Vector2 Abs    (Vector2 v)               => new Vector2( MathF.Abs(v.x) , MathF.Abs(v.y) );
         public static bool    IsZero (Vector2 v)               => v.x == 0 && v.y == 0;
-
+        public Vector2 Negate => new Vector2(-x,-y);
         public static Vector2 Sum(Vector2[] vs)
         {
             var result = Vector2.Zero;
