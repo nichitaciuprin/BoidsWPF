@@ -20,14 +20,15 @@ public struct Boid
         pos = aabb.RandPointInside;
         vel = Vector2.Mul(randDirection,randSpeed);
     }
-    public static void Update(Boid[] boids, Boid[] boids2, ref AABB aabb)
+    public static void Update(Boid[] boids, ref AABB aabb)
     {
-        // Span<Boid> localBoids = stackalloc Boid[boids.Length];
+        Span<Boid> span1 = new Span<Boid>(boids);
+        Span<Boid> span2 = stackalloc Boid[boids.Length];
 
         for (int i = 0; i < boids.Length; i++)
-            boids2[i] = Boid.UpdateVelocity(i,boids);
+            span2[i] = Boid.UpdateVelocity(i,boids);
 
-        boids2.CopyTo(boids,0);
+        span2.CopyTo(span1);
 
         for (int i = 0; i < boids.Length; i++)
             Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);

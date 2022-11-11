@@ -4,7 +4,6 @@ public static class Game
 {
     private static int boidsCount = 300;
     private static Boid[] boids = new Boid[boidsCount];
-    private static Boid[] boids2 = new Boid[boidsCount];
     private static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
     public static unsafe void Init()
     {
@@ -14,7 +13,7 @@ public static class Game
     }
     public static void Update()
     {
-        Boid.Update(boids,boids2,ref aabb);
+        Boid.Update(boids,ref aabb);
     }
     public static void End()
     {
