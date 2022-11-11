@@ -1,4 +1,4 @@
-using System.Numerics;
+using MyVector2;
 
 public static class Game
 {
@@ -14,16 +14,10 @@ public static class Game
     }
     public static void Update()
     {
-        for (int i = 0; i < boids.Length; i++)
-            boids2[i] = Boid.UpdateVelocity(i,boids);
-
-        boids2.CopyTo(boids,0);
-
-        for (int i = 0; i < boids.Length; i++)
-            Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);
+        Boid.Update(boids,boids2,ref aabb);
     }
     public static void End()
     {
-        Boid.Print(ref boids[0]);
+        System.Console.WriteLine(boids[0].ToString());
     }
 }

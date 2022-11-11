@@ -1,4 +1,4 @@
-using System.Numerics;
+using MyVector2;
 
 public struct Boid
 {
@@ -16,9 +16,21 @@ public struct Boid
     public Boid(AABB aabb)
     {
         var randSpeed = Subgen.Range(minSpeed,maxSpeed);
-        var randDirection = Vector2Ext.RandNormDir();
+        var randDirection = Vector2.RandNormDir();
         pos = aabb.RandPointInside;
-        vel = Vector2Ext.Mul(randDirection,randSpeed);
+        vel = Vector2.Mul(randDirection,randSpeed);
+    }
+    public static void Update(Boid[] boids, Boid[] boids2, ref AABB aabb)
+    {
+        // Span<Boid> localBoids = stackalloc Boid[boids.Length];
+
+        for (int i = 0; i < boids.Length; i++)
+            boids2[i] = Boid.UpdateVelocity(i,boids);
+
+        boids2.CopyTo(boids,0);
+
+        for (int i = 0; i < boids.Length; i++)
+            Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);
     }
     public static Boid UpdateVelocity(int thisBoidIndex, Boid[] boids)
     {
@@ -35,62 +47,62 @@ public struct Boid
 
             if (thisBoidIndex == i) continue;
 
-            var diff = Vector2Ext.Sub(boid.pos,otherBoid.pos);
-            var dist = Vector2Ext.Length(diff);
+            var diff = Vector2.Sub(boid.pos,otherBoid.pos);
+            var dist = diff.Length();
 
             // COHESION
             if (dist < range_1)
             {
-                vec_1 = Vector2Ext.Add(vec_1,otherBoid.pos);
+                vec_1 = Vector2.Add(vec_1,otherBoid.pos);
                 count_1++;
             }
 
             // ALIGHMENT
             if (dist < range_2)
             {
-                vec_2 = Vector2Ext.Add(vec_2,otherBoid.vel);
+                vec_2 = Vector2.Add(vec_2,otherBoid.vel);
                 count_2++;
             }
 
             // SEPARATION
             if (dist < range_3)
             {
-                var normDiff = Vector2Ext.Normalize(diff);
+                var normDiff = diff.Normalized();
                 var d2 = range_3 - dist;
-                normDiff = Vector2Ext.Mul(normDiff,d2);
-                vec_3 = Vector2Ext.Add(vec_3,normDiff);
+                normDiff = Vector2.Mul(normDiff,d2);
+                vec_3 = Vector2.Add(vec_3,normDiff);
             }
         }
 
         if (count_1 != 0)
         {
-            vec_1 = Vector2Ext.Div(vec_1,count_1);
-            vec_1 = Vector2Ext.Sub(vec_1,boid.pos);
+            vec_1 = Vector2.Div(vec_1,count_1);
+            vec_1 = Vector2.Sub(vec_1,boid.pos);
         }
         if (count_2 != 0)
         {
-            vec_2 = Vector2Ext.Div(vec_2,count_2);
-            vec_2 = Vector2Ext.Sub(vec_2,boid.vel);
+            vec_2 = Vector2.Div(vec_2,count_2);
+            vec_2 = Vector2.Sub(vec_2,boid.vel);
         }
 
-        vec_1 = Vector2Ext.Mul(vec_1,power1);
-        vec_2 = Vector2Ext.Mul(vec_2,power2);
-        vec_3 = Vector2Ext.Mul(vec_3,power3);
+        vec_1 = Vector2.Mul(vec_1,power1);
+        vec_2 = Vector2.Mul(vec_2,power2);
+        vec_3 = Vector2.Mul(vec_3,power3);
 
         var result = boid.vel;
-        result = Vector2Ext.Add(Vector2Ext.Add(Vector2Ext.Add(result,vec_1),vec_2),vec_3);
-        result = Vector2Ext.ClampLength(result,minSpeed,maxSpeed);
+        result = Vector2.Add(Vector2.Add(Vector2.Add(result,vec_1),vec_2),vec_3);
+        result = result.ClampLength(minSpeed,maxSpeed);
         boid.vel = result;
         return boid;
     }
     public static void UpdatePosition(ref Boid boid, ref AABB aabb, float deltaTime)
     {
-        var velocityDelta = Vector2Ext.Mul(boid.vel,deltaTime);
-        boid.pos = Vector2Ext.Add(boid.pos,velocityDelta);
+        var velocityDelta = Vector2.Mul(boid.vel,deltaTime);
+        boid.pos = Vector2.Add(boid.pos,velocityDelta);
         boid.pos = aabb.WrapAround(boid.pos);
     }
     public override string ToString()
     {
-        return Vector2Ext.ToHex(pos) + Vector2Ext.ToHex(vel);
+        return pos.ToHex() + vel.ToHex();
     }
 }

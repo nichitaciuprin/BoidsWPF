@@ -1,4 +1,4 @@
-using System.Numerics;
+using MyVector2;
 
 public struct AABB
 {
@@ -9,21 +9,21 @@ public struct AABB
     }
     public Vector2 p0;
     public Vector2 p1;
-    public Vector2 Size => Vector2Ext.Abs(p0 - p1);
-    public float MinX => MathF.Min(p0.X,p1.X);
-    public float MinY => MathF.Min(p0.Y,p1.Y);
-    public float MaxX => MathF.Max(p0.X,p1.X);
-    public float MaxY => MathF.Max(p0.Y,p1.Y);
+    public Vector2 Size => Vector2.Abs(Vector2.Sub(p0,p1));
+    public float MinX => MathF.Min(p0.x,p1.x);
+    public float MinY => MathF.Min(p0.y,p1.y);
+    public float MaxX => MathF.Max(p0.x,p1.x);
+    public float MaxY => MathF.Max(p0.y,p1.y);
     public float RandPointInside_X => Subgen.Range( MinX, MaxX );
     public float RandPointInside_Y => Subgen.Range( MinY, MaxY );
     public Vector2 RandPointInside => new Vector2( RandPointInside_X, RandPointInside_Y );
     public Vector2 WrapAround(Vector2 point)
     {
         var size = Size;
-        if      (point.X < MinX) point.X += size.X;
-        else if (point.X > MaxX) point.X -= size.X;
-        if      (point.Y < MinY) point.Y += size.Y;
-        else if (point.Y > MaxY) point.Y -= size.Y;
+        if      (point.x < MinX) point.x += size.x;
+        else if (point.x > MaxX) point.x -= size.x;
+        if      (point.y < MinY) point.y += size.y;
+        else if (point.y > MaxY) point.y -= size.y;
         return point;
     }
 }
