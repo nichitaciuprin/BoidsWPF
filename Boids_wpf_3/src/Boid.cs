@@ -42,6 +42,7 @@ public struct Boid
     public static Boid UpdateVelocity(int thisBoidIndex, Boid[] boids)
     {
         var boid = boids[thisBoidIndex];
+
         for (int i = 0; i < boids.Length; i++)
         {
             var otherBoid = boids[i];
@@ -75,44 +76,11 @@ public struct Boid
             }
         }
 
-        if (boid.count_1 != 0)
-        {
-            boid.vec_1 = Vector2.Div(boid.vec_1,boid.count_1);
-            boid.vec_1 = Vector2.Sub(boid.vec_1,boid.pos);
-        }
-        if (boid.count_2 != 0)
-        {
-            boid.vec_2 = Vector2.Div(boid.vec_2,boid.count_2);
-            boid.vec_2 = Vector2.Sub(boid.vec_2,boid.vel);
-        }
-
-        boid.vec_1 = Vector2.Mul(boid.vec_1,power1);
-        boid.vec_2 = Vector2.Mul(boid.vec_2,power2);
-        boid.vec_3 = Vector2.Mul(boid.vec_3,power3);
-
-        var result = boid.vel;
-        result = Vector2.Add(Vector2.Add(Vector2.Add(result,boid.vec_1),boid.vec_2),boid.vec_3);
-        result = result.ClampLength(minSpeed,maxSpeed);
-        boid.vel = result;
-
-        boid.vec_1 = Vector2.Zero;
-        boid.vec_2 = Vector2.Zero;
-        boid.vec_3 = Vector2.Zero;
-        boid.count_1 = 0;
-        boid.count_2 = 0;
+        UpdateVelocity_2(ref boid);
 
         return boid;
     }
-    public static void UpdatePosition(Boid[] boids, ref AABB aabb, float deltaTime)
-    {
-        for (int i = 0; i < boids.Length; i++)
-        {
-            var velocityDelta = Vector2.Mul(boids[i].vel,deltaTime);
-            boids[i].pos = Vector2.Add(boids[i].pos,velocityDelta);
-            boids[i].pos = aabb.WrapAround(boids[i].pos);
-        }
-    }
-    public static void UpdateVelocity_0(Boid[] boids)
+    private static void UpdateVelocity_0(Boid[] boids)
     {
         var length = boids.Length;
 
@@ -124,7 +92,7 @@ public struct Boid
         for (int i = 0;   i < length; i++)
             UpdateVelocity_2(ref boids[i]);
     }
-    public static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
+    private static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
     {
         var diff = Vector2.Sub(boid1.pos,boid2.pos);
         var dist = diff.Length();
@@ -177,6 +145,15 @@ public struct Boid
         boid.vec_3 = Vector2.Zero;
         boid.count_1 = 0;
         boid.count_2 = 0;
+    }
+    private static void UpdatePosition(Boid[] boids, ref AABB aabb, float deltaTime)
+    {
+        for (int i = 0; i < boids.Length; i++)
+        {
+            var velocityDelta = Vector2.Mul(boids[i].vel,deltaTime);
+            boids[i].pos = Vector2.Add(boids[i].pos,velocityDelta);
+            boids[i].pos = aabb.WrapAround(boids[i].pos);
+        }
     }
     public override string ToString()
     {
