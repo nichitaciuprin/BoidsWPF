@@ -30,16 +30,13 @@ public struct Boid
     {
         Span<Boid> span1 = new Span<Boid>(boids);
         Span<Boid> span2 = stackalloc Boid[boids.Length];
-
         for (int i = 0; i < boids.Length; i++)
             span2[i] = Boid.UpdateVelocity(i,boids);
-
         span2.CopyTo(span1);
 
-        UpdatePosition(boids, ref aabb, 0.02f);
+        // UpdateVelocity(boids);
 
-        // for (int i = 0; i < boids.Length; i++)
-        //     Boid.UpdatePosition(ref boids[i], ref aabb, 0.02f);
+        UpdatePosition(boids, ref aabb, 0.02f);
     }
     public static Boid UpdateVelocity(int thisBoidIndex, Boid[] boids)
     {
@@ -113,73 +110,73 @@ public struct Boid
             boids[i].pos = aabb.WrapAround(boids[i].pos);
         }
     }
+    public static void UpdateVelocity(Boid[] boids)
+    {
+        // ALL UNIQUE PAIRS
+        var length = boids.Length;
+        for (int i = 0;   i < length; i++)
+        for (int j = i+1; j < length; j++)
+            UpdateVelocity_1(ref boids[i], ref boids[j]);
+
+        for (int i = 0;   i < length; i++)
+            UpdateVelocity_2(ref boids[i]);
+    }
+    public static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
+    {
+        var diff = Vector2.Sub(boid1.pos,boid2.pos);
+        var dist = diff.Length();
+
+        if (dist < range_1) return;
+
+        // COHESION
+        boid1.vec_1 = Vector2.Add(boid1.vec_1,boid2.pos); boid1.count_1++;
+        boid2.vec_1 = Vector2.Add(boid2.vec_1,boid1.pos); boid2.count_1++;
+
+        if (dist < range_2) return;
+
+        // ALIGHMENT
+        boid1.vec_2 = Vector2.Add(boid1.vec_2,boid2.vel); boid1.count_2++;
+        boid2.vec_2 = Vector2.Add(boid2.vec_2,boid1.vel); boid2.count_2++;
+
+        if (dist < range_3) return;
+
+        // SEPARATION
+        var normDiff = diff.Normalized();
+        var d2 = range_3 - dist;
+        normDiff = Vector2.Mul(normDiff,d2);
+        boid1.vec_3 = Vector2.Add(boid1.vec_3,normDiff);
+        boid2.vec_3 = Vector2.Add(boid2.vec_3,normDiff.Negate);
+    }
+    private static void UpdateVelocity_2(ref Boid boid)
+    {
+        if (boid.count_1 != 0)
+        {
+            boid.vec_1 = Vector2.Div(boid.vec_1,boid.count_1);
+            boid.vec_1 = Vector2.Sub(boid.vec_1,boid.pos);
+        }
+        if (boid.count_2 != 0)
+        {
+            boid.vec_2 = Vector2.Div(boid.vec_2,boid.count_2);
+            boid.vec_2 = Vector2.Sub(boid.vec_2,boid.vel);
+        }
+
+        boid.vec_1 = Vector2.Mul(boid.vec_1,power1);
+        boid.vec_2 = Vector2.Mul(boid.vec_2,power2);
+        boid.vec_3 = Vector2.Mul(boid.vec_3,power3);
+
+        var result = boid.vel;
+        result = Vector2.Add(Vector2.Add(Vector2.Add(result,boid.vec_1),boid.vec_2),boid.vec_3);
+        result = result.ClampLength(minSpeed,maxSpeed);
+        boid.vel = result;
+
+        boid.vec_1 = Vector2.Zero;
+        boid.vec_2 = Vector2.Zero;
+        boid.vec_3 = Vector2.Zero;
+        boid.count_1 = 0;
+        boid.count_2 = 0;
+    }
     public override string ToString()
     {
         return pos.ToHex() + vel.ToHex();
     }
-    // public static void UpdateVelocity(Boid[] boids)
-    // {
-    //     // ALL UNIQUE PAIRS
-    //     var length = boids.Length;
-    //     for (int i = 0;   i < length; i++)
-    //     for (int j = i+1; j < length; j++)
-    //         UpdateVelocity_1(ref boids[i], ref boids[j]);
-
-    //     for (int i = 0;   i < length; i++)
-    //         UpdateVelocity_2(ref boids[i]);
-    // }
-    // public static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
-    // {
-    //     var diff = Vector2.Sub(boid1.pos,boid2.pos);
-    //     var dist = diff.Length();
-
-    //     if (dist < range_1) return;
-
-    //     // COHESION
-    //     boid1.vec_1 = Vector2.Add(boid1.vec_1,boid2.pos); boid1.count_1++;
-    //     boid2.vec_1 = Vector2.Add(boid2.vec_1,boid1.pos); boid2.count_1++;
-
-    //     if (dist < range_2) return;
-
-    //     // ALIGHMENT
-    //     boid1.vec_2 = Vector2.Add(boid1.vec_2,boid2.vel); boid1.count_2++;
-    //     boid2.vec_2 = Vector2.Add(boid2.vec_2,boid1.vel); boid2.count_2++;
-
-    //     if (dist < range_3) return;
-
-    //     // SEPARATION
-    //     var normDiff = diff.Normalized();
-    //     var d2 = range_3 - dist;
-    //     normDiff = Vector2.Mul(normDiff,d2);
-    //     boid1.vec_3 = Vector2.Add(boid1.vec_3,normDiff);
-    //     boid2.vec_3 = Vector2.Add(boid2.vec_3,normDiff.Negate);
-    // }
-    // private static void UpdateVelocity_2(ref Boid boid)
-    // {
-    //     if (boid.count_1 != 0)
-    //     {
-    //         boid.vec_1 = Vector2.Div(boid.vec_1,boid.count_1);
-    //         boid.vec_1 = Vector2.Sub(boid.vec_1,boid.pos);
-    //     }
-    //     if (boid.count_2 != 0)
-    //     {
-    //         boid.vec_2 = Vector2.Div(boid.vec_2,boid.count_2);
-    //         boid.vec_2 = Vector2.Sub(boid.vec_2,boid.vel);
-    //     }
-
-    //     boid.vec_1 = Vector2.Mul(boid.vec_1,power1);
-    //     boid.vec_2 = Vector2.Mul(boid.vec_2,power2);
-    //     boid.vec_3 = Vector2.Mul(boid.vec_3,power3);
-
-    //     var result = boid.vel;
-    //     result = Vector2.Add(Vector2.Add(Vector2.Add(result,boid.vec_1),boid.vec_2),boid.vec_3);
-    //     result = result.ClampLength(minSpeed,maxSpeed);
-    //     boid.vel = result;
-
-    //     boid.vec_1 = Vector2.Zero;
-    //     boid.vec_2 = Vector2.Zero;
-    //     boid.vec_3 = Vector2.Zero;
-    //     boid.count_1 = 0;
-    //     boid.count_2 = 0;
-    // }
 }
