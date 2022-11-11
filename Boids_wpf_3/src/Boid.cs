@@ -4,6 +4,7 @@ public struct Boid
 {
     public Vector2 pos;
     public Vector2 vel;
+
     private Vector2 vec_1 = Vector2.Zero;
     private Vector2 vec_2 = Vector2.Zero;
     private Vector2 vec_3 = Vector2.Zero;
@@ -34,7 +35,7 @@ public struct Boid
             span2[i] = Boid.UpdateVelocity(i,boids);
         span2.CopyTo(span1);
 
-        // UpdateVelocity(boids);
+        // UpdateVelocity_0(boids);
 
         UpdatePosition(boids, ref aabb, 0.02f);
     }
@@ -110,7 +111,7 @@ public struct Boid
             boids[i].pos = aabb.WrapAround(boids[i].pos);
         }
     }
-    public static void UpdateVelocity(Boid[] boids)
+    public static void UpdateVelocity_0(Boid[] boids)
     {
         // ALL UNIQUE PAIRS
         var length = boids.Length;
