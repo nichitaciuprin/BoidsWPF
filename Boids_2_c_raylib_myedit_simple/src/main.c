@@ -1,19 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "game.h"
+#include "GameEngine.h"
 
 int main(void)
 {
-    Game_Init();
+    MainInit();
 
     long time1 = clock();
-    for (int i = 0; i < 3000; i++) Game_Update();
+    for (int i = 0; i < 3000; i++) MainUpdate(20);
     long time2 = clock();
 
     printf("ms: %li\n",time2-time1);
 
-	Game_End();
+	MainEnd();
 
 	return 0;
 }

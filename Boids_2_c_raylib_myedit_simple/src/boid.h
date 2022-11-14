@@ -101,7 +101,7 @@ void UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
     boid->pos = Helper_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
-void Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
+void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
     int length = boidsLength;
 

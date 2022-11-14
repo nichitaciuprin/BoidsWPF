@@ -1,100 +1,80 @@
 ﻿using System.Diagnostics;
-using System.Threading;
 
-public abstract class GameEngine
+public static class GameEngine
 {
-    private bool abort = false;
-    private Thread thread;
-    private Stopwatch loopWatch = new Stopwatch();
-    private Stopwatch udpateWatch = new Stopwatch();
-    private Stopwatch fixedUpdateWatch = new Stopwatch();
-    private long frameCount = 0;
-    private long gameTime = 0;
-    private long deltaTime = 0;
-    private readonly long updateTimeStep = Helper.ToTicks(15); // ~60FPS
-    private readonly long fixedUpdateTimeStep = Helper.ToTicks(10);
-    private long updateTimer = 0;
-    private long fixedUpdateTimer = 0;
+    private static long realTime = 0;
+    private static long gameTime = 0;
+    private static long frameCount = 0;
+    private static long updateTimer = updateTimeStep;
+    private static long fixedUpdateTimer = fixedUpdateTimeStep;
+    private static Stopwatch updateWatch = new Stopwatch();
+    private static Stopwatch fixedUpdateWatch = new Stopwatch();
+    private static readonly long updateTimeStep = Helper.ToTicks(15); // ~60FPS;
+    private static readonly long fixedUpdateTimeStep = Helper.ToTicks(20);
 
-    public GameEngine()
+    public static void MainInit()
     {
-        thread = new Thread(ThreadStart);
+        Game.Init();
     }
-    public long GameTime => gameTime;
-    public void Start()
+    public static void MainEnd()
     {
-        thread.Start();
+        Game.End();
     }
-    public void End()
+    public static void MainUpdate(long deltaTime)
     {
-        abort = true;
-    }
-    protected abstract void Update(long deltaTime);
-    protected abstract void FixedUpdate(long deltaTime);
-    private void ThreadStart()
-    {
-        try
+        realTime += deltaTime;
+        fixedUpdateTimer -= deltaTime;
+        if (fixedUpdateTimer < 0)
         {
-            // MAYBE REMOVE. Wait to avoid init spike
-            var initWatch = Stopwatch.StartNew();
-            while (initWatch.ElapsedMilliseconds < 100)
-                Thread.Yield();
-
-            Loop();
+            deltaTime += fixedUpdateTimer;
+            fixedUpdateTimer = 0;
         }
-        catch (System.Exception)
+        updateTimer -= deltaTime;
+        gameTime += deltaTime;
+
+        Debug.Assert(deltaTime >= 0);
+        Debug.Assert(fixedUpdateTimer >= 0);
+
+        if (updateTimer <= 0)
         {
-            // TODO
-            abort = true;
-            throw;
+            updateWatch.Restart();
+            Update(updateTimeStep - updateTimer);
+            updateWatch.Stop();
+
+            var calcTime = updateWatch.ElapsedTicks;
+            if (calcTime > updateTimeStep)
+                System.Console.WriteLine($"Update IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
+
+            frameCount++;
+            updateTimer = updateTimeStep;
+        }
+        if (fixedUpdateTimer == 0)
+        {
+            fixedUpdateWatch.Restart();
+            FixedUpdate(fixedUpdateTimeStep);
+            fixedUpdateWatch.Stop();
+
+            fixedUpdateTimer = fixedUpdateTimeStep;
+
+            var calcTime = fixedUpdateWatch.ElapsedTicks;
+            if (calcTime > fixedUpdateTimeStep)
+                System.Console.WriteLine($"FixedUpdate IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
         }
     }
-    private void Loop()
+
+    private static void Init()
     {
-        while (true)
-        {
-            if (abort) return;
-
-            loopWatch.Restart();
-
-            if (updateTimer <= 0)
-            {
-                updateTimer = updateTimeStep;
-                udpateWatch.Restart();
-                Update(deltaTime);
-                frameCount++;
-                udpateWatch.Stop();
-                var calcTime = udpateWatch.ElapsedTicks;
-                if (calcTime > updateTimeStep)
-                    System.Console.WriteLine($"Update IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
-            }
-            if (fixedUpdateTimer == 0)
-            {
-                fixedUpdateTimer = fixedUpdateTimeStep;
-                fixedUpdateWatch.Restart();
-                FixedUpdate(fixedUpdateTimeStep);
-                fixedUpdateWatch.Stop();
-                var calcTime = fixedUpdateWatch.ElapsedTicks;
-                if (calcTime > fixedUpdateTimeStep)
-                    System.Console.WriteLine($"FixedUpdate IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
-            }
-
-            var waitTime = System.Math.Min(updateTimer,fixedUpdateTimer);
-            while (true)
-            {
-                deltaTime = loopWatch.ElapsedTicks;
-                if (deltaTime >= waitTime)
-                    break;
-                Thread.Yield();
-            }
-            if (deltaTime > fixedUpdateTimer)
-                deltaTime = fixedUpdateTimer;
-
-            gameTime += deltaTime;
-            updateTimer -= deltaTime;
-            fixedUpdateTimer -= deltaTime;
-
-            Debug.Assert(fixedUpdateTimer >= 0);
-        }
+        Game.Init();
+    }
+    private static void End()
+    {
+        Game.End();
+    }
+    private static void Update(long deltaTime)
+    {
+    }
+    private static void FixedUpdate(long deltaTime)
+    {
+        Game.Update();
     }
 }

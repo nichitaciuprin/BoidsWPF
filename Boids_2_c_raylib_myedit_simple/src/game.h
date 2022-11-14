@@ -16,7 +16,7 @@ void Game_Init()
 }
 void Game_Update()
 {
-    Update(boids,GAME_BOIDSCOUNT,&aabb,0.02f);
+    Boid_Update(boids,GAME_BOIDSCOUNT,&aabb,0.02f);
 }
 void Game_End()
 {
