@@ -3,6 +3,7 @@
 #include <raymath.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <stdlib.h>
 #include "subgen.h"
 #include "string.h"
 

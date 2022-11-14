@@ -4,7 +4,7 @@
 // #include <raymath.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "subgen.h"
+#include "Subgen.h"
 
 typedef struct Vector2
 {

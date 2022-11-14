@@ -1,4 +1,4 @@
-#include "game.h"
+#include "Game.h"
 
 long realTime = 0;
 long gameTime = 0;

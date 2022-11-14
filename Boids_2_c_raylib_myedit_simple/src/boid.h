@@ -1,5 +1,4 @@
-#include "aabb.h"
-#include <stdlib.h>
+#include "AABB.h"
 
 typedef struct Boid
 {

@@ -1,4 +1,4 @@
-#include "boid.h"
+#include "Boid.h"
 
 #define GAME_BOIDSCOUNT 300
 
