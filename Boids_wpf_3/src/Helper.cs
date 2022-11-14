@@ -36,11 +36,4 @@ public static class Helper
         var result = wholeSeconds + subseconds;
         return (float)result;
     }
-    public static float RandFloat(Random rand, float min, float max)
-    {
-        System.Diagnostics.Debug.Assert(min < max);
-        var length = max - min;
-        var t = (rand.NextSingle()-.5f)*2f;
-        return min + length*t;
-    }
 }

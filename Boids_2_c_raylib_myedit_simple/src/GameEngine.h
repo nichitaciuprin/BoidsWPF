@@ -44,32 +44,30 @@ void MainUpdate(long deltaTime)
     updateTimer -= deltaTime;
     gameTime += deltaTime;
 
-    // Debug.Assert(deltaTime >= 0);
-    // Debug.Assert(fixedUpdateTimer >= 0);
+    if (deltaTime < 0) printf("!!!!!!!!!!!!  deltaTime < 0  \n");
+    if (fixedUpdateTimer < 0) printf("!!!!!!!!!!!!  fixedUpdateTimer < 0  \n");
 
     if (updateTimer <= 0)
     {
-        // updateWatch.Restart();
+        long time1 = clock();
         Update(updateTimeStep - updateTimer);
-        // updateWatch.Stop();
-
-        // var calcTime = updateWatch.ElapsedTicks;
-        // if (calcTime > updateTimeStep)
-        //     System.Console.WriteLine($"Update IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
+        long time2 = clock();
+        long calcTime = time2 - time1;
+        if (calcTime > updateTimeStep)
+            printf("Update IS SLOW. %ld ms\n", calcTime);
 
         frameCount++;
         updateTimer = updateTimeStep;
     }
     if (fixedUpdateTimer == 0)
     {
-        // fixedUpdateWatch.Restart();
+        long time1 = clock();
         FixedUpdate(fixedUpdateTimeStep);
-        // fixedUpdateWatch.Stop();
+        long time2 = clock();
+        long calcTime = time2 - time1;
+        if (calcTime > fixedUpdateTimeStep)
+            printf("Update IS SLOW. %ld ms\n", calcTime);
 
         fixedUpdateTimer = fixedUpdateTimeStep;
-
-        // var calcTime = fixedUpdateWatch.ElapsedTicks;
-        // if (calcTime > fixedUpdateTimeStep)
-        //     System.Console.WriteLine($"FixedUpdate IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
     }
 }
