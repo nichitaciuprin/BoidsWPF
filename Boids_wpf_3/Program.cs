@@ -1,20 +1,20 @@
-﻿using System.Diagnostics;
+﻿// using System.Diagnostics;
 
-public unsafe static class Programm
-{
-    public unsafe static void Main()
-    {
-        Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
-        Thread.CurrentThread.Priority = ThreadPriority.Highest;
+// public unsafe static class Programm
+// {
+//     public unsafe static void Main()
+//     {
+//         Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+//         Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
-        Game.Init();
+//         Game.Init();
 
-        var watch = Stopwatch.StartNew();
-        for (int i = 0; i < 3000; i++) Game.Update();
-        watch.Stop();
+//         var watch = Stopwatch.StartNew();
+//         for (int i = 0; i < 3000; i++) Game.Update();
+//         watch.Stop();
 
-        Console.WriteLine($"ms: {watch.ElapsedMilliseconds}");
+//         Console.WriteLine($"ms: {watch.ElapsedMilliseconds}");
 
-        Game.End();
-    }
-}
+//         Game.End();
+//     }
+// }

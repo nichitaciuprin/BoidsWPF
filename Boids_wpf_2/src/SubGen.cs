@@ -1,15 +1,15 @@
-public class SubtractiveGenerator {
+public static class Subgen
+{
     public static int MAX = 1000000000;
-    private int[] state;
-    private int pos;
+    private static int[] state = new int[55];
+    private static int pos;
 
-    private int mod(int n) {
+    private static int mod(int n)
+    {
         return ((n % MAX) + MAX) % MAX;
     }
-
-    public SubtractiveGenerator(int seed) {
-        state = new int[55];
-
+    public static void Init(int seed)
+    {
         int[] temp = new int[55];
         temp[0] = mod(seed);
         temp[1] = 1;
@@ -21,20 +21,25 @@ public class SubtractiveGenerator {
 
         pos = 54;
         for(int i = 55; i < 220; ++i)
-            next();
+            Next();
     }
-
-    public int next() {
+    public static int Next()
+    {
         int temp = mod(state[(pos + 1) % 55] - state[(pos + 32) % 55]);
         pos = (pos + 1) % 55;
         state[pos] = temp;
         return temp;
     }
-
-    static void Main(string[] args)
+    public static float FractionUnsigned()
     {
-        SubtractiveGenerator gen = new SubtractiveGenerator(292929);
-        for(int i = 220; i < 230; ++i)
-            Console.WriteLine(i.ToString() + ": " + gen.next().ToString());
+        return Next() / (float)MAX;
+    }
+    public static float FractionSigned()
+    {
+        return FractionUnsigned() * 2 - 1;
+    }
+    public static float Range(float min, float max)
+    {
+        return min + ((max - min) * FractionUnsigned());
     }
 }

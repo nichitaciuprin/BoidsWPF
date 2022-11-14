@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 public static class Helper
 {
+    public static string ToHex(float value) => System.BitConverter.SingleToUInt32Bits(value).ToString("X");
     private static Stopwatch test = new Stopwatch();
     private static long allTime = 0;
     private static int count = 0;

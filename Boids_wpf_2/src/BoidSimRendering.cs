@@ -1,10 +1,11 @@
 using System.Linq;
 using System.Collections.Generic;
-using System.Numerics;
+using MyVector2;
 using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System;
 
 public class BoidSimRendering
 {
@@ -27,7 +28,8 @@ public class BoidSimRendering
         // Test_BoidPolygon();
         // Test_Cross();
 
-        var size2 = model.boids.Length + model.predators.Length;
+        // var size2 = model.boids.Length + model.predators.Length;
+        var size2 = model.boids.Length;
         myTransformPool = new Queue<MyTransform>((new bool[size2]).Select(x => new MyTransform()));
         boidShapePool = new Queue<Shape>((new bool[size2]).Select(x => CreateBoidShape()));
         foreach (var item in boidShapePool)
@@ -42,7 +44,7 @@ public class BoidSimRendering
     {
         HideAll();
         Render(model.boids,Brushes.White);
-        Render(model.predators,Brushes.Red);
+        // Render(model.predators,Brushes.Red);
     }
     private Window CreateWindow()
     {
@@ -54,8 +56,8 @@ public class BoidSimRendering
         window.Left = 0;
         window.Top = 0;
         var size = new Vector2(600,600);
-        window.Width = size.X;
-        window.Height = size.Y;
+        window.Width = size.x;
+        window.Height = size.y;
         window.Background = Brushes.Magenta;
         return window;
     }
@@ -213,17 +215,22 @@ public class BoidSimRendering
     }
     private void SetPosition(Boid boid, MyTransform myTransform, Shape boidShape)
     {
-        myTransform.Set(boidShape,ToRenderPos(boid.pos),boid.GetAngle());
+        myTransform.Set(boidShape,ToRenderPos(boid.pos),GetAngle(boid.vel));
+    }
+    public float GetAngle(Vector2 vel)
+    {
+        if (Vector2.IsZero(vel)) return 0;
+        return MathF.Atan2(vel.x,vel.y) * 180f / MathF.PI;
     }
     private void SetPosition(Line line, Vector2 worldPosition_Start, Vector2 worldPosition_End)
     {
         var offsetY = (float)canvas.Height;
-        line.X1 = worldPosition_Start.X;
-        line.Y1 = offsetY - worldPosition_Start.Y;
-        line.X2 = worldPosition_End.X;
-        line.Y2 = offsetY - worldPosition_End.Y;
+        line.X1 = worldPosition_Start.x;
+        line.Y1 = offsetY - worldPosition_Start.y;
+        line.X2 = worldPosition_End.x;
+        line.Y2 = offsetY - worldPosition_End.y;
     }
-    private Vector2 ToRenderPos(Vector2 worldPos) => (new Vector2(worldPos.X*scale,(float)canvas.Height - worldPos.Y*scale));
+    private Vector2 ToRenderPos(Vector2 worldPos) => (new Vector2(worldPos.x*scale,(float)canvas.Height - worldPos.y*scale));
     private class MyTransform
     {
         private TransformGroup tg;
@@ -240,8 +247,8 @@ public class BoidSimRendering
         }
         public void Set(Shape shape, Vector2 pos, float rot)
         {
-            tt.X = pos.X;
-            tt.Y = pos.Y;
+            tt.X = pos.x;
+            tt.Y = pos.y;
             rt.Angle = rot;
             shape.RenderTransform = tg;
         }

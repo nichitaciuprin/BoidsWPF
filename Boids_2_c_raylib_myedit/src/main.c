@@ -11,8 +11,8 @@ int main(void)
     Game_Init();
 	Draw_Init();
 
-	//while (true)
-    for (size_t i = 0; i < 100; i++)
+    // for (size_t i = 0; i < 100; i++)
+	while (true)
     {
         if (Draw_ShouldExit()) break;
         double time1 = GetTime();

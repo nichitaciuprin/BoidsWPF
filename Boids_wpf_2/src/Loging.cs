@@ -17,6 +17,7 @@ public static class Loging
     }
     public static void CreateFileLogs()
     {
+        if (buffer.Length == 0) return;
         using var streamWriter = File.CreateText(logFilePath);
         streamWriter.WriteLine(buffer);
     }

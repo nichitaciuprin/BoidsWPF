@@ -66,7 +66,7 @@ public abstract class GameEngine
                 udpateWatch.Stop();
                 var calcTime = udpateWatch.ElapsedTicks;
                 if (calcTime > updateTimeStep)
-                    Loging.WriteLine($"Update IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
+                    System.Console.WriteLine($"Update IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
             }
             if (fixedUpdateTimer == 0)
             {
@@ -76,7 +76,7 @@ public abstract class GameEngine
                 fixedUpdateWatch.Stop();
                 var calcTime = fixedUpdateWatch.ElapsedTicks;
                 if (calcTime > fixedUpdateTimeStep)
-                    Loging.WriteLine($"FixedUpdate IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
+                    System.Console.WriteLine($"FixedUpdate IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
             }
 
             var waitTime = System.Math.Min(updateTimer,fixedUpdateTimer);
