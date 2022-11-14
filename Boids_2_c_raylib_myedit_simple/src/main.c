@@ -40,6 +40,8 @@ int main(void)
 		Draw_Update(); // !!! MUST BE CALLED TO AVOID WINDOW FREEZE !!!
         time2 = clock();
         deltaTime = time2 - time1;
+        if (deltaTime > 20)
+            printf("MainLoop is SLOW. %ld ms\n", deltaTime);
 	}
 
 	Game_End();
