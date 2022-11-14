@@ -17,6 +17,8 @@
         "*.tcc": "c",
         "type_traits": "c",
         "pthread.h": "c",
-        "subgen.h": "c"
+        "subgen.h": "c",
+        "vector2.h": "c",
+        "string.h": "c"
     }
 }
