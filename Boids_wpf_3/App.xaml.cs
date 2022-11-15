@@ -11,7 +11,7 @@ public partial class App : Application
     {
         CompositionTarget.Rendering += OnRendering;
         Exit += OnExit;
-        GameEngine.MainInit();
+        GameEngine.Init();
         Draw.Init();
         thread2 = new Thread(Thread2);
         thread2.Start();
@@ -58,7 +58,7 @@ public partial class App : Application
 
                 if (shutdownCalled)
                 {
-                    GameEngine.MainEnd();
+                    GameEngine.End();
                     return;
                 }
 
@@ -67,7 +67,7 @@ public partial class App : Application
                     var deltaTime = timer/ticksPerMillisecond;
                     timer %= ticksPerMillisecond;
 
-                    GameEngine.MainUpdate(deltaTime);
+                    GameEngine.Update(deltaTime);
                 }
             }
         }

@@ -10,17 +10,17 @@ public static class GameEngine
     private static Stopwatch updateWatch = new Stopwatch();
     private static Stopwatch fixedUpdateWatch = new Stopwatch();
     private static readonly long updateTimeStep = 15; // ~60FPS;
-    private static readonly long fixedUpdateTimeStep = 20;
+    private static readonly long fixedUpdateTimeStep = 10;
 
-    public static void MainInit()
+    public static void Init()
     {
-        Init();
+        Game.Init();
     }
-    public static void MainEnd()
+    public static void End()
     {
-        End();
+        Game.End();
     }
-    public static void MainUpdate(long deltaTime)
+    public static void Update(long deltaTime)
     {
         if (deltaTime == 0) return;
 
@@ -41,7 +41,7 @@ public static class GameEngine
             updateTimer = updateTimeStep;
 
             updateWatch.Restart();
-            Update(updateTimeStep - updateTimer);
+            Game.Update(updateTimeStep - updateTimer);
             updateWatch.Stop();
 
             var calcTime = updateWatch.ElapsedMilliseconds;
@@ -55,28 +55,12 @@ public static class GameEngine
             fixedUpdateTimer = fixedUpdateTimeStep;
 
             fixedUpdateWatch.Restart();
-            FixedUpdate(fixedUpdateTimeStep);
+            Game.FixedUpdate(fixedUpdateTimeStep);
             fixedUpdateWatch.Stop();
 
             var calcTime = fixedUpdateWatch.ElapsedMilliseconds;
             if (calcTime > fixedUpdateTimeStep)
                 System.Console.WriteLine($"FixedUpdate IS SLOW {calcTime}ms");
         }
-    }
-
-    private static void Init()
-    {
-        Game.Init();
-    }
-    private static void End()
-    {
-        Game.End();
-    }
-    private static void Update(long deltaTime)
-    {
-    }
-    private static void FixedUpdate(long deltaTime)
-    {
-        Game.Update();
     }
 }
