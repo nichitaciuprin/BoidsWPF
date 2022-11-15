@@ -20,6 +20,7 @@ void Game_Update()
 }
 void Game_End()
 {
-    printf("First boid: ");
+    // printf("First boid: ");
     PrintBoid(&boids[0]);
+    printf(" ");
 }

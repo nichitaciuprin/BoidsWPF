@@ -25,6 +25,11 @@ float     Vector2_Length(MyVector2 v)
     float dist = sqrtf(distSquared);
     return dist;
 }
+float     Vector2_LengthSquared(MyVector2 v)
+{
+    float distSquared = v.x*v.x + v.y*v.y;
+    return distSquared;
+}
 MyVector2 Vector2_Normalized(MyVector2 v)
 {
     float dist = Vector2_Length(v);

@@ -11,14 +11,17 @@ public struct Boid
     private int count_1 = 0;
     private int count_2 = 0;
 
-    private static float minSpeed = 9f;
-    private static float maxSpeed = 15f;
-    private static float range_1 = 5f;
-    private static float range_2 = 5f;
-    private static float range_3 = 2f;
-    private static float power1 = .01f;
-    private static float power2 = .01f;
-    private static float power3 = .04f;
+    private const float minSpeed = 9f;
+    private const float maxSpeed = 15f;
+    private const float range_1 = 5f;
+    private const float range_2 = 5f;
+    private const float range_3 = 2f;
+    private const float rangeSquared_1 = range_1*range_1;
+    private const float rangeSquared_2 = range_2*range_2;
+    private const float rangeSquared_3 = range_3*range_3;
+    private const float power1 = .01f;
+    private const float power2 = .01f;
+    private const float power3 = .04f;
 
     public Boid(AABB aabb)
     {
@@ -45,26 +48,27 @@ public struct Boid
     private static void UpdateVelocity_1(ref Boid boid1, ref Boid boid2)
     {
         var diff = Vector2.Sub(boid1.pos,boid2.pos);
-        var dist1Squared = diff.x*diff.x + diff.y*diff.y;
-        var dist1 = MathF.Sqrt(dist1Squared);
+        var distSquared = diff.x*diff.x + diff.y*diff.y;
 
         // COHESION
-        if (dist1 >= range_1) return;
+        if (distSquared >= rangeSquared_1) return;
 
         boid1.vec_1 = Vector2.Add(boid1.vec_1,boid2.pos); boid1.count_1++;
         boid2.vec_1 = Vector2.Add(boid2.vec_1,boid1.pos); boid2.count_1++;
 
         // ALIGHMENT
-        if (dist1 >= range_2) return;
+        if (distSquared >= rangeSquared_2) return;
 
         boid1.vec_2 = Vector2.Add(boid1.vec_2,boid2.vel); boid1.count_2++;
         boid2.vec_2 = Vector2.Add(boid2.vec_2,boid1.vel); boid2.count_2++;
 
         // SEPARATION
-        if (dist1 >= range_3) return;
-        var ilength = 1.0f/dist1;
-        var normDiff = new Vector2(diff.x*ilength, diff.y*ilength);
-        var dist2 = range_3 - dist1;
+        if (distSquared >= rangeSquared_3) return;
+
+        var dist = MathF.Sqrt(distSquared);
+        var normFraction = 1.0f/dist;
+        var normDiff = new Vector2(diff.x*normFraction, diff.y*normFraction);
+        var dist2 = range_3 - dist;
         normDiff = Vector2.Mul(normDiff,dist2);
 
         boid1.vec_3 = Vector2.Add(boid1.vec_3,normDiff);

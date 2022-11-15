@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 
 var path0 = AppDomain.CurrentDomain.BaseDirectory+@"..\..\..\";
-var path1 = path0+@"..\Boids_wpf_2";
-var path2 = path1+@"\bin\Release\net6.0-windows\TestWPF.exe";
+var path1 = path0+@"..\Boids_wpf_3";
+var path2 = path1+@"\bin\Release\net6.0-windows\Boids_wpf_3.exe";
 
 ExecuteCommand($"dotnet build {path1} --configuration Release");
 

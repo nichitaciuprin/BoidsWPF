@@ -34,6 +34,8 @@ void MainEnd()
 }
 void MainUpdate(long deltaTime)
 {
+    if (deltaTime == 0) return;
+
     realTime += deltaTime;
     fixedUpdateTimer -= deltaTime;
     if (fixedUpdateTimer < 0)
@@ -44,8 +46,9 @@ void MainUpdate(long deltaTime)
     updateTimer -= deltaTime;
     gameTime += deltaTime;
 
+#ifdef DEBUG
     if (deltaTime < 0) printf("!!!!!!!!!!!!  deltaTime < 0  \n");
-    if (fixedUpdateTimer < 0) printf("!!!!!!!!!!!!  fixedUpdateTimer < 0  \n");
+#endif
 
     if (updateTimer <= 0)
     {

@@ -9,19 +9,21 @@ public static class GameEngine
     private static long fixedUpdateTimer = fixedUpdateTimeStep;
     private static Stopwatch updateWatch = new Stopwatch();
     private static Stopwatch fixedUpdateWatch = new Stopwatch();
-    private static readonly long updateTimeStep = Helper.ToTicks(15); // ~60FPS;
-    private static readonly long fixedUpdateTimeStep = Helper.ToTicks(20);
+    private static readonly long updateTimeStep = 15; // ~60FPS;
+    private static readonly long fixedUpdateTimeStep = 20;
 
     public static void MainInit()
     {
-        Game.Init();
+        Init();
     }
     public static void MainEnd()
     {
-        Game.End();
+        End();
     }
     public static void MainUpdate(long deltaTime)
     {
+        if (deltaTime == 0) return;
+
         realTime += deltaTime;
         fixedUpdateTimer -= deltaTime;
         if (fixedUpdateTimer < 0)
@@ -33,32 +35,32 @@ public static class GameEngine
         gameTime += deltaTime;
 
         Debug.Assert(deltaTime >= 0);
-        Debug.Assert(fixedUpdateTimer >= 0);
 
         if (updateTimer <= 0)
         {
+            updateTimer = updateTimeStep;
+
             updateWatch.Restart();
             Update(updateTimeStep - updateTimer);
             updateWatch.Stop();
 
-            var calcTime = updateWatch.ElapsedTicks;
+            var calcTime = updateWatch.ElapsedMilliseconds;
             if (calcTime > updateTimeStep)
-                System.Console.WriteLine($"Update IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
+                System.Console.WriteLine($"Update IS SLOW {calcTime}ms");
 
             frameCount++;
-            updateTimer = updateTimeStep;
         }
         if (fixedUpdateTimer == 0)
         {
+            fixedUpdateTimer = fixedUpdateTimeStep;
+
             fixedUpdateWatch.Restart();
             FixedUpdate(fixedUpdateTimeStep);
             fixedUpdateWatch.Stop();
 
-            fixedUpdateTimer = fixedUpdateTimeStep;
-
-            var calcTime = fixedUpdateWatch.ElapsedTicks;
+            var calcTime = fixedUpdateWatch.ElapsedMilliseconds;
             if (calcTime > fixedUpdateTimeStep)
-                System.Console.WriteLine($"FixedUpdate IS SLOW {Helper.ToMilliseconds(calcTime)}ms");
+                System.Console.WriteLine($"FixedUpdate IS SLOW {calcTime}ms");
         }
     }
 

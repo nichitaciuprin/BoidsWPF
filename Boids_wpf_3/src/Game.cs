@@ -2,10 +2,10 @@ using MyVector2;
 
 public static class Game
 {
-    private static int boidsCount = 300;
-    private static Boid[] boids = new Boid[boidsCount];
-    private static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
-    public static unsafe void Init()
+    public static int boidsCount = 300;
+    public static Boid[] boids = new Boid[boidsCount];
+    public static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
+    public static void Init()
     {
         Subgen.Init(0);
         for (int i = 0; i < boidsCount; i++)
@@ -17,7 +17,6 @@ public static class Game
     }
     public static void End()
     {
-        System.Console.Write("First boid: ");
-        System.Console.WriteLine(boids[0].ToString());
+        System.Console.Write($"{boids[0].ToString()} ");
     }
 }
