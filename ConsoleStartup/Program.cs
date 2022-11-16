@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 
-
 var path0 = AppDomain.CurrentDomain.BaseDirectory+@"..\..\..\";
 var path1 = path0+@"..\Boids_wpf_3";
 var path2 = path1+@"\bin\Release\net6.0-windows\Boids_wpf_3.exe";
@@ -9,9 +8,9 @@ ExecuteCommand($"dotnet build {path1} --configuration Release");
 
 var currentProcess = Process.GetCurrentProcess();
 var startInfo = new ProcessStartInfo();
-startInfo.RedirectStandardOutput = true;
 startInfo.FileName = path2;
 startInfo.Arguments = currentProcess.Id.ToString();
+startInfo.RedirectStandardOutput = true;
 var process = Process.Start(startInfo)!;
 process.OutputDataReceived += (sender, args) => Console.WriteLine(args.Data);
 process.BeginOutputReadLine();
@@ -19,7 +18,9 @@ process.WaitForExit();
 
 void ExecuteCommand(string command)
 {
-    var processInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+    var processInfo = new ProcessStartInfo();
+    processInfo.FileName = "cmd.exe";
+    processInfo.Arguments = "/c " + command;
     processInfo.CreateNoWindow = false;
     processInfo.UseShellExecute = false;
     processInfo.RedirectStandardError = true;
@@ -29,8 +30,8 @@ void ExecuteCommand(string command)
     process.WaitForExit();
 
     // Warning: This approach can lead to deadlocks, see Edit #2
-    string output = process.StandardOutput.ReadToEnd();
-    string error = process.StandardError.ReadToEnd();
+    var output = process.StandardOutput.ReadToEnd();
+    var error = process.StandardError.ReadToEnd();
 
     var exitCode = process.ExitCode;
 
@@ -39,5 +40,6 @@ void ExecuteCommand(string command)
     // Console.WriteLine("output>>" + (String.IsNullOrEmpty(output) ? "(none)" : output));
     // Console.WriteLine("error>>" + (String.IsNullOrEmpty(error) ? "(none)" : error));
     Console.WriteLine("ExitCode: " + exitCode.ToString(), "ExecuteCommand");
+    Console.WriteLine();
     process.Close();
 }
