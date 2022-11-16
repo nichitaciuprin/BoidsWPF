@@ -54,7 +54,7 @@ public partial class App : Application
             Console.WriteLine(exc);
         }
     }
-    private static void ManualShutdown()
+    public static void ManualShutdown()
     {
         Application.Current.Shutdown();
         shutdownCalled = true;

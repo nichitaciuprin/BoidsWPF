@@ -14,13 +14,17 @@ void Game_Init()
 	for (int i = 0; i < GAME_BOIDSCOUNT; i++)
 		boids[i] = CreateBoidRand(&aabb);
 }
-void Game_Update()
-{
-    Boid_Update(boids,GAME_BOIDSCOUNT,&aabb,0.02f);
-}
 void Game_End()
 {
-    // printf("First boid: ");
     PrintBoid(&boids[0]);
-    printf(" ");
+    printf(" \n");
+}
+void Game_Update(long deltaTime)
+{
+
+}
+void Game_FixedUpdate(long deltaTime)
+{
+    float deltaTimeInSeconds = ((float)deltaTime)/1000;
+    Boid_Update(boids,GAME_BOIDSCOUNT,&aabb,deltaTimeInSeconds);
 }

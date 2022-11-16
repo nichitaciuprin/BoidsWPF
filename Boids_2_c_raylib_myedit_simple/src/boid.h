@@ -126,5 +126,4 @@ void PrintBoid(Boid* boid)
 {
     Vector2_PrintVector2Hex(boid->pos);
     Vector2_PrintVector2Hex(boid->vel);
-    // Helper_PrintEmptyLine();
 }

@@ -6,27 +6,27 @@ var path2 = path1+@"\bin\Release\net6.0-windows\Boids_wpf_3.exe";
 
 ExecuteCommand($"dotnet build {path1} --configuration Release");
 
-var currentProcess = Process.GetCurrentProcess();
-var startInfo = new ProcessStartInfo();
-startInfo.FileName = path2;
-startInfo.Arguments = currentProcess.Id.ToString();
-startInfo.RedirectStandardOutput = true;
-var process = Process.Start(startInfo)!;
+var processStartInfo = new ProcessStartInfo();
+processStartInfo.FileName = path2;
+processStartInfo.Arguments = Process.GetCurrentProcess().Id.ToString();
+processStartInfo.RedirectStandardOutput = true;
+
+var process = Process.Start(processStartInfo)!;
 process.OutputDataReceived += (sender, args) => Console.WriteLine(args.Data);
 process.BeginOutputReadLine();
 process.WaitForExit();
 
 void ExecuteCommand(string command)
 {
-    var processInfo = new ProcessStartInfo();
-    processInfo.FileName = "cmd.exe";
-    processInfo.Arguments = "/c " + command;
-    processInfo.CreateNoWindow = false;
-    processInfo.UseShellExecute = false;
-    processInfo.RedirectStandardError = true;
-    processInfo.RedirectStandardOutput = true;
+    var processStartInfo = new ProcessStartInfo();
+    processStartInfo.FileName = "cmd.exe";
+    processStartInfo.Arguments = "/c " + command;
+    processStartInfo.CreateNoWindow = false;
+    processStartInfo.UseShellExecute = false;
+    processStartInfo.RedirectStandardError = true;
+    processStartInfo.RedirectStandardOutput = true;
 
-    var process = Process.Start(processInfo)!;
+    var process = Process.Start(processStartInfo)!;
     process.WaitForExit();
 
     // Warning: This approach can lead to deadlocks, see Edit #2

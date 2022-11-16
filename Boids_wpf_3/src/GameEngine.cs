@@ -9,8 +9,9 @@ public static class GameEngine
     private static long timer_fixedUpdate = timestep_fixedUpdate;
     private static Stopwatch watch_update = new Stopwatch();
     private static Stopwatch watch_fixedUpdate = new Stopwatch();
-    private static readonly long timestep_update = 15; // ~60FPS;
-    private static readonly long timestep_fixedUpdate = 20;
+    private const long timestep_update = 15;
+    private const long timestep_fixedUpdate = 20;
+    private static bool countFrame = false;
 
     public static long MinTimer => System.Math.Min(timer_update,timer_fixedUpdate);
 
@@ -34,18 +35,10 @@ public static class GameEngine
         }
         timer_update -= deltaTime;
         gameTime += deltaTime;
+#if DEBUG
         Debug.Assert(deltaTime >= 0);
+#endif
 
-        if (timer_update <= 0)
-        {
-            timer_update = timestep_update;
-            watch_update.Restart();
-            Game.Update(timestep_update - timer_update);
-            watch_update.Stop();
-            Helper.MaybeWarn(nameof(Game.Update),watch_update.ElapsedMilliseconds,timestep_update);
-
-            frameCount++;
-        }
         if (timer_fixedUpdate == 0)
         {
             timer_fixedUpdate = timestep_fixedUpdate;
@@ -53,6 +46,22 @@ public static class GameEngine
             Game.FixedUpdate(timestep_fixedUpdate);
             watch_fixedUpdate.Stop();
             Helper.MaybeWarn(nameof(Game.FixedUpdate),watch_fixedUpdate.ElapsedMilliseconds,timestep_fixedUpdate);
+            countFrame = true;
+        }
+        if (timer_update <= 0)
+        {
+            timer_update = timestep_update;
+            watch_update.Restart();
+            Game.Update(timestep_update - timer_update);
+            watch_update.Stop();
+            Helper.MaybeWarn(nameof(Game.Update),watch_update.ElapsedMilliseconds,timestep_update);
+            countFrame = true;
+        }
+
+        if (countFrame)
+        {
+            frameCount++;
+            countFrame = false;
         }
     }
 }

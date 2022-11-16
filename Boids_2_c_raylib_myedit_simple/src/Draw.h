@@ -3,18 +3,12 @@
 #include <raymath.h>
 #include <rlgl.h>
 
-
 int width = 500;
 int height = 500;
 float scale = 10;
 MyVector2 position_1 = (MyVector2){ 0.00, 0.25};
 MyVector2 position_2 = (MyVector2){-0.15,-0.25};
 MyVector2 position_3 = (MyVector2){ 0.15,-0.25};
-
-void Draw_Update();
-void Draw_Init();
-void Draw_End();
-bool Draw_ShouldExit();
 
 Vector2 rv(MyVector2 v) { return (Vector2) { v.x, v.y }; }
 MyVector2 ToScreenSpace(MyVector2 v)
@@ -63,7 +57,6 @@ void DrawBoid(Boid* boid, Color color)
 
     DrawTriangle2(v1, v2, v3, color);
 }
-
 void Draw_Update()
 {
     BeginDrawing();
@@ -94,6 +87,7 @@ void Draw_Init()
 	rlDisableBackfaceCulling();
 	SetTargetFPS(60);
     Draw_Update();
+    printf("\n"); // padding from Raylib print
 }
 void Draw_End()
 {

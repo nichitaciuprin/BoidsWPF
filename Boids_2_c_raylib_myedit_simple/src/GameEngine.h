@@ -3,74 +3,60 @@
 long realTime = 0;
 long gameTime = 0;
 long frameCount = 0;
-const long updateTimeStep = 15; // ~60FPS;
-const long fixedUpdateTimeStep = 20;
-long updateTimer = updateTimeStep;
-long fixedUpdateTimer = fixedUpdateTimeStep;
+const long timeStep_update = 15;
+const long timeStep_fixedUpdate = 20;
+long timer_update = timeStep_update;
+long timer_fixedUpdate = timeStep_fixedUpdate;
+bool countFrame = false;
 
-void Init()
+void GameEngine_Init()
 {
     Game_Init();
 }
-void End()
+void GameEngine_End()
 {
     Game_End();
 }
-void Update(long deltaTime)
-{
-}
-void FixedUpdate(long deltaTime)
-{
-    Game_Update();
-}
-
-void MainInit()
-{
-    Init();
-}
-void MainEnd()
-{
-    End();
-}
-void MainUpdate(long deltaTime)
+void GameEngine_Loop(long deltaTime)
 {
     if (deltaTime == 0) return;
-
     realTime += deltaTime;
-    fixedUpdateTimer -= deltaTime;
-    if (fixedUpdateTimer < 0)
+    timer_fixedUpdate -= deltaTime;
+    if (timer_fixedUpdate < 0)
     {
-        deltaTime += fixedUpdateTimer;
-        fixedUpdateTimer = 0;
+        deltaTime += timer_fixedUpdate;
+        timer_fixedUpdate = 0;
     }
-    updateTimer -= deltaTime;
+    timer_update -= deltaTime;
     gameTime += deltaTime;
-
 #ifdef DEBUG
     if (deltaTime < 0) printf("!!!!!!!!!!!!  deltaTime < 0  \n");
 #endif
 
-    if (updateTimer <= 0)
+    if (timer_fixedUpdate == 0)
     {
+        timer_fixedUpdate = timeStep_fixedUpdate;
         long time1 = clock();
-        Update(updateTimeStep - updateTimer);
+        Game_FixedUpdate(timeStep_fixedUpdate);
         long time2 = clock();
         long calcTime = time2 - time1;
-        if (calcTime > updateTimeStep)
-            printf("Update IS SLOW. %ld ms\n", calcTime);
-
-        frameCount++;
-        updateTimer = updateTimeStep;
+        Helper_MaybeWarn("Game_FixedUpdate",calcTime,timeStep_fixedUpdate);
+        countFrame = true;
     }
-    if (fixedUpdateTimer == 0)
+    if (timer_update <= 0)
     {
+        timer_update = timeStep_update;
         long time1 = clock();
-        FixedUpdate(fixedUpdateTimeStep);
+        Game_Update(timeStep_update - timer_update);
         long time2 = clock();
         long calcTime = time2 - time1;
-        if (calcTime > fixedUpdateTimeStep)
-            printf("Update IS SLOW. %ld ms\n", calcTime);
+        Helper_MaybeWarn("Game_Update",calcTime,timeStep_update);
+        countFrame = true;
+    }
 
-        fixedUpdateTimer = fixedUpdateTimeStep;
+    if (countFrame)
+    {
+        frameCount++;
+        countFrame = false;
     }
 }

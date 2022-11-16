@@ -7,7 +7,6 @@ public static class Game
     public static AABB aabb = new AABB(Vector2.Zero, new Vector2(50,50));
     public static void Init()
     {
-        Subgen.Init(0);
         for (int i = 0; i < boidsCount; i++)
             boids[i] = new Boid(aabb);
     }
@@ -20,6 +19,7 @@ public static class Game
     }
     public static void FixedUpdate(long deltaTime)
     {
-        Boid.Update(boids,ref aabb,0.02f);
+        var deltaTimeInSeconds = ((float)deltaTime)/1000f;
+        Boid.Update(boids, ref aabb, deltaTimeInSeconds);
     }
 }

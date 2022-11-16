@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 public static class Draw
 {
@@ -21,6 +22,18 @@ public static class Draw
         // Test_Cross();
         Render();
         window.Show();
+        window.KeyDown += OnKeyDown;
+    }
+    private static void OnKeyDown(object sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Escape:
+                App.ManualShutdown();
+                break;
+            default:
+                break;
+        }
     }
     private static Window CreateWindow()
     {
@@ -35,6 +48,7 @@ public static class Draw
         window.Width = size.x;
         window.Height = size.y;
         window.Background = Brushes.Magenta;
+        // window.KeyDown
         return window;
     }
     private static Canvas CreateCanvas()
@@ -61,7 +75,7 @@ public static class Draw
     public static void Render()
     {
         HideAll();
-        Render(Game.boids,Brushes.White);
+        Render(Game.boids);
     }
     private static void CreateBorder()
     {
@@ -171,17 +185,21 @@ public static class Draw
         // {
         // }
     }
-    private static void Render(Boid[] boids, SolidColorBrush color)
+    private static void Render(Boid[] boids)
     {
-        for (int i = 0; i < boids.Length; i++)
-        {
-            var boid = boids[i];
-            var shape = boidShapePool.Dequeue(); boidShapePool.Enqueue(shape);
-            var myTransform = myTransformPool.Dequeue(); myTransformPool.Enqueue(myTransform);
-            shape.Fill = color;
-            shape.Visibility = Visibility.Visible;
-            SetPosition(boid,myTransform,shape);
-        }
+        if (boids.Length == 0) return;
+        RenderBoid(boids,0,Brushes.Red);
+        for (int i = 1; i < boids.Length; i++)
+            RenderBoid(boids,i,Brushes.White);
+    }
+    private static void RenderBoid(Boid[] boids, int i, SolidColorBrush color)
+    {
+        var boid = boids[i];
+        var shape = boidShapePool.Dequeue(); boidShapePool.Enqueue(shape);
+        var myTransform = myTransformPool.Dequeue(); myTransformPool.Enqueue(myTransform);
+        shape.Fill = color;
+        shape.Visibility = Visibility.Visible;
+        SetPosition(boid,myTransform,shape);
     }
     private static Shape CreateBoidShape()
     {

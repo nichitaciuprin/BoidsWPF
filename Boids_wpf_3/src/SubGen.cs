@@ -4,6 +4,10 @@ public static class Subgen
     private static int[] state = new int[55];
     private static int pos;
 
+    static Subgen()
+    {
+        Subgen.Init(0);
+    }
     private static int mod(int n)
     {
         return ((n % MAX) + MAX) % MAX;
