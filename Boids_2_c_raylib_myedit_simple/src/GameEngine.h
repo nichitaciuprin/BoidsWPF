@@ -16,6 +16,7 @@ void GameEngine_Init()
 void GameEngine_End()
 {
     Game_End();
+    // printf("%il")
 }
 void GameEngine_Loop(long deltaTime)
 {
