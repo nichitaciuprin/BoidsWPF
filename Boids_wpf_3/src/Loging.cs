@@ -7,14 +7,14 @@ public static class Loging
     private static StringBuilder buffer = new StringBuilder(size,size);
     private static readonly string projectRootPath = AppDomain.CurrentDomain.BaseDirectory+@"..\..\..\";
     private static readonly string logFilePath = projectRootPath+"logs.txt";
-    public static void ClearFileIfExist()
+    public static void CreateOrClearFile()
     {
         if (File.Exists(logFilePath))
             File.Create(logFilePath);
         else
             File.WriteAllText(logFilePath,string.Empty);
     }
-    public static void CreateFileLogs()
+    public static void WriteToFile()
     {
         using var streamWriter = File.CreateText(logFilePath);
         streamWriter.WriteLine(buffer);

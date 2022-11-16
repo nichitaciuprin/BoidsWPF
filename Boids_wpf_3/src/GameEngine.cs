@@ -7,7 +7,6 @@ public static class GameEngine
     private static long frameCount = 0;
     private static long timer_update = timestep_update;
     private static long timer_fixedUpdate = timestep_fixedUpdate;
-    // private static Stopwatch watch_loop = new Stopwatch();
     private static Stopwatch watch_update = new Stopwatch();
     private static Stopwatch watch_fixedUpdate = new Stopwatch();
     private static readonly long timestep_update = 15; // ~60FPS;
@@ -37,7 +36,6 @@ public static class GameEngine
         gameTime += deltaTime;
         Debug.Assert(deltaTime >= 0);
 
-        // watch_loop.Restart();
         if (timer_update <= 0)
         {
             timer_update = timestep_update;
@@ -56,7 +54,5 @@ public static class GameEngine
             watch_fixedUpdate.Stop();
             Helper.MaybeWarn(nameof(Game.FixedUpdate),watch_fixedUpdate.ElapsedMilliseconds,timestep_fixedUpdate);
         }
-        // watch_loop.Stop();
-        // Helper.MaybeWarn(nameof(Loop),watch_loop.ElapsedMilliseconds,timestep_update+timestep_fixedUpdate);
     }
 }
