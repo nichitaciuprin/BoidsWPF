@@ -15,7 +15,11 @@ public partial class App : Application
     {
         Startup += OnStartup;
         Exit += OnExit;
-        
+    }
+    public static void ManualShutdown()
+    {
+        Application.Current.Shutdown();
+        shutdownCalled = true;
     }
     private static void OnStartup(object sender, StartupEventArgs e)
     {
@@ -55,11 +59,6 @@ public partial class App : Application
         {
             Console.WriteLine(exc);
         }
-    }
-    public static void ManualShutdown()
-    {
-        Application.Current.Shutdown();
-        shutdownCalled = true;
     }
     private static void OnRendering_Proc(object? sender, EventArgs e)
     {
@@ -103,15 +102,11 @@ public partial class App : Application
         {
             while (true)
             {
-                if (shutdownCalled)
-                {
-                    GameEngine.End();
-                    return;
-                }
+                if (shutdownCalled) return;
 
                 // WILL LOWER CPU USAGE BUT ALSO FPS
                 // SIMPLE.
-                Thread.Sleep(10);
+                Thread.Sleep(30);
                 // ADVANCED. Calc time only at the end.
                 // if (GameEngine.MinTimer > 5)
                 // {
