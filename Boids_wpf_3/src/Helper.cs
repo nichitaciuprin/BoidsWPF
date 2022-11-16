@@ -36,4 +36,9 @@ public static class Helper
         var result = wholeSeconds + subseconds;
         return (float)result;
     }
+    public static void MaybeWarn(string callingMethodName,long actualTime_ms,long maxTime_ms)
+    {
+        if (actualTime_ms > maxTime_ms)
+            Console.WriteLine($"{callingMethodName} IS SLOW. {actualTime_ms} > {maxTime_ms}ms");
+    }
 }

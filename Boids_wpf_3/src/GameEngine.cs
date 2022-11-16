@@ -5,12 +5,15 @@ public static class GameEngine
     private static long realTime = 0;
     private static long gameTime = 0;
     private static long frameCount = 0;
-    private static long updateTimer = updateTimeStep;
-    private static long fixedUpdateTimer = fixedUpdateTimeStep;
-    private static Stopwatch updateWatch = new Stopwatch();
-    private static Stopwatch fixedUpdateWatch = new Stopwatch();
-    private static readonly long updateTimeStep = 15; // ~60FPS;
-    private static readonly long fixedUpdateTimeStep = 10;
+    private static long timer_update = timestep_update;
+    private static long timer_fixedUpdate = timestep_fixedUpdate;
+    // private static Stopwatch watch_loop = new Stopwatch();
+    private static Stopwatch watch_update = new Stopwatch();
+    private static Stopwatch watch_fixedUpdate = new Stopwatch();
+    private static readonly long timestep_update = 15; // ~60FPS;
+    private static readonly long timestep_fixedUpdate = 20;
+
+    public static long MinTimer => System.Math.Min(timer_update,timer_fixedUpdate);
 
     public static void Init()
     {
@@ -20,47 +23,40 @@ public static class GameEngine
     {
         Game.End();
     }
-    public static void Update(long deltaTime)
+    public static void Loop(long deltaTime)
     {
         if (deltaTime == 0) return;
-
         realTime += deltaTime;
-        fixedUpdateTimer -= deltaTime;
-        if (fixedUpdateTimer < 0)
+        timer_fixedUpdate -= deltaTime;
+        if (timer_fixedUpdate < 0)
         {
-            deltaTime += fixedUpdateTimer;
-            fixedUpdateTimer = 0;
+            deltaTime += timer_fixedUpdate;
+            timer_fixedUpdate = 0;
         }
-        updateTimer -= deltaTime;
+        timer_update -= deltaTime;
         gameTime += deltaTime;
-
         Debug.Assert(deltaTime >= 0);
 
-        if (updateTimer <= 0)
+        // watch_loop.Restart();
+        if (timer_update <= 0)
         {
-            updateTimer = updateTimeStep;
-
-            updateWatch.Restart();
-            Game.Update(updateTimeStep - updateTimer);
-            updateWatch.Stop();
-
-            var calcTime = updateWatch.ElapsedMilliseconds;
-            if (calcTime > updateTimeStep)
-                System.Console.WriteLine($"Update IS SLOW {calcTime}ms");
+            timer_update = timestep_update;
+            watch_update.Restart();
+            Game.Update(timestep_update - timer_update);
+            watch_update.Stop();
+            Helper.MaybeWarn(nameof(Game.Update),watch_update.ElapsedMilliseconds,timestep_update);
 
             frameCount++;
         }
-        if (fixedUpdateTimer == 0)
+        if (timer_fixedUpdate == 0)
         {
-            fixedUpdateTimer = fixedUpdateTimeStep;
-
-            fixedUpdateWatch.Restart();
-            Game.FixedUpdate(fixedUpdateTimeStep);
-            fixedUpdateWatch.Stop();
-
-            var calcTime = fixedUpdateWatch.ElapsedMilliseconds;
-            if (calcTime > fixedUpdateTimeStep)
-                System.Console.WriteLine($"FixedUpdate IS SLOW {calcTime}ms");
+            timer_fixedUpdate = timestep_fixedUpdate;
+            watch_fixedUpdate.Restart();
+            Game.FixedUpdate(timestep_fixedUpdate);
+            watch_fixedUpdate.Stop();
+            Helper.MaybeWarn(nameof(Game.FixedUpdate),watch_fixedUpdate.ElapsedMilliseconds,timestep_fixedUpdate);
         }
+        // watch_loop.Stop();
+        // Helper.MaybeWarn(nameof(Loop),watch_loop.ElapsedMilliseconds,timestep_update+timestep_fixedUpdate);
     }
 }

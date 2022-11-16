@@ -5,20 +5,24 @@ using System.Windows.Media;
 public partial class App : Application
 {
     private static bool shutdownCalled = false;
-    private static Thread thread2 = new Thread(Thread2);
-    private static Stopwatch renderWatch = new Stopwatch();
+    private static long ticksPerMillisecond = Stopwatch.Frequency/1000;
+    private static long timer_systemLoop = 0;
+    private static Stopwatch watch_render = Stopwatch.StartNew();
+    private static Stopwatch watch_realTime = Stopwatch.StartNew();
+    // private static Thread thread2 = new Thread(SystemLoop);
     public App()
     {
         CompositionTarget.Rendering += OnRendering;
         Exit += OnExit;
         GameEngine.Init();
         Draw.Init();
-        thread2 = new Thread(Thread2);
-        thread2.Start();
+        // thread2 = new Thread(SystemLoop);
+        // thread2.Start();
     }
     private static void OnExit(object sender, ExitEventArgs e)
     {
         shutdownCalled = true;
+        GameEngine.End();
     }
     private static void ManualShutdown()
     {
@@ -30,45 +34,19 @@ public partial class App : Application
         if (shutdownCalled) return;
         try
         {
-            renderWatch.Restart();
+            watch_render.Restart();
             Draw.Render();
-            renderWatch.Stop();
-            var calcTime = renderWatch.ElapsedMilliseconds;
-            if (calcTime > 15) // ~60FPS
-                Console.WriteLine($"Rendering IS SLOW {calcTime}ms");
-        }
-        catch (System.Exception exc)
-        {
-            Console.WriteLine(exc.ToString());
-            ManualShutdown();
-        }
-    }
-    private static void Thread2()
-    {
-        try
-        {
-            var ticksPerMillisecond = Stopwatch.Frequency/1000;
-            long timer = 0;
-            var watch = Stopwatch.StartNew();
+            watch_render.Stop();
+            Helper.MaybeWarn(nameof(OnRendering),watch_render.ElapsedMilliseconds,15);
 
-            while (true)
+            timer_systemLoop += watch_realTime.ElapsedTicks;
+            watch_realTime.Restart();
+            if (timer_systemLoop >= ticksPerMillisecond)
             {
-                timer += watch.ElapsedTicks;
-                watch.Restart();
-
-                if (shutdownCalled)
-                {
-                    GameEngine.End();
-                    return;
-                }
-
-                if (timer >= ticksPerMillisecond)
-                {
-                    var deltaTime = timer/ticksPerMillisecond;
-                    timer %= ticksPerMillisecond;
-
-                    GameEngine.Update(deltaTime);
-                }
+                var deltaTime = timer_systemLoop/ticksPerMillisecond;
+                timer_systemLoop %= ticksPerMillisecond;
+                // Helper.MaybeWarn("SystemDeltaTime",deltaTime,15);
+                GameEngine.Loop(deltaTime);
             }
         }
         catch (System.Exception exc)
@@ -77,4 +55,41 @@ public partial class App : Application
             ManualShutdown();
         }
     }
+    // private static void SystemLoop()
+    // {
+    //     try
+    //     {
+    //         while (true)
+    //         {
+    //             if (shutdownCalled)
+    //             {
+    //                 GameEngine.End();
+    //                 return;
+    //             }
+
+    //             // LOW FPS BUT LOW CPU USAGE
+    //             // Thread.Sleep(10);
+    //             // if (GameEngine.MinTimer > 5)
+    //             // {
+    //             //     var timeout = (int)(GameEngine.MinTimer - 5);
+    //             //     Thread.Sleep(timeout);
+    //             // }
+
+    //             timer_systemLoop += watch_systemLoop.ElapsedTicks;
+    //             watch_systemLoop.Restart();
+    //             if (timer_systemLoop >= ticksPerMillisecond)
+    //             {
+    //                 var deltaTime = timer_systemLoop/ticksPerMillisecond;
+    //                 timer_systemLoop %= ticksPerMillisecond;
+    //                 // Helper.MaybeWarn(nameof(SystemLoop),deltaTime,15);
+    //                 GameEngine.Loop(deltaTime);
+    //             }
+    //         }
+    //     }
+    //     catch (System.Exception exc)
+    //     {
+    //         Console.WriteLine(exc.ToString());
+    //         ManualShutdown();
+    //     }
+    // }
 }

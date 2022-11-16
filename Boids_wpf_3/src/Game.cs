@@ -11,15 +11,15 @@ public static class Game
         for (int i = 0; i < boidsCount; i++)
             boids[i] = new Boid(aabb);
     }
+    public static void End()
+    {
+        System.Console.Write($"{boids[0].ToString()} ");
+    }
     public static void Update(long deltaTime)
     {
     }
     public static void FixedUpdate(long deltaTime)
     {
         Boid.Update(boids,ref aabb,0.02f);
-    }
-    public static void End()
-    {
-        System.Console.Write($"{boids[0].ToString()} ");
     }
 }
