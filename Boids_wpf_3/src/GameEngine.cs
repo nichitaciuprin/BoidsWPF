@@ -10,7 +10,7 @@ public static class GameEngine
     private static Stopwatch watch_update = new Stopwatch();
     private static Stopwatch watch_fixedUpdate = new Stopwatch();
     private const long timestep_update = 15;
-    private const long timestep_fixedUpdate = 20;
+    private const long timestep_fixedUpdate = 10;
     private static bool countFrame = false;
 
     public static long MinTimer => System.Math.Min(timer_update,timer_fixedUpdate);
