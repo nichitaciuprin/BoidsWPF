@@ -61,6 +61,7 @@ void Draw_Update(GameState* gameState)
 {
     BeginDrawing();
     ClearBackground(BLACK);
+    DrawFPS(0,0);
 
     // MyVector2 v1 = (MyVector2) {  0,  0};
     // MyVector2 v2 = (MyVector2) { 10,  0};
