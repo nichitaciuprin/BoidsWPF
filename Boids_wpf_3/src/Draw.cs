@@ -13,14 +13,14 @@ public static class Draw
     private static Queue<MyTransform> myTransformPool = CreateMyTransformPool(Game.boidsCount);
     private static Queue<Shape> boidShapePool = CreateBoidShapePool(Game.boidsCount);
 
-    public static void Init()
+    public static void Init(ref GameState gameState)
     {
         CreateBorder();
         // Test_Elipse();
         // Test_Square();
         // Test_BoidPolygon();
         // Test_Cross();
-        Render();
+        Render(ref gameState);
         window.Show();
         window.KeyDown += OnKeyDown;
     }
@@ -66,16 +66,15 @@ public static class Draw
     }
     private static Queue<Shape> CreateBoidShapePool(int size)
     {
-        // boidShapePool = new Queue<Shape>((new bool[size2]).Select(x => CreateBoidShape()));
         var boidShapePool =  new Queue<Shape>((new bool[size]).Select(x => CreateBoidShape()));
         foreach (var item in boidShapePool)
             canvas.Children.Add(item);
         return boidShapePool;
     }
-    public static void Render()
+    public static void Render(ref GameState gameState)
     {
         HideAll();
-        Render(Game.boids);
+        Render(gameState.boids);
     }
     private static void CreateBorder()
     {

@@ -5,23 +5,26 @@ public static class GameEngine
     private static long realTime = 0;
     private static long gameTime = 0;
     private static long frameCount = 0;
-    private static long timer_update = timestep_update;
     private static long timer_fixedUpdate = timestep_fixedUpdate;
     private static Stopwatch watch_update = new Stopwatch();
     private static Stopwatch watch_fixedUpdate = new Stopwatch();
-    private const long timestep_update = 15;
-    private const long timestep_fixedUpdate = 10;
-    private static bool countFrame = false;
+    private const long timestep_fixedUpdate = 20;
 
-    public static long MinTimer => System.Math.Min(timer_update,timer_fixedUpdate);
+    public static long MinTimer => timer_fixedUpdate;
+
+    public static GameState gameState;
+    public static GameState gameState_forRender;
 
     public static void Init()
     {
-        Game.Init();
+        gameState = Game.Init();
+        gameState_forRender = new GameState();
+        gameState_forRender.boids = new Boid[gameState.boids.Length];
+        gameState_forRender.aabb = gameState.aabb;
     }
     public static void End()
     {
-        Game.End();
+        Game.End(ref gameState);
     }
     public static void Loop(long deltaTime)
     {
@@ -33,8 +36,8 @@ public static class GameEngine
             deltaTime += timer_fixedUpdate;
             timer_fixedUpdate = 0;
         }
-        timer_update -= deltaTime;
         gameTime += deltaTime;
+
 #if DEBUG
         Debug.Assert(deltaTime >= 0);
 #endif
@@ -43,25 +46,23 @@ public static class GameEngine
         {
             timer_fixedUpdate = timestep_fixedUpdate;
             watch_fixedUpdate.Restart();
-            Game.FixedUpdate(timestep_fixedUpdate);
+            Game.Update(ref gameState, timestep_fixedUpdate);
+            Copy(ref gameState, ref gameState_forRender);
             watch_fixedUpdate.Stop();
-            Helper.MaybeWarn(nameof(Game.FixedUpdate),watch_fixedUpdate.ElapsedMilliseconds,timestep_fixedUpdate);
-            countFrame = true;
+            Helper.MaybeWarn(nameof(Game.Update),watch_fixedUpdate.ElapsedMilliseconds,timestep_fixedUpdate);
         }
-        if (timer_update <= 0)
+        else
         {
-            timer_update = timestep_update;
-            watch_update.Restart();
-            Game.Update(timestep_update - timer_update);
-            watch_update.Stop();
-            Helper.MaybeWarn(nameof(Game.Update),watch_update.ElapsedMilliseconds,timestep_update);
-            countFrame = true;
+            Game.Update(ref gameState_forRender, deltaTime);
         }
 
-        if (countFrame)
-        {
-            frameCount++;
-            countFrame = false;
-        }
+        frameCount++;
+    }
+    public static void Copy(ref GameState logicState, ref GameState renderState)
+    {
+        logicState.aabb = renderState.aabb;
+        var lenght = logicState.boids.Length;
+        for (int i = 0; i < lenght; i++)
+            logicState.boids[i] = renderState.boids[i];
     }
 }

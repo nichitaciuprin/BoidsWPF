@@ -29,5 +29,5 @@ void Game_End(GameState* gameState)
 void Game_Update(GameState* gameState, long realDeltaTimeInMilliseconds)
 {
     float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
-    Boid_Update(gameState->boids,GAME_BOIDSCOUNT,&gameState->aabb,deltaTimeInSeconds);
+    Boid_Update(gameState->boids,gameState->boidsLength,&gameState->aabb,deltaTimeInSeconds);
 }

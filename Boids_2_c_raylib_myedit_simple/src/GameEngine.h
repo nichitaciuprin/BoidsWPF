@@ -4,7 +4,6 @@
 long realTime = 0;
 long gameTime = 0;
 long frameCount = 0;
-const long timeStep_update = 15;
 const long timeStep_fixedUpdate = 20;
 long timer_fixedUpdate = timeStep_fixedUpdate;
 bool shutdown = false;

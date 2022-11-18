@@ -23,18 +23,16 @@ public partial class App : Application
     }
     private static void OnStartup(object sender, StartupEventArgs e)
     {
-        // TrySetCallingProcess(e);
         try
         {
             GameEngine.Init();
-            Draw.Init();
+            Draw.Init(ref GameEngine.gameState_forRender);
         }
         catch (System.Exception exc)
         {
             Console.WriteLine(exc);
             ManualShutdown();
         }
-
         try
         {
             var processID = int.Parse(e.Args[0]);
@@ -45,7 +43,6 @@ public partial class App : Application
         {
             CompositionTarget.Rendering += OnRendering_NoProc;
         }
-
         // thread2.Start();
     }
     private static void OnExit(object sender, ExitEventArgs e)
@@ -74,11 +71,6 @@ public partial class App : Application
         if (shutdownCalled) return;
         try
         {
-            watch_render.Restart();
-            Draw.Render();
-            watch_render.Stop();
-            Helper.MaybeWarn(nameof(OnRendering),watch_render.ElapsedMilliseconds,15);
-
             timer_systemLoop += watch_realTime.ElapsedTicks;
             watch_realTime.Restart();
             if (timer_systemLoop >= ticksPerMillisecond)
@@ -88,6 +80,10 @@ public partial class App : Application
                 // Helper.MaybeWarn("SystemDeltaTime",deltaTime,15);
                 GameEngine.Loop(deltaTime);
             }
+            // watch_render.Restart();
+            Draw.Render(ref GameEngine.gameState_forRender);
+            // watch_render.Stop();
+            // Helper.MaybeWarn(nameof(OnRendering),watch_render.ElapsedMilliseconds,15);
         }
         catch (System.Exception exc)
         {
