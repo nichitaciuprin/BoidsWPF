@@ -57,7 +57,7 @@ void DrawBoid(Boid* boid, Color color)
 
     DrawTriangle2(v1, v2, v3, color);
 }
-void Draw_Update()
+void Draw_Update(GameState* gameState)
 {
     BeginDrawing();
     ClearBackground(BLACK);
@@ -69,24 +69,24 @@ void Draw_Update()
 
     if (GAME_BOIDSCOUNT > 0)
     {
-        DrawBoid(&boids[0], RED);
+        DrawBoid(&gameState->boids[0], RED);
         // printf("%f\n",boids[0]->velocity.y);
-        for (int i = 1; i < GAME_BOIDSCOUNT; i++)
-            DrawBoid(&boids[i], WHITE);
+        for (int i = 1; i < gameState->boidsLength; i++)
+            DrawBoid(&gameState->boids[i], WHITE);
     }
 
-    DrawAABB(&aabb);
+    DrawAABB(&gameState->aabb);
 
     EndDrawing();
 }
-void Draw_Init()
+void Draw_Init(GameState* gameState)
 {
     InitWindow(width, height, "WindowName");
     ClearBackground(BLACK);
     SetWindowPosition(0,0);
 	rlDisableBackfaceCulling();
 	SetTargetFPS(60);
-    Draw_Update();
+    Draw_Update(gameState);
     printf("\n"); // padding from Raylib print
 }
 void Draw_End()

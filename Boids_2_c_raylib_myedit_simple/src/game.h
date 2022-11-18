@@ -2,29 +2,35 @@
 
 #define GAME_BOIDSCOUNT 300
 
-AABB aabb;
-Boid boids[GAME_BOIDSCOUNT];
-
-void Game_Init()
+typedef struct GameState
 {
+    AABB aabb;
+    Boid boids[GAME_BOIDSCOUNT];
+    int boidsLength;
+} GameState;
+
+GameState Game_Init()
+{
+    GameState gameState;
+
+    gameState.boidsLength = GAME_BOIDSCOUNT;
+
     Subgen_Init(0);
 
-    aabb.p0 = (MyVector2){ 0, 0 };
-    aabb.p1 = (MyVector2){ 50, 50 };
+    gameState.aabb.p0 = (MyVector2){ 0, 0 };
+    gameState.aabb.p1 = (MyVector2){ 50, 50 };
 	for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-		boids[i] = CreateBoidRand(&aabb);
+		gameState.boids[i] = CreateBoidRand(&gameState.aabb);
+
+    return gameState;
 }
-void Game_End()
+void Game_End(GameState* gameState)
 {
-    PrintBoid(&boids[0]);
+    PrintBoid(&gameState->boids[0]);
     printf(" \n");
 }
-void Game_Update(long deltaTime)
+void Game_Update(GameState* gameState, long realDeltaTimeInMilliseconds)
 {
-
-}
-void Game_FixedUpdate(long deltaTime)
-{
-    float deltaTimeInSeconds = ((float)deltaTime)/1000;
-    Boid_Update(boids,GAME_BOIDSCOUNT,&aabb,deltaTimeInSeconds);
+    float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
+    Boid_Update(gameState->boids,GAME_BOIDSCOUNT,&gameState->aabb,deltaTimeInSeconds);
 }
