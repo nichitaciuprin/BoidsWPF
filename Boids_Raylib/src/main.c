@@ -11,14 +11,6 @@ void Wait(long milliseconds)
 }
 int main(void)
 {
-    // gameState = Game_Init();
-    // long time1 = clock();
-    // for (int i = 0; i < 3000; i++) Game_Update(&gameState,20);
-    // long time2 = clock();
-    // Game_End(&gameState);
-    // printf("ms: %li\n",time2-time1);
-	// return 0;
-
     GameState gameState = Game_Init();
     Draw_Init(&gameState);
     while (true)

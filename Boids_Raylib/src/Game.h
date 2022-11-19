@@ -23,8 +23,6 @@ GameState Game_Init()
 }
 void Game_End(GameState* gameState)
 {
-    PrintBoid(&gameState->boids[0]);
-    printf(" \n");
 }
 void Game_Update(GameState* gameState, long realDeltaTimeInMilliseconds)
 {
