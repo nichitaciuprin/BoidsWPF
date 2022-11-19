@@ -41,14 +41,14 @@ public partial class App : Application
             CompositionTarget.Rendering += (object? sender, EventArgs e) =>
             {
                 if (callingProcess!.HasExited) ManualShutdown();
-                OnRendering();
+                OnWpfRendering();
             };
         }
         catch (System.Exception)
         {
             CompositionTarget.Rendering += (object? sender, EventArgs e) =>
             {
-                OnRendering();
+                OnWpfRendering();
             };
         }
         // thread2.Start();
@@ -65,7 +65,7 @@ public partial class App : Application
             Console.WriteLine(exc);
         }
     }
-    private static void OnRendering()
+    private static void OnWpfRendering()
     {
         if (shutdownCalled) return;
         try

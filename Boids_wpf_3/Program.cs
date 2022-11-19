@@ -7,13 +7,13 @@ public static class Program
         Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
         Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
-        Game.Init();
+        var gameState = Game.Init();
 
         var watch = Stopwatch.StartNew();
-        for (int i = 0; i < 3000; i++) Game.Update();
+        for (int i = 0; i < 3000; i++) Game.Update(ref gameState, 20);
         watch.Stop();
 
-        Game.End();
+        Game.End(ref gameState);
 
         Console.WriteLine($"ms: {watch.ElapsedMilliseconds}");
     }

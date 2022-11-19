@@ -6,9 +6,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!-- <OutputType>Exe</OutputType> -->
-    <OutputType>WinExe</OutputType>
-    <UseWPF>true</UseWPF>
+    <OutputType>Exe</OutputType>
+    <!-- <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF> -->
 
   </PropertyGroup>
 
