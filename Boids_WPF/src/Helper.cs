@@ -3,26 +3,6 @@ using System.Diagnostics;
 public static class Helper
 {
     public static string ToHex(float value) => System.BitConverter.SingleToUInt32Bits(value).ToString("X");
-    private static Stopwatch test = new Stopwatch();
-    private static long allTime = 0;
-    private static int count = 0;
-    public static void Start()
-    {
-        test.Restart();
-    }
-    public static void End()
-    {
-        test.Stop();
-        var deltaTime = test.ElapsedTicks;
-        allTime += deltaTime;
-        count++;
-        if (count == 100)
-        {
-            // Loging.WriteLine($"AVG: {allTime/count}");
-            allTime = 0;
-            count = 0;
-        }
-    }
     public static long ToTicks(long milliseconds) => milliseconds*Stopwatch.Frequency/1000;
     public static float ToSecondsFloat(long ticks) => ((float)ToMilliseconds(ticks))/1000;
     public static long ToMilliseconds(long ticks) => ticks*1000/Stopwatch.Frequency;
