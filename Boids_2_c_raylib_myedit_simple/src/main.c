@@ -14,6 +14,7 @@ int main(void)
     {
         if (GameEngine_ShutdownCalled()) break;
         newTime = clock();
+        printf("%ld\n",newTime);
         deltaTime = newTime - oldTime;
         oldTime = newTime;
 		GameEngine_Loop(deltaTime);

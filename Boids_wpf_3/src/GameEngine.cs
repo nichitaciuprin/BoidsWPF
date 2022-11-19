@@ -21,6 +21,7 @@ public static class GameEngine
         gameState_forRender = new GameState();
         gameState_forRender.boids = new Boid[gameState.boids.Length];
         gameState_forRender.aabb = gameState.aabb;
+        Copy(ref gameState, ref gameState_forRender);
     }
     public static void End()
     {
@@ -60,9 +61,9 @@ public static class GameEngine
     }
     public static void Copy(ref GameState logicState, ref GameState renderState)
     {
-        logicState.aabb = renderState.aabb;
+        renderState.aabb = logicState.aabb;
         var lenght = logicState.boids.Length;
         for (int i = 0; i < lenght; i++)
-            logicState.boids[i] = renderState.boids[i];
+            renderState.boids[i] = logicState.boids[i];
     }
 }

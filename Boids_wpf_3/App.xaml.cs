@@ -11,6 +11,7 @@ public partial class App : Application
     private static Stopwatch watch_realTime = Stopwatch.StartNew();
     private static Thread thread2 = new Thread(SystemLoop);
     private static Process? callingProcess;
+
     public App()
     {
         Startup += OnStartup;
@@ -37,11 +38,18 @@ public partial class App : Application
         {
             var processID = int.Parse(e.Args[0]);
             callingProcess = Process.GetProcessById(processID);
-            CompositionTarget.Rendering += OnRendering_Proc;
+            CompositionTarget.Rendering += (object? sender, EventArgs e) =>
+            {
+                if (callingProcess!.HasExited) ManualShutdown();
+                OnRendering();
+            };
         }
         catch (System.Exception)
         {
-            CompositionTarget.Rendering += OnRendering_NoProc;
+            CompositionTarget.Rendering += (object? sender, EventArgs e) =>
+            {
+                OnRendering();
+            };
         }
         // thread2.Start();
     }
@@ -56,15 +64,6 @@ public partial class App : Application
         {
             Console.WriteLine(exc);
         }
-    }
-    private static void OnRendering_Proc(object? sender, EventArgs e)
-    {
-        if (callingProcess!.HasExited) ManualShutdown();
-        OnRendering();
-    }
-    private static void OnRendering_NoProc(object? sender, EventArgs e)
-    {
-        OnRendering();
     }
     private static void OnRendering()
     {
@@ -82,6 +81,7 @@ public partial class App : Application
             }
             // watch_render.Restart();
             Draw.Render(ref GameEngine.gameState_forRender);
+            // Draw.Render(ref GameEngine.gameState_forRender);
             // watch_render.Stop();
             // Helper.MaybeWarn(nameof(OnRendering),watch_render.ElapsedMilliseconds,15);
         }
