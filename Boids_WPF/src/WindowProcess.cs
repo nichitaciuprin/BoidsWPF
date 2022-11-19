@@ -7,28 +7,28 @@ using System.Windows.Controls;
 
 public class WindowProcess : Application
 {
-    private GameState gameState;
+    private Game game;
     private float scale = 12f;
     private Window window;
     private Canvas canvas;
     private Queue<MyTransform> myTransformPool;
     private Queue<Shape> boidShapePool;
 
-    public WindowProcess(GameState gameState)
+    public WindowProcess(Game game)
     {
-        this.gameState = gameState;
+        this.game = game;
 
         window = CreateWindow();
         canvas = CreateCanvas();
-        myTransformPool = CreateMyTransformPool(Game.boidsCount);
-        boidShapePool = CreateBoidShapePool(Game.boidsCount);
+        myTransformPool = CreateMyTransformPool(game.boids.Length);
+        boidShapePool = CreateBoidShapePool(game.boids.Length);
 
         CreateBorder();
         // Test_Elipse();
         // Test_Square();
         // Test_BoidPolygon();
         // Test_Cross();
-        Render(gameState);
+        Render(game);
         window.Show();
         window.KeyDown += OnKeyDown;
         Startup += OnStartup;
@@ -45,7 +45,7 @@ public class WindowProcess : Application
     {
         try
         {
-            Render(gameState);
+            Render(game);
         }
         catch (System.Exception exc)
         {
@@ -99,7 +99,7 @@ public class WindowProcess : Application
             canvas.Children.Add(item);
         return boidShapePool;
     }
-    private void Render(GameState gameState)
+    private void Render(Game gameState)
     {
         HideAll();
         Render(gameState.boids);

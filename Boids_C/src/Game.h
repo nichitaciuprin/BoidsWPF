@@ -2,18 +2,18 @@
 
 #define GAME_BOIDSCOUNT 300
 
-typedef struct GameState
+typedef struct Game
 {
     AABB aabb;
     Boid boids[GAME_BOIDSCOUNT];
     int boidsLength;
-} GameState;
+} Game;
 
-GameState Game_Init()
+Game Game_Init()
 {
     Subgen_Init(0);
 
-    GameState gameState;
+    Game gameState;
     gameState.boidsLength = GAME_BOIDSCOUNT;
     gameState.aabb.p0 = (MyVector2){ 0, 0 };
     gameState.aabb.p1 = (MyVector2){ 50, 50 };
@@ -21,10 +21,10 @@ GameState Game_Init()
 		gameState.boids[i] = CreateBoidRand(&gameState.aabb);
     return gameState;
 }
-void Game_End(GameState* gameState)
+void Game_End(Game* gameState)
 {
 }
-void Game_Update(GameState* gameState, long realDeltaTimeInMilliseconds)
+void Game_Update(Game* gameState, long realDeltaTimeInMilliseconds)
 {
     float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
     Boid_Update(gameState->boids,gameState->boidsLength,&gameState->aabb,deltaTimeInSeconds);

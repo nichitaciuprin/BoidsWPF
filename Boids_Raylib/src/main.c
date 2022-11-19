@@ -11,19 +11,19 @@ void Wait(long milliseconds)
 }
 int main(void)
 {
-    GameState gameState = Game_Init();
-    Draw_Init(&gameState);
+    Game game = Game_Init();
+    Draw_Init(&game);
     while (true)
     {
         if (Draw_ShouldExit()) break;
 
         long time1 = clock();
-        Game_Update(&gameState,20);
-        Draw_Update(&gameState);
+        Game_Update(&game,20);
+        Draw_Update(&game);
         long time2 = clock();
         long diff = time2 - time1;
         Wait(20-diff);
     }
-    Game_End(&gameState);
+    Game_End(&game);
 	return 0;
 }
