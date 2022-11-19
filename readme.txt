@@ -1,3 +1,5 @@
+Boids writen in C/Raylib and C#/WPF
+
 HOW RUN C
 
 1. Go here https://github.com/niXman/mingw-builds-binaries/releases
