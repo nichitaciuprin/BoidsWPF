@@ -7,7 +7,7 @@ public class Game
 
     public Game()
     {
-        var aabb = new AABB(Vector2.Zero, new Vector2(50,50));
+        aabb = new AABB(Vector2.Zero, new Vector2(50,50));
         for (int i = 0; i < boids.Length; i++)
             boids[i] = new Boid(aabb);
     }
