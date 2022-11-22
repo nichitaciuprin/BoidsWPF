@@ -8,7 +8,7 @@
 
 int state[55];
 int si = 0;
-int sj = 0;
+int sj = 24;
 
 int Subgen_Next();
 void Subgen_Init(int seed)
@@ -23,8 +23,6 @@ void Subgen_Init(int seed)
 		if (p2 < 0) p2 += MAX;
 		seed = state[j];
 	}
-	si = 0;
-	sj = 24;
 
 	for (int i = 0; i < 165; i++) Subgen_Next();
 }
