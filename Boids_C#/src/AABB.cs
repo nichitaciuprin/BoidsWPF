@@ -14,9 +14,9 @@ public struct AABB
     public float MinY => MathF.Min(p0.y,p1.y);
     public float MaxX => MathF.Max(p0.x,p1.x);
     public float MaxY => MathF.Max(p0.y,p1.y);
-    public float RandPointInside_X => Subgen.Range( MinX, MaxX );
-    public float RandPointInside_Y => Subgen.Range( MinY, MaxY );
-    public Vector2 RandPointInside => new Vector2( RandPointInside_X, RandPointInside_Y );
+    public float RandPointInside_X(Subgen subgen) => subgen.Range( MinX, MaxX );
+    public float RandPointInside_Y(Subgen subgen) => subgen.Range( MinY, MaxY );
+    public Vector2 RandPointInside(Subgen subgen) => new Vector2( RandPointInside_X(subgen), RandPointInside_Y(subgen) );
     public Vector2 WrapAround(Vector2 point)
     {
         var size = Size;

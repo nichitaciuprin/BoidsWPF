@@ -32,10 +32,10 @@ namespace MyVector2
                 result = Add(result,item);
             return Div(result,vs.Length);
         }
-        public static Vector2 RandNormDir()
+        public static Vector2 RandNormDir(Subgen subgen)
         {
-            var x = Subgen.FractionSigned();
-            var y = Subgen.FractionSigned();
+            var x = subgen.FractionSigned();
+            var y = subgen.FractionSigned();
             var result = new Vector2(x, y);
             result.Normalize();
             return result;

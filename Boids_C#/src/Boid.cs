@@ -23,11 +23,11 @@ public struct Boid
     private const float power2 = .01f;
     private const float power3 = .04f;
 
-    public Boid(AABB aabb)
+    public Boid(AABB aabb, Subgen subgen)
     {
-        var randSpeed = Subgen.Range(minSpeed,maxSpeed);
-        var randDirection = Vector2.RandNormDir();
-        pos = aabb.RandPointInside;
+        var randSpeed = subgen.Range(minSpeed,maxSpeed);
+        var randDirection = Vector2.RandNormDir(subgen);
+        pos = aabb.RandPointInside(subgen);
         vel = Vector2.Mul(randDirection,randSpeed);
     }
     public static void Update(Boid[] boids, ref AABB aabb, float deltaTime)

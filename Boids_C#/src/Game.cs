@@ -7,9 +7,10 @@ public class Game
 
     public Game()
     {
+        var subgen = new Subgen(0);
         aabb = new AABB(Vector2.Zero, new Vector2(50,50));
         for (int i = 0; i < boids.Length; i++)
-            boids[i] = new Boid(aabb);
+            boids[i] = new Boid(aabb,subgen);
     }
     public static void Update(Game gameState, long deltaTime)
     {
