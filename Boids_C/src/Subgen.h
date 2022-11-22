@@ -5,6 +5,7 @@ typedef struct Subgen
     int state[55];
     int si;
     int sj;
+    int seed;
 } Subgen;
 
 int Subgen_Next(Subgen* subgen)
@@ -21,6 +22,7 @@ Subgen Subgen_Init(int seed)
 
     subgen.si = 0;
     subgen.sj = 24;
+    subgen.seed = seed;
 
     int p2 = 1;
 	subgen.state[0] = seed % MAX;
