@@ -11,14 +11,14 @@ typedef struct Game
 
 Game Game_Init()
 {
-    Subgen_Init(0);
+    Subgen subgen = Subgen_Init(0);
 
     Game gameState;
     gameState.boidsLength = GAME_BOIDSCOUNT;
     gameState.aabb.p0 = (MyVector2){ 0, 0 };
     gameState.aabb.p1 = (MyVector2){ 50, 50 };
 	for (int i = 0; i < GAME_BOIDSCOUNT; i++)
-		gameState.boids[i] = CreateBoidRand(&gameState.aabb);
+		gameState.boids[i] = CreateBoidRand(&gameState.aabb,&subgen);
     return gameState;
 }
 void Game_End(Game* gameState)

@@ -36,10 +36,10 @@ MyVector2 Vector2_Normalized(MyVector2 v)
     float t = 1.0f / dist;
     return (MyVector2) { v.x*t , v.y*t };
 }
-MyVector2 Vector2_RandNormDir()
+MyVector2 Vector2_RandNormDir(Subgen* subgen)
 {
-    float x = Subgen_FractionSigned();
-    float y = Subgen_FractionSigned();
+    float x = Subgen_FractionSigned(subgen);
+    float y = Subgen_FractionSigned(subgen);
     return Vector2_Normalized( (MyVector2) { x,y } );
 }
 MyVector2 Vector2_ClampLength(MyVector2 v1, float min, float max)

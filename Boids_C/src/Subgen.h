@@ -1,49 +1,50 @@
 #define MAX 1000000000
 
-// typedef struct SubgenState
-// {
-//     MyVector2 p0;
-//     MyVector2 p1;
-// } AABB;
-
-int state[55];
-int si = 0;
-int sj = 24;
-
-int Subgen_Next();
-void Subgen_Init(int seed)
+typedef struct Subgen
 {
-	state[0] = seed % MAX;
+    int state[55];
+    int si;
+    int sj;
+} Subgen;
+
+int Subgen_Next(Subgen* subgen)
+{
+	if (!subgen->si--) subgen->si = 54;
+	if (!subgen->sj--) subgen->sj = 54;
+    int x = subgen->state[subgen->si] - subgen->state[subgen->sj];
+	if (x < 0) x += MAX;
+	return subgen->state[subgen->si] = x;
+}
+Subgen Subgen_Init(int seed)
+{
+    Subgen subgen;
+
+    subgen.si = 0;
+    subgen.sj = 24;
+
     int p2 = 1;
+	subgen.state[0] = seed % MAX;
 	for (int i = 1, j = 21; i < 55; i++, j += 21)
     {
 		if (j >= 55) j -= 55;
-		state[j] = p2;
+		subgen.state[j] = p2;
         p2 = seed - p2;
 		if (p2 < 0) p2 += MAX;
-		seed = state[j];
+		seed = subgen.state[j];
 	}
+	for (int i = 0; i < 165; i++) Subgen_Next(&subgen);
 
-	for (int i = 0; i < 165; i++) Subgen_Next();
+    return subgen;
 }
-int Subgen_Next()
+float Subgen_FractionUnsigned(Subgen* subgen)
 {
-	if (si == sj) Subgen_Init(0);
-	if (!si--) si = 54;
-	if (!sj--) sj = 54;
-    int x = state[si] - state[sj];
-	if (x < 0) x += MAX;
-	return state[si] = x;
+    return Subgen_Next(subgen) / (float)MAX;
 }
-float Subgen_FractionUnsigned()
+float Subgen_FractionSigned(Subgen* subgen)
 {
-    return Subgen_Next() / (float)MAX;
+    return Subgen_FractionUnsigned(subgen) * 2 - 1;
 }
-float Subgen_FractionSigned()
+float Subgen_Range(Subgen* subgen, float min, float max)
 {
-    return Subgen_FractionUnsigned() * 2 - 1;
-}
-float Subgen_Range(float min, float max)
-{
-    return min + ((max - min) * Subgen_FractionUnsigned());
+    return min + ((max - min) * Subgen_FractionUnsigned(subgen));
 }

@@ -31,12 +31,12 @@ void InitCatche(Boid* boid)
     boid->count_1 = 0;
     boid->count_2 = 0;
 }
-Boid CreateBoidRand(AABB* aabb)
+Boid CreateBoidRand(AABB* aabb, Subgen* subgen)
 {
-    float randSpeed = Subgen_Range(minSpeed,maxSpeed);
-    MyVector2 randDirection = Vector2_RandNormDir();
+    float randSpeed = Subgen_Range(subgen,minSpeed,maxSpeed);
+    MyVector2 randDirection = Vector2_RandNormDir(subgen);
 
-    MyVector2 pos = AABB_RandPointInside(aabb);
+    MyVector2 pos = AABB_RandPointInside(subgen,aabb);
     MyVector2 vel = Vector2_Mul(randDirection,randSpeed);
 
     Boid boid;
