@@ -35,6 +35,15 @@ int Subgen_Next()
 	if (x < 0) x += MAX;
 	return state[si] = x;
 }
-float Subgen_FractionUnsigned()          { return Subgen_Next() / (float)MAX; }
-float Subgen_FractionSigned()            { return Subgen_FractionUnsigned() * 2 - 1; }
-float Subgen_Range(float min, float max) { return min + ((max - min) * Subgen_FractionUnsigned()); }
+float Subgen_FractionUnsigned()
+{
+    return Subgen_Next() / (float)MAX;
+}
+float Subgen_FractionSigned()
+{
+    return Subgen_FractionUnsigned() * 2 - 1;
+}
+float Subgen_Range(float min, float max)
+{
+    return min + ((max - min) * Subgen_FractionUnsigned());
+}

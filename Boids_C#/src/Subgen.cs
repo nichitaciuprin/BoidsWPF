@@ -2,7 +2,7 @@ public static class Subgen
 {
     public static int MAX = 1000000000;
     private static int[] state = new int[55];
-    private static int pos;
+    private static int pos = 54;
 
     static Subgen()
     {
@@ -23,7 +23,6 @@ public static class Subgen
         for(int i = 0; i < 55; ++i)
             state[i] = temp[(34 * (i + 1)) % 55];
 
-        pos = 54;
         for(int i = 55; i < 220; ++i)
             Next();
     }
