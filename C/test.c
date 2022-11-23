@@ -1,6 +1,6 @@
 #define DEBUG
 #include <time.h>
-#include "Game.h"
+#include "src\Game.h"
 
 int main(void)
 {

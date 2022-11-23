@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <StartupObject>Run</StartupObject>
     <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Exe</OutputType>
-    <StartupObject>Program</StartupObject>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>

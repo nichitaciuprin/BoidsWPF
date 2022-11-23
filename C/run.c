@@ -1,7 +1,7 @@
 #define DEBUG
 #include <time.h>
-#include "Game.h"
-#include "Draw.h"
+#include "src\Game.h"
+#include "src\Draw.h"
 
 void Wait(long milliseconds)
 {

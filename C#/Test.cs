@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-public static class Program
+public static class Test
 {
     public static void Main()
     {
