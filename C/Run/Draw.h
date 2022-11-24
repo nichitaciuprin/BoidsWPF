@@ -74,7 +74,7 @@ void Draw_Update(Game* game)
 }
 void Draw_Init(Game* game)
 {
-    InitWindow(width, height, "WindowName");
+    InitWindow(width, height, "BOIDS_C");
     ClearBackground(BLACK);
     SetWindowPosition(0,0);
 	rlDisableBackfaceCulling();
