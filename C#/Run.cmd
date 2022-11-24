@@ -1,2 +1,2 @@
 @echo off
-dotnet run --project Run.csproj --configuration Release
+dotnet run --project Run\Run.csproj --configuration Release

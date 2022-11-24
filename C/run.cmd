@@ -1,6 +1,8 @@
-set name=run
-del %name%.exe
-gcc %name%.c ^
+@echo off
+set name=Run
+set filePath=%name%\%name%
+del %filePath%.exe
+gcc %filePath%.c ^
 -lraylib ^
 -ldloadhelper ^
 -lglmf32 ^
@@ -8,5 +10,5 @@ gcc %name%.c ^
 -lopengl32 ^
 -lgdi32 ^
 -lwinmm ^
--o %name%.exe -g3 -O3 -Wall -std=c99 -Wno-missing-braces
-%name%.exe
+-o %filePath%.exe -g3 -O3 -Wall -std=c99 -Wno-missing-braces
+%filePath%.exe
