@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-public static class App
+public static class Run
 {
     [STAThread]
     public static void Main()
