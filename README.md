@@ -1,4 +1,4 @@
-## Boids writen in C#/WPF and C/Raylib
+## Boids written in C#/WPF and C/Raylib
 
 <!-- ## TODO. Create easy installation -->
 
