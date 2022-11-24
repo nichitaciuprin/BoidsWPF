@@ -6,5 +6,6 @@
         "aabb.h": "c",
         "vector2.h": "c",
         "math.h": "c"
-    }
+    },
+    "editor.minimap.enabled": false
 }
