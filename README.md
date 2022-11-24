@@ -6,7 +6,7 @@
 1. install .NET 7 (winget install Microsoft.DotNet.SDK.7)
 2. run RunBoids_C#.cmd
 
-##### How to run FOR C/Raylib
+##### How to run C/Raylib
 1. Go here https://github.com/niXman/mingw-builds-binaries/releases
 2. Download x86_64-12.2.0-release-win32-seh-rt_v10-rev0.7z
 3. Extract to C:\mingw64
