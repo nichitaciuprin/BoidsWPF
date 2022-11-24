@@ -14,7 +14,7 @@ public static class App
         var game = new Game();
         var watch = new Stopwatch();
         var timeStep = 20;
-        var windowThread = StartWindowThread(game);
+        var windowThread = WindowProcess.Start(game);
         while (windowThread.IsAlive)
         {
             watch.Restart();
@@ -28,17 +28,5 @@ public static class App
     {
         if (milliseconds <= 0) return;
         Thread.Sleep((int)milliseconds);
-    }
-    public static Thread StartWindowThread(Game game)
-    {
-        var windowThread = new Thread(_ =>
-        {
-            Thread.CurrentThread.Name = "WINDOW";
-            var windowProcess = new WindowProcess(game);
-            windowProcess.Run();
-        });
-        windowThread.SetApartmentState(ApartmentState.STA);
-        windowThread.Start();
-        return windowThread;
     }
 }

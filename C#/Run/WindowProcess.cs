@@ -14,6 +14,18 @@ public class WindowProcess : Application
     private Queue<MyTransform> myTransformPool;
     private Queue<Shape> boidShapePool;
 
+    public static Thread Start(Game game)
+    {
+        var windowThread = new Thread(_ =>
+        {
+            Thread.CurrentThread.Name = "WINDOW";
+            var windowProcess = new WindowProcess(game);
+            windowProcess.Run();
+        });
+        windowThread.SetApartmentState(ApartmentState.STA);
+        windowThread.Start();
+        return windowThread;
+    }
     public WindowProcess(Game game)
     {
         this.game = game;
