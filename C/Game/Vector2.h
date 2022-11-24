@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include <stdbool.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include "Subgen.h"
 #include "Helper.h"
 

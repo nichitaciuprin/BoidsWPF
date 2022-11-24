@@ -1,7 +1,7 @@
 @echo off
-set name=Run
-set filePath=%name%\%name%
-del %filePath%.exe
+set cmdFileName=%~n0
+set filePath=%cmdFileName%\%cmdFileName%
+@REM del %filePath%.exe
 gcc %filePath%.c ^
 -lraylib ^
 -ldloadhelper ^
@@ -11,4 +11,8 @@ gcc %filePath%.c ^
 -lgdi32 ^
 -lwinmm ^
 -o %filePath%.exe -g3 -O3 -Wall -std=c99 -Wno-missing-braces
+
+@REM Stop cmd if build failed
+if %errorlevel% neq 0 exit /b %errorlevel%
+
 %filePath%.exe

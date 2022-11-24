@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
+#include <math.h>
 
 int width = 500;
 int height = 500;
