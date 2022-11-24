@@ -10,17 +10,18 @@ public static class Run
         curentProcess.PriorityClass = ProcessPriorityClass.High;
         curentThread.Name = "MAIN";
         curentThread.Priority = ThreadPriority.Highest;
+        var watch = new Stopwatch();
 
         var game = new Game();
-        var watch = new Stopwatch();
-        var timeStep = 20;
         var windowThread = WindowProcess.Start(game);
+        var timeStep = 20L;
         while (windowThread.IsAlive)
         {
             watch.Restart();
             Game.Update(game, timeStep);
             watch.Stop();
-            var waitTime = timeStep - (int)watch.ElapsedMilliseconds;
+            var diff = watch.ElapsedMilliseconds;
+            var waitTime = timeStep - diff;
             Wait(waitTime);
         }
     }

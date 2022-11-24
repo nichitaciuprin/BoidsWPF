@@ -5,23 +5,23 @@
 void Wait(long milliseconds)
 {
     if (milliseconds <= 0) return;
-    float inSeconds = ((float)milliseconds) / 1000;
-    WaitTime(inSeconds);
+    float inFloat = ((float)milliseconds) / 1000;
+    WaitTime(inFloat);
 }
 int main(void)
 {
     Game game = Game_Init();
     Draw_Init(&game);
-    while (true)
+    long timeStep = 20;
+    while (!Draw_ShouldExit())
     {
-        if (Draw_ShouldExit()) break;
-
         long time1 = clock();
-        Game_Update(&game,20);
+        Game_Update(&game,timeStep);
         Draw_Update(&game);
         long time2 = clock();
         long diff = time2 - time1;
-        Wait(20-diff);
+        long waitTime = timeStep - diff;
+        Wait(waitTime);
     }
     Game_End(&game);
 	return 0;
