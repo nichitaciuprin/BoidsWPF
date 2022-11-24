@@ -1,10 +1,9 @@
-echo off
-cls
+@echo off
 
-cd Boids_C
-call run
+cd C
+call test
 cd ..
 
-cd Boids_C#
-call run
+cd C#
+call test
 cd ..
