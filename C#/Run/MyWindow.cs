@@ -189,6 +189,24 @@ public class MyWindow
         line.Stroke = Brushes.Red;
         canvas.Children.Add(line);}
     }
+    private void Test_Polygons()
+    {
+        var scale = 20;
+        for (int i = 0; i < scale; i++)
+        for (int j = 0; j < scale; j++)
+        {
+            var x = i*20;
+            var y = j*20;
+            var scale2 = 5;
+            var polygon = new Polygon();
+            polygon.Fill = Brushes.Green;
+            polygon.Points.Add(new Point(x+0,y+0));
+            polygon.Points.Add(new Point(x+0,y+scale2));
+            polygon.Points.Add(new Point(x+scale2,y+scale2));
+            polygon.Points.Add(new Point(x+scale2,y+0));
+            canvas.Children.Add(polygon);
+        }
+    }
     public class MyPolygon
     {
         internal MyTransform myTransform;
