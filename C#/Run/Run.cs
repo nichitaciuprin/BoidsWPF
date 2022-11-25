@@ -27,7 +27,11 @@ public static class Program
     }
     public static void Wait(long milliseconds)
     {
-        if (milliseconds <= 0) return;
+        if (milliseconds <= 0)
+        {
+            Console.WriteLine("SLOW");
+            return;
+        }
         Thread.Sleep((int)milliseconds);
     }
 }

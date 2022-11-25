@@ -45,12 +45,13 @@ public class MyWindow
     {
         points = points.Select(x => { x.y = -x.y; return x; } ).ToArray();
         points = points.Select(x => Vector2.Mul(x,scale)).ToArray();
-        var myPolygon = new MyPolygon(points);
+        var polygon = new Polygon();
+        var myTransform = new MyTransform();
+        polygon.Visibility = Visibility.Visible;
+        canvas.Children.Add(polygon);
         for (int i = 0; i < points.Length; i++)
-            myPolygon.polygon.Points.Add(new Point(points[i].x,points[i].y));
-        canvas.Children.Add(myPolygon.polygon);
-        myPolygon.polygon.Visibility = Visibility.Visible;
-        return myPolygon;
+            polygon.Points.Add(new Point(points[i].x,points[i].y));
+        return new MyPolygon(points,myTransform,polygon);
     }
     public Line Create_Line()
     {
@@ -190,12 +191,14 @@ public class MyWindow
     }
     public class MyPolygon
     {
-        internal MyTransform myTransform = new MyTransform();
-        internal Polygon polygon = new Polygon();
+        internal MyTransform myTransform;
+        internal Polygon polygon;
         internal Vector2[] points;
-        internal MyPolygon(Vector2[] points)
+        internal MyPolygon(Vector2[] points, MyTransform myTransform, Polygon polygon)
         {
             this.points = points;
+            this.myTransform = myTransform;
+            this.polygon = polygon;
         }
     }
     internal class MyTransform
