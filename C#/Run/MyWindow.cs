@@ -7,8 +7,8 @@ using System.Windows.Controls;
 
 public class MyWindow
 {
-    private float scale = 12f;
-    private Window window;
+    public float scale = 12f;
+    public Window window;
     private Canvas canvas;
 
     public MyWindow(string title)
@@ -43,11 +43,13 @@ public class MyWindow
     }
     public MyPolygon Create_MyPolygon(Vector2[] points)
     {
-        var polygon = new Polygon();
-        for (int i = 0; i < points.Length; i++)
-            polygon.Points.Add(new Point(points[i].x,points[i].y));
+        points = points.Select(x => { x.y = -x.y; return x; } ).ToArray();
+        points = points.Select(x => Vector2.Mul(x,scale)).ToArray();
         var myPolygon = new MyPolygon(points);
-        canvas.Children.Add(polygon);
+        for (int i = 0; i < points.Length; i++)
+            myPolygon.polygon.Points.Add(new Point(points[i].x,points[i].y));
+        canvas.Children.Add(myPolygon.polygon);
+        myPolygon.polygon.Visibility = Visibility.Visible;
         return myPolygon;
     }
     public Line Create_Line()
@@ -58,17 +60,20 @@ public class MyWindow
     }
     public void Draw_MyPolygon(MyPolygon myPolygon, Vector2 pos, Vector2 angle, Brush color)
     {
-        var polygonPoints = myPolygon.polygon.Points;
-        for (int i = 0; i < polygonPoints.Count; i++)
-        {
-            var point = myPolygon.points[i];
-            point.x *= scale;
-            point.y *= scale;
-            polygonPoints[i] = new Point(point.x,point.y);
-        }
+        // var polygonPoints = myPolygon.polygon.Points;
+        // for (int i = 0; i < polygonPoints.Count; i++)
+        // {
+        //     var point = myPolygon.points[i];
+        //     point.x *= scale;
+        //     point.y *= scale;
+        //     var point2 = polygonPoints[i];
+        //     point2.X = point.x;
+        //     point2.Y = point.y;
+        //     polygonPoints[i] = point2;
+        // }
         myPolygon.polygon.Fill = color;
-        myPolygon.polygon.Visibility = Visibility.Visible;
         myPolygon.myTransform.Set(myPolygon.polygon,ToWindowPosition(pos),GetAngle(angle));
+        myPolygon.polygon.Visibility = Visibility.Visible;
     }
     public void Draw_DrawLine(Line line, Vector2 start, Vector2 end)
     {

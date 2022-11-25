@@ -3,17 +3,13 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using System.Windows.Controls;
 
 public class GameRender : Application
 {
     private Game game;
-    private float scale = 12f;
-    private Window window;
-    private Canvas canvas;
-    private Queue<MyTransform> myTransformPool;
-    private Queue<Shape> boidShapePool;
-    private Queue<Line> linePool;
+    private MyWindow myWindow;
+    private MyWindow.MyPolygon[] myPoligons;
+    private Line[] linePool;
 
     public static Thread Start(Game game)
     {
@@ -30,38 +26,33 @@ public class GameRender : Application
     public GameRender(Game game)
     {
         this.game = game;
+        this.myWindow = new MyWindow("BOIDS_C#");
 
-        window = CreateWindow();
-        canvas = CreateCanvas();
-        myTransformPool = CreateMyTransformPool(game.boids.Length);
-        boidShapePool = CreateBoidShapePool(game.boids.Length);
-        linePool = LinePool(100);
+        var points = new []
+        {
+            new Vector2(  0     ,  0     ),
+            new Vector2( -0.25f , -0.06f ),
+            new Vector2(  0     ,  0.50f ),
+            new Vector2(  0.25f , -0.06f ),
+            new Vector2(  0     ,  0     ),
+        };
 
-        Render(game);
-        window.Show();
+        myPoligons = game.boids.Select(x => myWindow.Create_MyPolygon(points)).ToArray();
+        linePool = (new bool[100]).Select(x => myWindow.Create_Line()).ToArray();
 
-        window.KeyDown += OnKeyDown;
+        Render();
+
         Startup += OnStartup;
         Exit += OnExit;
+        myWindow.window.KeyDown += OnKeyDown;
         CompositionTarget.Rendering += OnRendering;
     }
+
     private void OnStartup(object sender, StartupEventArgs e)
     {
     }
     private void OnExit(object sender, ExitEventArgs e)
     {
-    }
-    private void OnRendering(object? sender, EventArgs e)
-    {
-        try
-        {
-            Render(game);
-        }
-        catch (System.Exception exc)
-        {
-            Console.WriteLine(exc.ToString());
-            Application.Current.Shutdown();
-        }
     }
     private void OnKeyDown(object sender, KeyEventArgs e)
     {
@@ -74,54 +65,25 @@ public class GameRender : Application
                 break;
         }
     }
-    private Window CreateWindow()
+    private void OnRendering(object? sender, EventArgs e)
     {
-        var window = new Window();
-        window.WindowStyle = WindowStyle.None;
-        window.ResizeMode = ResizeMode.NoResize;
-        window.AllowsTransparency = false;
-        window.Title = "BOIDS_C#";
-        window.Left = 0;
-        window.Top = 0;
-        var size = new Vector2(600,600);
-        window.Width = size.x;
-        window.Height = size.y;
-        window.Background = Brushes.Magenta;
-        return window;
-    }
-    private Canvas CreateCanvas()
-    {
-        var canvas = new Canvas();
-        canvas.Background = Brushes.Black;
-        canvas.Width = window.Width;
-        canvas.Height = window.Height;
-        window.Content = canvas;
-        return canvas;
-    }
-    private Queue<MyTransform> CreateMyTransformPool(int size)
-    {
-        return new Queue<MyTransform>((new bool[size]).Select(x => new MyTransform()));
-    }
-    private Queue<Shape> CreateBoidShapePool(int size)
-    {
-        var boidShapePool =  new Queue<Shape>((new bool[size]).Select(x => CreateBoidShape()));
-        foreach (var item in boidShapePool)
-            canvas.Children.Add(item);
-        return boidShapePool;
-    }
-    private Queue<Line> LinePool(int size)
-    {
-        var boidShapePool = new Queue<Line>((new bool[size]).Select(x => new Line()));
-        foreach (var item in boidShapePool)
-            canvas.Children.Add(item);
-        return boidShapePool;
+        try
+        {
+            Render();
+        }
+        catch (System.Exception exc)
+        {
+            Console.WriteLine(exc.ToString());
+            Application.Current.Shutdown();
+        }
     }
 
-    private void Render(Game gameState)
+    public void Render()
     {
-        HideAll();
-        Render(gameState.boids);
-        Render(gameState.aabb);
+        myWindow.BeginDraw();
+        Render(game.boids);
+        Render(game.aabb);
+        myWindow.EndDraw();
     }
     private void Render(AABB aabb)
     {
@@ -129,205 +91,24 @@ public class GameRender : Application
         var p1 = new Vector2(aabb.MinX,aabb.MaxY);
         var p2 = new Vector2(aabb.MaxX,aabb.MaxY);
         var p3 = new Vector2(aabb.MaxX,aabb.MinY);
-        RenderLine(p0,p1);
-        RenderLine(p1,p2);
-        RenderLine(p2,p3);
-        RenderLine(p3,p0);
+        var line0 = linePool[0];
+        var line1 = linePool[1];
+        var line2 = linePool[2];
+        var line3 = linePool[3];
+        myWindow.Draw_DrawLine(line0,p0,p1);
+        myWindow.Draw_DrawLine(line1,p1,p2);
+        myWindow.Draw_DrawLine(line2,p2,p3);
+        myWindow.Draw_DrawLine(line3,p3,p0);
     }
     private void Render(Boid[] boids)
     {
         if (boids.Length == 0) return;
-        RenderBoid(ref boids[0],Brushes.Red);
+        RenderBoid(ref boids[0],0,Brushes.Red);
         for (int i = 1; i < boids.Length; i++)
-            RenderBoid(ref boids[i],Brushes.White);
+            RenderBoid(ref boids[i],i,Brushes.White);
     }
-    private void RenderBoid(ref Boid boid, Brush color)
+    private void RenderBoid(ref Boid boid, int i, Brush color)
     {
-        var shape = Next(boidShapePool);
-        var myTransform = Next(myTransformPool);
-        shape.Fill = color;
-        shape.Visibility = Visibility.Visible;
-        SetPosition(boid,myTransform,shape);
-    }
-    private void RenderLine(Vector2 start, Vector2 end)
-    {
-        var line = Next(linePool);
-        line.Stroke = Brushes.DarkCyan;
-        // line.Fill = lineBrush;
-        line.StrokeThickness = 1;
-        SetPosition(line,start,end);
-    }
-    private Shape CreateBoidShape()
-    {
-        var shape = new Polygon();
-        var points = new []
-        {
-            new Point(0, 0),
-            new Point(-4, 1),
-            new Point(0, -8),
-            new Point(4, 1),
-            new Point(0, 0),
-        };
-        var duno = 1f/8f/2f*scale;
-        for (int i = 0; i < points.Length; i++)
-            points[i] = new Point(points[i].X*duno,points[i].Y*duno);
-        for (int i = 0; i < points.Length; i++)
-            shape.Points.Add(points[i]);
-        return shape;
-    }
-    private void HideAll()
-    {
-        foreach (var item in boidShapePool) item.Visibility = Visibility.Hidden;
-        // foreach (var item in linePool) item.Visibility = Visibility.Hidden;
-    }
-    private float GetAngle(Vector2 vel)
-    {
-        if (Vector2.IsZero(vel)) return 0;
-        return MathF.Atan2(vel.x,vel.y) * 180f / MathF.PI;
-    }
-    private void SetPosition(Boid boid, MyTransform myTransform, Shape boidShape)
-    {
-        myTransform.Set(boidShape,ToRenderPos(boid.pos),GetAngle(boid.vel));
-    }
-    private void SetPosition(Line line, Vector2 worldPosition_Start, Vector2 worldPosition_End)
-    {
-        worldPosition_Start = Vector2.Mul(worldPosition_Start,scale);
-        worldPosition_End = Vector2.Mul(worldPosition_End,scale);
-        var offsetY = (float)canvas.Height;
-        line.X1 = worldPosition_Start.x;
-        line.Y1 = offsetY - worldPosition_Start.y;
-        line.X2 = worldPosition_End.x;
-        line.Y2 = offsetY - worldPosition_End.y;
-    }
-    private Vector2 ToRenderPos(Vector2 worldPos) => (new Vector2(worldPos.x*scale,(float)canvas.Height - worldPos.y*scale));
-    private class MyTransform
-    {
-        private TransformGroup tg;
-        private TranslateTransform tt;
-        private RotateTransform rt;
-
-        public MyTransform()
-        {
-            tg = new TransformGroup();
-            tt = new TranslateTransform();
-            rt = new RotateTransform();
-            tg.Children.Add(rt);
-            tg.Children.Add(tt);
-        }
-        public void Set(Shape shape, Vector2 pos, float rot)
-        {
-            tt.X = pos.x;
-            tt.Y = pos.y;
-            rt.Angle = rot;
-            shape.RenderTransform = tg;
-        }
-    }
-    private T Next<T>(Queue<T> queue)
-    {
-        var result = queue.Dequeue();
-        queue.Enqueue(result);
-        return result;
-    }
-
-    private void Test_CreateWindowBorder()
-    {
-        var size = 2;
-        var color = Brushes.DarkCyan;
-
-        {
-        var topBar = new Rectangle();
-        topBar.Width = canvas.Width;
-        topBar.Height = size;
-        topBar.Fill = color;
-        canvas.Children.Add(topBar);
-        Canvas.SetZIndex(topBar,1);
-        Canvas.SetTop(topBar,0);
-        }
-
-        {
-        var bottomBar = new Rectangle();
-        bottomBar.Width = canvas.Width;
-        bottomBar.Height = size;
-        bottomBar.Fill = color;
-        canvas.Children.Add(bottomBar);
-        Canvas.SetZIndex(bottomBar,1);
-        Canvas.SetBottom(bottomBar,0);
-        }
-
-        {
-        var leftBar = new Rectangle();
-        leftBar.Width = size;
-        leftBar.Height = canvas.Height;
-        leftBar.Fill = color;
-        canvas.Children.Add(leftBar);
-        Canvas.SetZIndex(leftBar,1);
-        Canvas.SetLeft(leftBar,0);
-        }
-
-        {
-        var rightBar = new Rectangle();
-        rightBar.Width = size;
-        rightBar.Height = canvas.Height;
-        rightBar.Fill = color;
-        canvas.Children.Add(rightBar);
-        Canvas.SetZIndex(rightBar,1);
-        Canvas.SetRight(rightBar,0);
-        }
-    }
-    private void Test_Elipse()
-    {
-        var shape = new Ellipse();
-        shape.Height = 50;
-        shape.Width = 50;
-        shape.Fill = Brushes.Red;
-        canvas.Children.Add(shape);
-        var newTrans = new MyTransform();
-        newTrans.Set(shape,new Vector2((float)-shape.Width/2,(float)-shape.Height/2),0);
-    }
-    private void Test_Cross()
-    {
-        var brush = new SolidColorBrush();
-        brush.Color = Colors.Red;
-
-        {var line = new Line();
-        line.X1 = 0;
-        line.Y1 = 0;
-        line.X2 = canvas.Width;
-        line.Y2 = canvas.Height;
-        line.StrokeThickness = 1;
-        line.Stroke = brush;
-        canvas.Children.Add(line);}
-
-        {var line = new Line();
-        line.X1 = canvas.Width;
-        line.Y1 = 0;
-        line.X2 = 0;
-        line.Y2 = canvas.Height;
-        line.StrokeThickness = 1;
-        line.Stroke = brush;
-        canvas.Children.Add(line);}
-    }
-    private void Test_Square()
-    {
-        var brush = new SolidColorBrush();
-        brush.Color = Colors.Green;
-
-        var p0 = new Vector2(0,0);
-        var p1 = new Vector2(0,100);
-        var p2 = new Vector2(100,100);
-        var p3 = new Vector2(100,0);
-
-        var line0 = new Line(); line0.Stroke = brush; line0.StrokeThickness = 1; canvas.Children.Add(line0); SetPosition(line0,p0,p1);
-        var line1 = new Line(); line1.Stroke = brush; line1.StrokeThickness = 1; canvas.Children.Add(line1); SetPosition(line1,p1,p2);
-        var line2 = new Line(); line2.Stroke = brush; line2.StrokeThickness = 1; canvas.Children.Add(line2); SetPosition(line2,p2,p3);
-        var line3 = new Line(); line3.Stroke = brush; line3.StrokeThickness = 1; canvas.Children.Add(line3); SetPosition(line3,p3,p0);
-    }
-    private void Test_BoidPolygon()
-    {
-        var shape = CreateBoidShape();
-        shape.Fill = Brushes.Green;
-        var tran = new MyTransform();
-        tran.Set(shape,new Vector2((float)canvas.Width/2f,(float)canvas.Height/2),90);
-        canvas.Children.Add(shape);
+        myWindow.Draw_MyPolygon(myPoligons[i],boid.pos,boid.vel,color);
     }
 }
