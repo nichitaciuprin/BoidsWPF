@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Controls;
 
-public class WindowProcess : Application
+public class GameRender : Application
 {
     private Game game;
     private float scale = 12f;
@@ -19,15 +19,15 @@ public class WindowProcess : Application
     {
         var windowThread = new Thread(_ =>
         {
-            Thread.CurrentThread.Name = "WINDOW";
-            var windowProcess = new WindowProcess(game);
+            Thread.CurrentThread.Name = "GameRender";
+            var windowProcess = new GameRender(game);
             windowProcess.Run();
         });
         windowThread.SetApartmentState(ApartmentState.STA);
         windowThread.Start();
         return windowThread;
     }
-    public WindowProcess(Game game)
+    public GameRender(Game game)
     {
         this.game = game;
 

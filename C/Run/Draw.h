@@ -78,9 +78,8 @@ void Draw_Init(Game* game)
     ClearBackground(BLACK);
     SetWindowPosition(0,0);
 	rlDisableBackfaceCulling();
-	// SetTargetFPS(60);
-    Draw_Update(game);
     printf("\n"); // padding from Raylib print
+    Draw_Update(game);
 }
 void Draw_End()
 {

@@ -13,7 +13,7 @@ public static class Run
         var watch = new Stopwatch();
 
         var game = new Game();
-        var windowThread = WindowProcess.Start(game);
+        var windowThread = GameRender.Start(game);
         var timeStep = 20L;
         while (windowThread.IsAlive)
         {
