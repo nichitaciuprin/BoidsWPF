@@ -11,6 +11,11 @@ public class GameRender : Application
     private MyWindow.MyPolygon[] myPoligons;
     private Line[] linePool;
 
+    private Vector2 boidPoint_1 = new Vector2 ( 0.00f, 0.00f);
+    private Vector2 boidPoint_2 = new Vector2 (-0.25f,-0.25f);
+    private Vector2 boidPoint_3 = new Vector2 ( 0.00f, 0.50f);
+    private Vector2 boidPoint_4 = new Vector2 ( 0.25f,-0.25f);
+
     public static Thread Start(Game game)
     {
         var windowThread = new Thread(_ =>
@@ -30,11 +35,10 @@ public class GameRender : Application
 
         var points = new []
         {
-            new Vector2(  0     ,  0     ),
-            new Vector2( -0.25f , -0.06f ),
-            new Vector2(  0     ,  0.50f ),
-            new Vector2(  0.25f , -0.06f ),
-            new Vector2(  0     ,  0     ),
+            boidPoint_1,
+            boidPoint_2,
+            boidPoint_3,
+            boidPoint_4,
         };
 
         myPoligons = game.boids.Select(x => myWindow.Create_MyPolygon(points)).ToArray();
