@@ -1,3 +1,6 @@
+#ifndef MYVECTOR2_H
+#define MYVECTOR2_H
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdlib.h>
@@ -69,3 +72,5 @@ MyVector2 Vector2_Rotate(MyVector2 v, float angle)
     result.y = v.x*sinres + v.y*cosres;
     return result;
 }
+
+#endif

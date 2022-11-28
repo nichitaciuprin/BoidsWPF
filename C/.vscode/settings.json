@@ -5,7 +5,11 @@
         "boid.h": "c",
         "aabb.h": "c",
         "vector2.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "stdlib.h": "c",
+        "stdbool.h": "c",
+        "mywindow.h": "c",
+        "rlgl.h": "c"
     },
     "editor.minimap.enabled": false
 }
