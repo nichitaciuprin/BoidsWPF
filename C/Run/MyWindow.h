@@ -12,7 +12,7 @@ Vector2 MyWindow_ToWindowSpace(MyVector2 v)
     v.y = MyWindow_Height - v.y;
     return (Vector2) { v.x, v.y };
 }
-void MyWindow_DrawRectangleLines(int posX, int posY, int width, int height)
+void MyWindow_DrawRectangleLines(int posX, int posY, int width, int height, Color color)
 {
     posX   *= MyWindow_Scale;
     posY   *= MyWindow_Scale;
@@ -21,7 +21,7 @@ void MyWindow_DrawRectangleLines(int posX, int posY, int width, int height)
 
     posY = MyWindow_Height - posY;
     posY -= height;
-    DrawRectangleLines(posX,posY,width,height,DARKGREEN);
+    DrawRectangleLines(posX,posY,width,height,color);
 }
 void MyWindow_DrawTriangle(MyVector2 v1, MyVector2 v2, MyVector2 v3, Color color)
 {

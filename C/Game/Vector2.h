@@ -63,6 +63,14 @@ void      Vector2_PrintVector2Hex(MyVector2 v1)
     Helper_PrintFloatHex(v1.x);
     Helper_PrintFloatHex(v1.y);
 }
+float     Vector2_Angle(MyVector2 v)
+{
+    // v ( 0, 1) =  0.000000
+    // v ( 1, 0) = -1.570796
+    // v ( 0,-1) = -3.141593
+    // v (-1, 0) =  1.570796
+    return Vector2_IsZero(v) ? 0 : atan2f(v.y,v.x) - M_PI_2;
+}
 MyVector2 Vector2_Rotate(MyVector2 v, float angle)
 {
     MyVector2 result = Vector2_Zero();

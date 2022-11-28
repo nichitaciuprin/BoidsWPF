@@ -5,16 +5,11 @@ MyVector2 Draw_boidPoint_1 = (MyVector2){ 0.00, 0.25};
 MyVector2 Draw_boidPoint_2 = (MyVector2){-0.15,-0.25};
 MyVector2 Draw_boidPoint_3 = (MyVector2){ 0.15,-0.25};
 
-float Draw_GetAngle(MyVector2 v)
-{
-    // v (0,1) returns 0;
-    return Vector2_IsZero(v) ? 0 : atan2f(v.y,v.x) - M_PI_2;
-}
 void Draw_DrawAABB(AABB* aabb)
 {
     MyVector2 pos = (MyVector2) { AABB_MinX(aabb), AABB_MinY(aabb) };
     MyVector2 size = AABB_Size(aabb);
-    MyWindow_DrawRectangleLines(pos.x,pos.y,size.x,size.y);
+    MyWindow_DrawRectangleLines(pos.x,pos.y,size.x,size.y,DARKGREEN);
 }
 void Draw_DrawBoid(Boid* boid, Color color)
 {
@@ -22,7 +17,7 @@ void Draw_DrawBoid(Boid* boid, Color color)
     MyVector2 v2 = Draw_boidPoint_2;
     MyVector2 v3 = Draw_boidPoint_3;
 
-    float angle = Draw_GetAngle(boid->vel);
+    float angle = Vector2_Angle(boid->vel);
 
     v1 = Vector2_Rotate(v1,angle);
     v2 = Vector2_Rotate(v2,angle);
