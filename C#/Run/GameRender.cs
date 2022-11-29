@@ -1,5 +1,4 @@
-﻿using MyVector2;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
 
@@ -7,10 +6,10 @@ public class GameRender : Application
 {
     private Game game;
     private MyWindow myWindow;
-    private Vector2 boidPoint_1 = new Vector2 ( 0.00f, 0.00f);
-    private Vector2 boidPoint_2 = new Vector2 (-0.25f,-0.25f);
-    private Vector2 boidPoint_3 = new Vector2 ( 0.00f, 0.50f);
-    private Vector2 boidPoint_4 = new Vector2 ( 0.25f,-0.25f);
+    private MyVector2 boidPoint_1 = new MyVector2 ( 0.00f, 0.00f);
+    private MyVector2 boidPoint_2 = new MyVector2 (-0.25f,-0.25f);
+    private MyVector2 boidPoint_3 = new MyVector2 ( 0.00f, 0.50f);
+    private MyVector2 boidPoint_4 = new MyVector2 ( 0.25f,-0.25f);
 
     public static Thread Start(Game game)
     {
@@ -91,28 +90,28 @@ public class GameRender : Application
     }
     private void Render(ref AABB aabb)
     {
-        var pos = new Vector2(aabb.MinX, aabb.MinY);
+        var pos = new MyVector2(aabb.MinX, aabb.MinY);
         var size = aabb.Size;
         myWindow.DrawRectangleLines((int)pos.x,(int)pos.y,(int)size.x,(int)size.y);
     }
     private void Render(ref Boid boid, Brush brush)
     {
-        Vector2 v1 = boidPoint_1;
-        Vector2 v2 = boidPoint_2;
-        Vector2 v3 = boidPoint_3;
-        Vector2 v4 = boidPoint_4;
+        MyVector2 v1 = boidPoint_1;
+        MyVector2 v2 = boidPoint_2;
+        MyVector2 v3 = boidPoint_3;
+        MyVector2 v4 = boidPoint_4;
 
-        float angle = Vector2.Angle(boid.vel);
+        float angle = MyVector2.Angle(boid.vel);
 
-        v1 = Vector2.Rotate(v1, angle);
-        v2 = Vector2.Rotate(v2, angle);
-        v3 = Vector2.Rotate(v3, angle);
-        v4 = Vector2.Rotate(v4, angle);
+        v1 = MyVector2.Rotate(v1, angle);
+        v2 = MyVector2.Rotate(v2, angle);
+        v3 = MyVector2.Rotate(v3, angle);
+        v4 = MyVector2.Rotate(v4, angle);
 
-        v1 = Vector2.Add(boid.pos, v1);
-        v2 = Vector2.Add(boid.pos, v2);
-        v3 = Vector2.Add(boid.pos, v3);
-        v4 = Vector2.Add(boid.pos, v4);
+        v1 = MyVector2.Add(boid.pos, v1);
+        v2 = MyVector2.Add(boid.pos, v2);
+        v3 = MyVector2.Add(boid.pos, v3);
+        v4 = MyVector2.Add(boid.pos, v4);
 
         myWindow.DrawTriangle(v1, v2, v3, brush);
         myWindow.DrawTriangle(v1, v4, v3, brush);

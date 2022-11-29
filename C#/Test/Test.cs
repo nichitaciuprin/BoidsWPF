@@ -16,6 +16,11 @@ public static class Test
         for (int i = 0; i < 3000; i++) Game.Update(game, 20);
         watch.Stop();
 
-        System.Console.WriteLine($"Boids_C# {game.boids[0].ToString()} {watch.ElapsedMilliseconds}");
+        System.Console.Write("Boids_C#");
+        System.Console.Write(" ");
+        game.boids[0].Print();
+        System.Console.Write(" ");
+        System.Console.Write(watch.ElapsedMilliseconds);
+        System.Console.Write(" \n");
     }
 }

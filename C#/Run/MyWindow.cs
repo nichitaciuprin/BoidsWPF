@@ -1,5 +1,4 @@
-﻿using MyVector2;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
@@ -67,16 +66,16 @@ public class MyWindow
     }
     public void DrawRectangleLines(int posX, int posY, int width, int height)
     {
-        var p0 = new Vector2(posX, posY);
-        var p1 = new Vector2(posX, posY + height);
-        var p2 = new Vector2(posX + width, posY + height);
-        var p3 = new Vector2(posX + width, posY);
+        var p0 = new MyVector2(posX, posY);
+        var p1 = new MyVector2(posX, posY + height);
+        var p2 = new MyVector2(posX + width, posY + height);
+        var p3 = new MyVector2(posX + width, posY);
         DrawLine(p0,p1);
         DrawLine(p1,p2);
         DrawLine(p2,p3);
         DrawLine(p3,p0);
     }
-    public void DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Brush brush)
+    public void DrawTriangle(MyVector2 v1, MyVector2 v2, MyVector2 v3, Brush brush)
     {
         v1 = ToWindowSpace(v1);
         v2 = ToWindowSpace(v2);
@@ -88,7 +87,7 @@ public class MyWindow
         triangle.Visibility = Visibility.Visible;
         triangle.Fill = brush;
     }
-    private void DrawLine(Vector2 start, Vector2 end)
+    private void DrawLine(MyVector2 start, MyVector2 end)
     {
         var line = GetLine();
         start = ToWindowSpace(start);
@@ -101,11 +100,11 @@ public class MyWindow
         line.StrokeThickness = 1;
         line.Visibility = Visibility.Visible;
     }
-    private Vector2 ToWindowSpace(Vector2 v)
+    private MyVector2 ToWindowSpace(MyVector2 v)
     {
-        v = Vector2.Mul(v, scale);
+        v = MyVector2.Mul(v, scale);
         v.y = height - v.y;
-        return new Vector2(v.x, v.y);
+        return new MyVector2(v.x, v.y);
     }
     private void Clear()
     {

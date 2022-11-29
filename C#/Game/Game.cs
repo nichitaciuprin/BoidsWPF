@@ -1,5 +1,3 @@
-using MyVector2;
-
 public class Game
 {
     public AABB aabb;
@@ -8,7 +6,7 @@ public class Game
     public Game()
     {
         var subgen = new Subgen(0);
-        aabb = new AABB(Vector2.Zero, new Vector2(50,50));
+        aabb = new AABB(MyVector2.Zero, new MyVector2(50,50));
         for (int i = 0; i < boids.Length; i++)
             boids[i] = new Boid(aabb,subgen);
     }
