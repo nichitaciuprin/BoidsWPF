@@ -1,5 +1,6 @@
 #include <time.h>
-#include "GameRender.h"
+#include "../BoidWorld/BoidWorld.h"
+#include "../BoidWorldRender/BoidWorldRender.h"
 
 void Wait(long milliseconds)
 {
@@ -9,7 +10,7 @@ void Wait(long milliseconds)
 }
 int main(void)
 {
-    Game game = Game_Init();
+    BoidWorld game = Game_Init();
     Draw_Init(&game);
     long timeStep = 20;
     while (!Draw_ShouldExit())

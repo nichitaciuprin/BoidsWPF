@@ -1,10 +1,10 @@
 #define DEBUG
 #include <time.h>
-#include "..\Game\Game.h"
+#include "..\BoidWorld\BoidWorld.h"
 
 int main(void)
 {
-    Game game = Game_Init();
+    BoidWorld game = Game_Init();
 
     long time1 = clock();
     for (int i = 0; i < 3000; i++) Game_Update(&game,20);

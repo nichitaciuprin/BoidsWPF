@@ -1,4 +1,7 @@
-#include "AABB.h"
+#ifndef BOID_H
+#define BOID_H
+
+#include "../Base/AABB.h"
 
 typedef struct Boid
 {
@@ -127,3 +130,5 @@ void PrintBoid(Boid* boid)
     Vector2_PrintVector2Hex(boid->pos);
     Vector2_PrintVector2Hex(boid->vel);
 }
+
+#endif

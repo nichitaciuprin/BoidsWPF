@@ -1,4 +1,4 @@
-#include "..\Game\Game.h"
+#include "..\BoidWorld\BoidWorld.h"
 #include "MyWindow.h"
 
 MyVector2 Draw_boidPoint_1 = (MyVector2) { 0.00f, 0.00f};
@@ -34,11 +34,11 @@ void Draw_DrawBoid(Boid* boid, Color color)
     MyWindow_DrawTriangle(v1, v2, v3, color);
     MyWindow_DrawTriangle(v1, v4, v3, color);
 }
-void Draw_Update(Game* game)
+void Draw_Update(BoidWorld* game)
 {
     MyWindow_BeginDrawing();
 
-    if (GAME_BOIDSCOUNT > 0)
+    if (BOIDWORLD_BOIDSCOUNT > 0)
     {
         Draw_DrawBoid(&game->boids[0], RED);
         for (int i = 1; i < game->boidsLength; i++)
@@ -48,7 +48,7 @@ void Draw_Update(Game* game)
 
     MyWindow_EndDrawing();
 }
-void Draw_Init(Game* game)
+void Draw_Init(BoidWorld* game)
 {
     MyWindow_Init();
     Draw_Update(game);

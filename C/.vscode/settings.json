@@ -10,7 +10,9 @@
         "stdbool.h": "c",
         "mywindow.h": "c",
         "rlgl.h": "c",
-        "myvector2.h": "c"
+        "myvector2.h": "c",
+        "boidworld.h": "c",
+        "boidworldrender.h": "c"
     },
     "editor.minimap.enabled": false
 }

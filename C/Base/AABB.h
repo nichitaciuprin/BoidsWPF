@@ -1,3 +1,6 @@
+#ifndef AABB_H
+#define AABB_H
+
 #include "MyVector2.h"
 
 typedef struct AABB
@@ -23,3 +26,5 @@ MyVector2 AABB_WrapAround(AABB* aabb, MyVector2 point)
     else if (point.y > AABB_MaxY(aabb)) point.y -= size.y;
     return point;
 }
+
+#endif
