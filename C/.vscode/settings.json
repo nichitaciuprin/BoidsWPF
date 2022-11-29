@@ -9,7 +9,8 @@
         "stdlib.h": "c",
         "stdbool.h": "c",
         "mywindow.h": "c",
-        "rlgl.h": "c"
+        "rlgl.h": "c",
+        "myvector2.h": "c"
     },
     "editor.minimap.enabled": false
 }
