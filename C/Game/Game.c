@@ -13,7 +13,7 @@ int main(void)
     BoidWorld game = BoidWorld_Init();
     BoidWorldRender_Init(&game);
     long timeStep = 20;
-    while (!Draw_ShouldExit())
+    while (!BoidWorldRender_ShouldExit())
     {
         long time1 = clock();
         BoidWorld_Update(&game,timeStep);

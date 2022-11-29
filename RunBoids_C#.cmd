@@ -1,4 +1,4 @@
 @echo off
 cd C#
-call run
+call Game
 cd ..

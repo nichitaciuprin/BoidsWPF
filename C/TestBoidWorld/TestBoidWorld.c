@@ -1,4 +1,3 @@
-#define DEBUG
 #include <time.h>
 #include "..\BoidWorld\BoidWorld.h"
 
