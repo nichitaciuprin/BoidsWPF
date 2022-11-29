@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-public static class Test
+public static class TestBoidWorld
 {
     public static void Main()
     {

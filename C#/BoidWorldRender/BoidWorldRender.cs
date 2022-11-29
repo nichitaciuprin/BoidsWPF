@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using System.Windows.Input;
 
-public class GameRender : Application
+public class BoidWorldRender : Application
 {
     private BoidWorld game;
     private MyWindow myWindow;
@@ -16,14 +16,14 @@ public class GameRender : Application
         var windowThread = new Thread(_ =>
         {
             Thread.CurrentThread.Name = "GameRender";
-            var windowProcess = new GameRender(game);
+            var windowProcess = new BoidWorldRender(game);
             windowProcess.Run();
         });
         windowThread.SetApartmentState(ApartmentState.STA);
         windowThread.Start();
         return windowThread;
     }
-    private GameRender(BoidWorld game)
+    private BoidWorldRender(BoidWorld game)
     {
         this.game = game;
         this.myWindow = new MyWindow("BOIDS_C#");

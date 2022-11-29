@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-public static class Program
+public static class Game
 {
     public static void Main()
     {
@@ -12,7 +12,7 @@ public static class Program
         var watch = new Stopwatch();
 
         var game = new BoidWorld();
-        var windowThread = GameRender.Start(game);
+        var windowThread = BoidWorldRender.Start(game);
         var timeStep = 20L;
         while (windowThread.IsAlive)
         {
