@@ -11,13 +11,13 @@ void Wait(long milliseconds)
 int main(void)
 {
     BoidWorld game = BoidWorld_Init();
-    Draw_Init(&game);
+    BoidWorldRender_Init(&game);
     long timeStep = 20;
     while (!Draw_ShouldExit())
     {
         long time1 = clock();
         BoidWorld_Update(&game,timeStep);
-        Draw_Update(&game);
+        BoidWorldRender_Update(&game);
         long time2 = clock();
         long diff = time2 - time1;
         long waitTime = timeStep - diff;
