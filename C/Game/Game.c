@@ -10,19 +10,19 @@ void Wait(long milliseconds)
 }
 int main(void)
 {
-    BoidWorld game = Game_Init();
+    BoidWorld game = BoidWorld_Init();
     Draw_Init(&game);
     long timeStep = 20;
     while (!Draw_ShouldExit())
     {
         long time1 = clock();
-        Game_Update(&game,timeStep);
+        BoidWorld_Update(&game,timeStep);
         Draw_Update(&game);
         long time2 = clock();
         long diff = time2 - time1;
         long waitTime = timeStep - diff;
         Wait(waitTime);
     }
-    Game_End(&game);
+    BoidWorld_End(&game);
 	return 0;
 }

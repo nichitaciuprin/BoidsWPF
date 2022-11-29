@@ -4,10 +4,10 @@
 
 int main(void)
 {
-    BoidWorld game = Game_Init();
+    BoidWorld game = BoidWorld_Init();
 
     long time1 = clock();
-    for (int i = 0; i < 3000; i++) Game_Update(&game,20);
+    for (int i = 0; i < 3000; i++) BoidWorld_Update(&game,20);
     long time2 = clock();
 
     printf("Boids_C");
@@ -17,7 +17,7 @@ int main(void)
     printf("%li",time2-time1);
     printf(" \n");
 
-    Game_End(&game);
+    BoidWorld_End(&game);
 
 	return 0;
 }

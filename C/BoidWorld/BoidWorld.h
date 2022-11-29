@@ -12,7 +12,7 @@ typedef struct BoidWorld
     int boidsLength;
 } BoidWorld;
 
-BoidWorld Game_Init()
+BoidWorld BoidWorld_Init()
 {
     Subgen subgen = Subgen_Init(0);
 
@@ -24,10 +24,10 @@ BoidWorld Game_Init()
 		boidWorld.boids[i] = CreateBoidRand(&boidWorld.aabb,&subgen);
     return boidWorld;
 }
-void Game_End(BoidWorld* boidWorld)
+void BoidWorld_End(BoidWorld* boidWorld)
 {
 }
-void Game_Update(BoidWorld* boidWorld, long realDeltaTimeInMilliseconds)
+void BoidWorld_Update(BoidWorld* boidWorld, long realDeltaTimeInMilliseconds)
 {
     float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
     Boid_Update(boidWorld->boids,boidWorld->boidsLength,&boidWorld->aabb,deltaTimeInSeconds);
