@@ -10,10 +10,10 @@ public static class Test
         curentThread.Name = "MAIN";
         curentThread.Priority = ThreadPriority.Highest;
 
-        var game = new Game();
+        var game = new BoidWorld();
 
         var watch = Stopwatch.StartNew();
-        for (int i = 0; i < 3000; i++) Game.Update(game, 20);
+        for (int i = 0; i < 3000; i++) BoidWorld.Update(game, 20);
         watch.Stop();
 
         System.Console.Write("Boids_C#");

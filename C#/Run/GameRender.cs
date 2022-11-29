@@ -4,14 +4,14 @@ using System.Windows.Input;
 
 public class GameRender : Application
 {
-    private Game game;
+    private BoidWorld game;
     private MyWindow myWindow;
     private MyVector2 boidPoint_1 = new MyVector2 ( 0.00f, 0.00f);
     private MyVector2 boidPoint_2 = new MyVector2 (-0.25f,-0.25f);
     private MyVector2 boidPoint_3 = new MyVector2 ( 0.00f, 0.50f);
     private MyVector2 boidPoint_4 = new MyVector2 ( 0.25f,-0.25f);
 
-    public static Thread Start(Game game)
+    public static Thread Start(BoidWorld game)
     {
         var windowThread = new Thread(_ =>
         {
@@ -23,7 +23,7 @@ public class GameRender : Application
         windowThread.Start();
         return windowThread;
     }
-    private GameRender(Game game)
+    private GameRender(BoidWorld game)
     {
         this.game = game;
         this.myWindow = new MyWindow("BOIDS_C#");

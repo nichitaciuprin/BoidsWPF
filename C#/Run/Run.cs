@@ -11,13 +11,13 @@ public static class Program
         curentThread.Priority = ThreadPriority.Highest;
         var watch = new Stopwatch();
 
-        var game = new Game();
+        var game = new BoidWorld();
         var windowThread = GameRender.Start(game);
         var timeStep = 20L;
         while (windowThread.IsAlive)
         {
             watch.Restart();
-            Game.Update(game, timeStep);
+            BoidWorld.Update(game, timeStep);
             watch.Stop();
             var diff = watch.ElapsedMilliseconds;
             var waitTime = timeStep - diff;
