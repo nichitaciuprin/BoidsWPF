@@ -19,17 +19,17 @@ void Draw_DrawBoid(Boid* boid, Color color)
     MyVector2 v3 = Draw_boidPoint_3;
     MyVector2 v4 = Draw_boidPoint_4;
 
-    float angle = Vector2_Angle(boid->vel);
+    float angle = MyVector2_Angle(boid->vel);
 
-    v1 = Vector2_Rotate(v1,angle);
-    v2 = Vector2_Rotate(v2,angle);
-    v3 = Vector2_Rotate(v3,angle);
-    v4 = Vector2_Rotate(v4,angle);
+    v1 = MyVector2_Rotate(v1,angle);
+    v2 = MyVector2_Rotate(v2,angle);
+    v3 = MyVector2_Rotate(v3,angle);
+    v4 = MyVector2_Rotate(v4,angle);
 
-    v1 = Vector2_Add(boid->pos,v1);
-    v2 = Vector2_Add(boid->pos,v2);
-    v3 = Vector2_Add(boid->pos,v3);
-    v4 = Vector2_Add(boid->pos,v4);
+    v1 = MyVector2_Add(boid->pos,v1);
+    v2 = MyVector2_Add(boid->pos,v2);
+    v3 = MyVector2_Add(boid->pos,v3);
+    v4 = MyVector2_Add(boid->pos,v4);
 
     MyWindow_DrawTriangle(v1, v2, v3, color);
     MyWindow_DrawTriangle(v1, v4, v3, color);
