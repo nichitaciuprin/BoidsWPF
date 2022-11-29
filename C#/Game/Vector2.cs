@@ -66,8 +66,7 @@ namespace MyVector2
         public string ToHex() => Helper.ToHex(x) + Helper.ToHex(y);
         public float Angle()
         {
-            if (Vector2.IsZero(this)) return 0;
-            return MathF.Atan2(this.x,this.y) * 180f / MathF.PI;
+            return Vector2.IsZero(this) ? 0 : MathF.Atan2(this.y,this.x) - MathF.PI/2;
         }
         public Vector2 Rotate(float angle)
         {
