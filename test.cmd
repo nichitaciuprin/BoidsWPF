@@ -1,9 +1,9 @@
 @echo off
 
 cd C
-call TestBoidWorld
+call BoidWorldTest
 cd ..
 
 cd C#
-call TestBoidWorld
+call BoidWorldTest
 cd ..
