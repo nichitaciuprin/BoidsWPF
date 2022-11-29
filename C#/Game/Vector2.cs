@@ -64,5 +64,19 @@ namespace MyVector2
         }
         public float Length() => System.MathF.Sqrt(x*x + y*y);
         public string ToHex() => Helper.ToHex(x) + Helper.ToHex(y);
+        public float Angle()
+        {
+            if (Vector2.IsZero(this)) return 0;
+            return MathF.Atan2(this.x,this.y) * 180f / MathF.PI;
+        }
+        public Vector2 Rotate(float angle)
+        {
+            var result = Zero;
+            float cosres = System.MathF.Cos(angle);
+            float sinres = System.MathF.Sin(angle);
+            result.x = this.x*cosres - this.y*sinres;
+            result.y = this.x*sinres + this.y*cosres;
+            return result;
+        }
     }
 }

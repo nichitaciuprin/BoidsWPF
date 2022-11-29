@@ -1,15 +1,18 @@
 ﻿using MyVector2;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Windows.Controls;
 
 public class MyWindow
 {
-    public float scale = 12f;
     public Window window;
     private Canvas canvas;
+    private Queue<Polygon> triangles;
+    private Queue<Line> lines;
+    private int width = 500;
+    private int height = 500;
+    private int scale = 10;
 
     public MyWindow(string title)
     {
@@ -20,9 +23,8 @@ public class MyWindow
         window.Title = title;
         window.Left = 0;
         window.Top = 0;
-        var size = new Vector2(600,600);
-        window.Width = size.x;
-        window.Height = size.y;
+        window.Width = width;
+        window.Height = height;
         window.Background = Brushes.Magenta;
 
         canvas = new Canvas();
@@ -32,7 +34,29 @@ public class MyWindow
         window.Content = canvas;
 
         window.Show();
-        window.KeyDown += OnKeyDown;
+
+        var poligonsArray = (new bool[1000])
+            .Select(x => new Polygon())
+            .Select(x =>
+            {
+                x.Points.Add(new Point());
+                x.Points.Add(new Point());
+                x.Points.Add(new Point());
+                canvas.Children.Add(x);
+                return x;
+            })
+            .ToArray();
+        triangles = new Queue<Polygon>(poligonsArray);
+
+        var linesArray = (new bool[10])
+            .Select(x =>
+            {
+                var line = new Line();
+                canvas.Children.Add(line);
+                return line;
+            })
+            .ToArray();
+        lines = new Queue<Line>(linesArray);
     }
     public void BeginDraw()
     {
@@ -41,45 +65,34 @@ public class MyWindow
     public void EndDraw()
     {
     }
-    public MyPolygon Create_MyPolygon(Vector2[] points)
+    public void DrawRectangleLines(int posX, int posY, int width, int height)
     {
-        points = points.Select(x => { x.y = -x.y; return x; } ).ToArray();
-        points = points.Select(x => Vector2.Mul(x,scale)).ToArray();
-        var polygon = new Polygon();
-        var myTransform = new MyTransform();
-        polygon.Visibility = Visibility.Visible;
-        canvas.Children.Add(polygon);
-        for (int i = 0; i < points.Length; i++)
-            polygon.Points.Add(new Point(points[i].x,points[i].y));
-        return new MyPolygon(points,myTransform,polygon);
+        var p0 = new Vector2(posX,posY);
+        var p1 = new Vector2(posX,posY+height);
+        var p2 = new Vector2(posX+width,posY+height);
+        var p3 = new Vector2(posX+width,posY);
+        DrawLine(p0,p1);
+        DrawLine(p1,p2);
+        DrawLine(p2,p3);
+        DrawLine(p3,p0);
     }
-    public Line Create_Line()
+    public void DrawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Brush brush)
     {
-        var line = new Line();
-        canvas.Children.Add(line);
-        return line;
+        v1 = ToWindowSpace(v1);
+        v2 = ToWindowSpace(v2);
+        v3 = ToWindowSpace(v3);
+        var triangle = GetTriangle();
+        triangle.Points[0] = new Point(v1.x,v1.y);
+        triangle.Points[1] = new Point(v2.x,v2.y);
+        triangle.Points[2] = new Point(v3.x,v3.y);
+        triangle.Visibility = Visibility.Visible;
+        triangle.Fill = brush;
     }
-    public void Draw_MyPolygon(MyPolygon myPolygon, Vector2 pos, Vector2 angle, Brush color)
+    private void DrawLine(Vector2 start, Vector2 end)
     {
-        // var polygonPoints = myPolygon.polygon.Points;
-        // for (int i = 0; i < polygonPoints.Count; i++)
-        // {
-        //     var point = myPolygon.points[i];
-        //     point.x *= scale;
-        //     point.y *= scale;
-        //     var point2 = polygonPoints[i];
-        //     point2.X = point.x;
-        //     point2.Y = point.y;
-        //     polygonPoints[i] = point2;
-        // }
-        myPolygon.polygon.Fill = color;
-        myPolygon.myTransform.Set(myPolygon.polygon,ToWindowPosition(pos),GetAngle(angle));
-        myPolygon.polygon.Visibility = Visibility.Visible;
-    }
-    public void Draw_DrawLine(Line line, Vector2 start, Vector2 end)
-    {
-        start = ToWindowPosition(start);
-        end = ToWindowPosition(end);
+        var line = GetLine();
+        start = ToWindowSpace(start);
+        end = ToWindowSpace(end);
         line.X1 = start.x;
         line.Y1 = start.y;
         line.X2 = end.x;
@@ -88,31 +101,29 @@ public class MyWindow
         line.StrokeThickness = 1;
         line.Visibility = Visibility.Visible;
     }
-    private void OnKeyDown(object sender, KeyEventArgs e)
+    private Vector2 ToWindowSpace(Vector2 v)
     {
-        switch (e.Key)
-        {
-            case Key.Escape:
-                // Shutdown();
-                break;
-            default:
-                break;
-        }
+        v = Vector2.Mul(v,scale);
+        v.y = height - v.y;
+        return new Vector2(v.x,v.y);
     }
     private void Clear()
     {
-        var coll = canvas.Children;
-        for (int i = 0; i < coll.Count; i++)
-        {
-            var item = coll[i];
-            item.Visibility = Visibility.Hidden;
-        }
+        var uiItems = canvas.Children;
+        for (int i = 0; i < uiItems.Count; i++)
+            uiItems[i].Visibility = Visibility.Hidden;
     }
-    private Vector2 ToWindowPosition(Vector2 worldPos) => new Vector2(worldPos.x*scale, (float)canvas.Height - worldPos.y*scale);
-    private float GetAngle(Vector2 vel)
+    private Polygon GetTriangle()
     {
-        if (Vector2.IsZero(vel)) return 0;
-        return MathF.Atan2(vel.x,vel.y) * 180f / MathF.PI;
+        var result = triangles.Dequeue();
+        triangles.Enqueue(result);
+        return result;
+    }
+    private Line GetLine()
+    {
+        var result = lines.Dequeue();
+        lines.Enqueue(result);
+        return result;
     }
     private void Test_CreateWindowBorder()
     {
@@ -159,16 +170,6 @@ public class MyWindow
         Canvas.SetRight(rightBar,0);
         }
     }
-    private void Test_Elipse()
-    {
-        var shape = new Ellipse();
-        shape.Height = 50;
-        shape.Width = 50;
-        shape.Fill = Brushes.Red;
-        canvas.Children.Add(shape);
-        var newTrans = new MyTransform();
-        newTrans.Set(shape,new Vector2((float)-shape.Width/2,(float)-shape.Height/2),0);
-    }
     private void Test_Cross()
     {
         {var line = new Line();
@@ -205,40 +206,6 @@ public class MyWindow
             polygon.Points.Add(new Point(x+scale2,y+scale2));
             polygon.Points.Add(new Point(x+scale2,y+0));
             canvas.Children.Add(polygon);
-        }
-    }
-    public class MyPolygon
-    {
-        internal MyTransform myTransform;
-        internal Polygon polygon;
-        internal Vector2[] points;
-        internal MyPolygon(Vector2[] points, MyTransform myTransform, Polygon polygon)
-        {
-            this.points = points;
-            this.myTransform = myTransform;
-            this.polygon = polygon;
-        }
-    }
-    internal class MyTransform
-    {
-        internal TransformGroup tg;
-        internal TranslateTransform tt;
-        internal RotateTransform rt;
-
-        internal MyTransform()
-        {
-            tg = new TransformGroup();
-            tt = new TranslateTransform();
-            rt = new RotateTransform();
-            tg.Children.Add(rt);
-            tg.Children.Add(tt);
-        }
-        internal void Set(Shape shape, Vector2 pos, float rot)
-        {
-            tt.X = pos.x;
-            tt.Y = pos.y;
-            rt.Angle = rot;
-            shape.RenderTransform = tg;
         }
     }
 }

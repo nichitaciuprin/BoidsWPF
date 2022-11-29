@@ -2,15 +2,11 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 public class GameRender : Application
 {
     private Game game;
     private MyWindow myWindow;
-    private MyWindow.MyPolygon[] myPoligons;
-    private Line[] linePool;
-
     private Vector2 boidPoint_1 = new Vector2 ( 0.00f, 0.00f);
     private Vector2 boidPoint_2 = new Vector2 (-0.25f,-0.25f);
     private Vector2 boidPoint_3 = new Vector2 ( 0.00f, 0.50f);
@@ -28,7 +24,7 @@ public class GameRender : Application
         windowThread.Start();
         return windowThread;
     }
-    public GameRender(Game game)
+    private GameRender(Game game)
     {
         this.game = game;
         this.myWindow = new MyWindow("BOIDS_C#");
@@ -41,9 +37,6 @@ public class GameRender : Application
             boidPoint_4,
         };
 
-        myPoligons = game.boids.Select(x => myWindow.Create_MyPolygon(points)).ToArray();
-        linePool = (new bool[100]).Select(x => myWindow.Create_Line()).ToArray();
-
         Render();
 
         Startup += OnStartup;
@@ -51,7 +44,6 @@ public class GameRender : Application
         myWindow.window.KeyDown += OnKeyDown;
         CompositionTarget.Rendering += OnRendering;
     }
-
     private void OnStartup(object sender, StartupEventArgs e)
     {
     }
@@ -81,38 +73,48 @@ public class GameRender : Application
             Application.Current.Shutdown();
         }
     }
-
-    public void Render()
+    private void Render()
     {
         myWindow.BeginDraw();
-        Render(game.boids);
-        Render(game.aabb);
+
+        var boids = game.boids;
+        if (boids.Length > 0)
+        {
+            Render(ref boids[0],Brushes.Red);
+            for (int i = 1; i < boids.Length; i++)
+                Render(ref boids[i],Brushes.White);
+        }
+
+        Render(ref game.aabb);
+
         myWindow.EndDraw();
     }
-    private void Render(AABB aabb)
+    private void Render(ref AABB aabb)
     {
-        var p0 = new Vector2(aabb.MinX,aabb.MinY);
-        var p1 = new Vector2(aabb.MinX,aabb.MaxY);
-        var p2 = new Vector2(aabb.MaxX,aabb.MaxY);
-        var p3 = new Vector2(aabb.MaxX,aabb.MinY);
-        var line0 = linePool[0];
-        var line1 = linePool[1];
-        var line2 = linePool[2];
-        var line3 = linePool[3];
-        myWindow.Draw_DrawLine(line0,p0,p1);
-        myWindow.Draw_DrawLine(line1,p1,p2);
-        myWindow.Draw_DrawLine(line2,p2,p3);
-        myWindow.Draw_DrawLine(line3,p3,p0);
+        var pos = new Vector2(aabb.MinX,aabb.MinY);
+        var size = aabb.Size;
+        myWindow.DrawRectangleLines((int)pos.x,(int)pos.y,(int)size.x,(int)size.y);
     }
-    private void Render(Boid[] boids)
+    private void Render(ref Boid boid, Brush brush)
     {
-        if (boids.Length == 0) return;
-        RenderBoid(ref boids[0],0,Brushes.Red);
-        for (int i = 1; i < boids.Length; i++)
-            RenderBoid(ref boids[i],i,Brushes.White);
-    }
-    private void RenderBoid(ref Boid boid, int i, Brush color)
-    {
-        myWindow.Draw_MyPolygon(myPoligons[i],boid.pos,boid.vel,color);
+        Vector2 v1 = boidPoint_1;
+        Vector2 v2 = boidPoint_2;
+        Vector2 v3 = boidPoint_3;
+        Vector2 v4 = boidPoint_4;
+
+        float angle = boid.vel.Angle();
+
+        v1 = v1.Rotate(angle);
+        v2 = v2.Rotate(angle);
+        v3 = v3.Rotate(angle);
+        v4 = v4.Rotate(angle);
+
+        v1 = Vector2.Add(boid.pos,v1);
+        v2 = Vector2.Add(boid.pos,v2);
+        v3 = Vector2.Add(boid.pos,v3);
+        v4 = Vector2.Add(boid.pos,v4);
+
+        myWindow.DrawTriangle(v1, v2, v3, brush);
+        myWindow.DrawTriangle(v1, v4, v3, brush);
     }
 }
