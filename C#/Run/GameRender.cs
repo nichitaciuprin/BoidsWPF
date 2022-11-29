@@ -91,7 +91,7 @@ public class GameRender : Application
     }
     private void Render(ref AABB aabb)
     {
-        var pos = new Vector2(aabb.MinX,aabb.MinY);
+        var pos = new Vector2(aabb.MinX, aabb.MinY);
         var size = aabb.Size;
         myWindow.DrawRectangleLines((int)pos.x,(int)pos.y,(int)size.x,(int)size.y);
     }
@@ -102,17 +102,17 @@ public class GameRender : Application
         Vector2 v3 = boidPoint_3;
         Vector2 v4 = boidPoint_4;
 
-        float angle = boid.vel.Angle();
+        float angle = Vector2.Angle(boid.vel);
 
-        v1 = v1.Rotate(angle);
-        v2 = v2.Rotate(angle);
-        v3 = v3.Rotate(angle);
-        v4 = v4.Rotate(angle);
+        v1 = Vector2.Rotate(v1, angle);
+        v2 = Vector2.Rotate(v2, angle);
+        v3 = Vector2.Rotate(v3, angle);
+        v4 = Vector2.Rotate(v4, angle);
 
-        v1 = Vector2.Add(boid.pos,v1);
-        v2 = Vector2.Add(boid.pos,v2);
-        v3 = Vector2.Add(boid.pos,v3);
-        v4 = Vector2.Add(boid.pos,v4);
+        v1 = Vector2.Add(boid.pos, v1);
+        v2 = Vector2.Add(boid.pos, v2);
+        v3 = Vector2.Add(boid.pos, v3);
+        v4 = Vector2.Add(boid.pos, v4);
 
         myWindow.DrawTriangle(v1, v2, v3, brush);
         myWindow.DrawTriangle(v1, v4, v3, brush);

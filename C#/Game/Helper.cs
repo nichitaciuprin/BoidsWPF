@@ -2,7 +2,12 @@ using System.Diagnostics;
 
 public static class Helper
 {
-    public static string ToHex(float value) => System.BitConverter.SingleToUInt32Bits(value).ToString("X");
+    public static void PrintFloatHex(float f)
+    {
+        var msg = System.BitConverter.SingleToUInt32Bits(f).ToString("X");
+        Console.Write(msg);
+    }
+
     public static long ToTicks(long milliseconds) => milliseconds*Stopwatch.Frequency/1000;
     public static float ToSecondsFloat(long ticks) => ((float)ToMilliseconds(ticks))/1000;
     public static long ToMilliseconds(long ticks) => ticks*1000/Stopwatch.Frequency;
@@ -15,10 +20,5 @@ public static class Helper
         double subseconds = subsecondPortion / (double)TimeSpan.TicksPerSecond;
         var result = wholeSeconds + subseconds;
         return (float)result;
-    }
-    public static void MaybeWarn(string callingMethodName,long actualTime_ms,long maxTime_ms)
-    {
-        if (actualTime_ms > maxTime_ms)
-            Console.WriteLine($"{callingMethodName} IS SLOW. {actualTime_ms} > {maxTime_ms}ms");
     }
 }

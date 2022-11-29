@@ -18,10 +18,6 @@ bool Vector2_IsZero(MyVector2 v1)
 {
     return v1.x == 0 && v1.y == 0;
 }
-void Vector2_PrintVector2(MyVector2 v1)
-{
-    printf("<%f,%f>\n",v1.x,v1.y);
-}
 void Vector2_PrintVector2Hex(MyVector2 v1)
 {
     Helper_PrintFloatHex(v1.x);
@@ -63,7 +59,8 @@ MyVector2 Vector2_RandNormDir(Subgen* subgen)
 {
     float x = Subgen_FractionSigned(subgen);
     float y = Subgen_FractionSigned(subgen);
-    return Vector2_Normalized( (MyVector2) { x,y } );
+    MyVector2 result = {x,y};
+    return Vector2_Normalized(result);
 }
 MyVector2 Vector2_ClampLength(MyVector2 v1, float min, float max)
 {

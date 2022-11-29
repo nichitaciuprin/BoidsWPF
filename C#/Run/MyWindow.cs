@@ -67,10 +67,10 @@ public class MyWindow
     }
     public void DrawRectangleLines(int posX, int posY, int width, int height)
     {
-        var p0 = new Vector2(posX,posY);
-        var p1 = new Vector2(posX,posY+height);
-        var p2 = new Vector2(posX+width,posY+height);
-        var p3 = new Vector2(posX+width,posY);
+        var p0 = new Vector2(posX, posY);
+        var p1 = new Vector2(posX, posY + height);
+        var p2 = new Vector2(posX + width, posY + height);
+        var p3 = new Vector2(posX + width, posY);
         DrawLine(p0,p1);
         DrawLine(p1,p2);
         DrawLine(p2,p3);
@@ -103,9 +103,9 @@ public class MyWindow
     }
     private Vector2 ToWindowSpace(Vector2 v)
     {
-        v = Vector2.Mul(v,scale);
+        v = Vector2.Mul(v, scale);
         v.y = height - v.y;
-        return new Vector2(v.x,v.y);
+        return new Vector2(v.x, v.y);
     }
     private void Clear()
     {

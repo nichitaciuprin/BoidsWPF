@@ -10,71 +10,68 @@ namespace MyVector2
             this.y = y;
         }
 
-        public static Vector2 Zero = new Vector2(0,0);
-        public static Vector2 Add    (Vector2 v1, Vector2 v2)  => new Vector2( v1.x + v2.x  , v1.y + v2.y  );
-        public static Vector2 Sub    (Vector2 v1, Vector2 v2)  => new Vector2( v1.x - v2.x  , v1.y - v2.y  );
-        public static Vector2 Mul    (Vector2 v1, float value) => new Vector2( v1.x * value , v1.y * value );
-        public static Vector2 Div    (Vector2 v1, float value) => new Vector2( v1.x / value , v1.y / value );
-        public static Vector2 Abs    (Vector2 v)               => new Vector2( MathF.Abs(v.x) , MathF.Abs(v.y) );
-        public static bool    IsZero (Vector2 v)               => v.x == 0 && v.y == 0;
-        public Vector2 Negate => new Vector2(-x,-y);
-        public static Vector2 Sum(Vector2[] vs)
+        public static bool IsZero (Vector2 v) => v.x == 0 && v.y == 0;
+        public static void PrintVector2Hex(Vector2 v)
         {
-            var result = Vector2.Zero;
-            foreach (var item in vs)
-                result = Add(result,item);
-            return result;
+            Helper.PrintFloatHex(v.x);
+            Helper.PrintFloatHex(v.y);
         }
-        public static Vector2 Average(Vector2[] vs)
+        public static float Length(Vector2 v)
         {
-            var result = Vector2.Zero;
-            foreach (var item in vs)
-                result = Add(result,item);
-            return Div(result,vs.Length);
+            float distSquared = v.x*v.x + v.y*v.y;
+            float dist = MathF.Sqrt(distSquared);
+            return dist;
+        }
+        public static float Vector2_LengthSquared(Vector2 v)
+        {
+            float distSquared = v.x*v.x + v.y*v.y;
+            return distSquared;
+        }
+        public static float Angle(Vector2 v)
+        {
+            // v ( 0, 1) =  0.000000
+            // v ( 1, 0) = -1.570796
+            // v ( 0,-1) = -3.141593
+            // v (-1, 0) =  1.570796
+            return Vector2.IsZero(v) ? 0 : MathF.Atan2(v.y,v.x) - MathF.PI/2;
+        }
+        public static Vector2 Zero => new Vector2(0,0);
+        public static Vector2 Add (Vector2 v1, Vector2 v2)  => new Vector2( v1.x + v2.x  , v1.y + v2.y  );
+        public static Vector2 Sub (Vector2 v1, Vector2 v2)  => new Vector2( v1.x - v2.x  , v1.y - v2.y  );
+        public static Vector2 Mul (Vector2 v1, float value) => new Vector2( v1.x * value , v1.y * value );
+        public static Vector2 Div (Vector2 v1, float value) => new Vector2( v1.x / value , v1.y / value );
+        public static Vector2 Abs (Vector2 v)               => new Vector2( MathF.Abs(v.x) , MathF.Abs(v.y) );
+        public static Vector2 Negate(Vector2 v)             => new Vector2(-v.x,-v.y);
+        public static Vector2 Normalized(Vector2 v)
+        {
+            var factor = 1.0f / Vector2.Length(v);
+            return new Vector2(
+                v.x * factor,
+                v.y * factor);
         }
         public static Vector2 RandNormDir(Subgen subgen)
         {
             var x = subgen.FractionSigned();
             var y = subgen.FractionSigned();
             var result = new Vector2(x, y);
-            result.Normalize();
-            return result;
+            return Normalized(result);
         }
-        public Vector2 ClampLength(float min, float max)
+        public static Vector2 ClampLength(Vector2 v, float min, float max)
         {
-            var length = Length();
+            var length = Length(v);
             if (length > max)
-                return Mul(this,(max/length));
+                return Mul(v,(max/length));
             if (length < min)
-                return Mul(this,(min/length));
-            return this;
+                return Mul(v,(min/length));
+            return v;
         }
-        public void Normalize()
-        {
-            var factor = 1.0f / Length();
-            x *= factor;
-            y *= factor;
-        }
-        public Vector2 Normalized()
-        {
-            var factor = 1.0f / Length();
-            return new Vector2(
-                x * factor,
-                y * factor);
-        }
-        public float Length() => System.MathF.Sqrt(x*x + y*y);
-        public string ToHex() => Helper.ToHex(x) + Helper.ToHex(y);
-        public float Angle()
-        {
-            return Vector2.IsZero(this) ? 0 : MathF.Atan2(this.y,this.x) - MathF.PI/2;
-        }
-        public Vector2 Rotate(float angle)
+        public static Vector2 Rotate(Vector2 v, float angle)
         {
             var result = Zero;
-            float cosres = System.MathF.Cos(angle);
-            float sinres = System.MathF.Sin(angle);
-            result.x = this.x*cosres - this.y*sinres;
-            result.y = this.x*sinres + this.y*cosres;
+            float cosres = MathF.Cos(angle);
+            float sinres = MathF.Sin(angle);
+            result.x = v.x*cosres - v.y*sinres;
+            result.y = v.x*sinres + v.y*cosres;
             return result;
         }
     }
