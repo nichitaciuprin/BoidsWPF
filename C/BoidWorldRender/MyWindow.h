@@ -1,3 +1,6 @@
+#ifndef MYWINDOW_H
+#define MYWINDOW_H
+
 #include "..\Base\MyVector2.h"
 #include <raylib.h>
 #include <rlgl.h>
@@ -49,3 +52,5 @@ void MyWindow_Init()
 }
 void MyWindow_End() { CloseWindow(); }
 bool MyWindow_ShouldClose() { return WindowShouldClose(); }
+
+#endif

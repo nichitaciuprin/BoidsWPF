@@ -1,3 +1,6 @@
+#ifndef SUBGEN_H
+#define SUBGEN_H
+
 #define MAX 1000000000
 
 typedef struct Subgen
@@ -50,3 +53,5 @@ float Subgen_Range(Subgen* subgen, float min, float max)
 {
     return min + ((max - min) * Subgen_FractionUnsigned(subgen));
 }
+
+#endif

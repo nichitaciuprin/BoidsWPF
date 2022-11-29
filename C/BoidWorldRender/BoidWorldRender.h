@@ -1,3 +1,6 @@
+#ifndef BOIDWORLDRENDER_H
+#define BOIDWORLDRENDER_H
+
 #include "..\BoidWorld\BoidWorld.h"
 #include "MyWindow.h"
 
@@ -61,3 +64,5 @@ bool BoidWorldRender_ShouldExit()
 {
     return MyWindow_ShouldClose();
 }
+
+#endif
