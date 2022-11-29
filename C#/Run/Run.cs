@@ -2,7 +2,6 @@
 
 public static class Program
 {
-    [STAThread]
     public static void Main()
     {
         var curentProcess = Process.GetCurrentProcess();
