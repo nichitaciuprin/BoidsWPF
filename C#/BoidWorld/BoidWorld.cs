@@ -10,9 +10,9 @@ public class BoidWorld
         for (int i = 0; i < boids.Length; i++)
             boids[i] = new Boid(aabb,subgen);
     }
-    public static void Update(BoidWorld gameState, long deltaTime)
+    public void Update(long deltaTime)
     {
         var deltaTimeInSeconds = ((float)deltaTime)/1000f;
-        Boid.Update(gameState.boids, ref gameState.aabb, deltaTimeInSeconds);
+        Boid.Update(boids, ref aabb, deltaTimeInSeconds);
     }
 }

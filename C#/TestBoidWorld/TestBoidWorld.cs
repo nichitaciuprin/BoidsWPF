@@ -10,15 +10,15 @@ public static class TestBoidWorld
         curentThread.Name = "MAIN";
         curentThread.Priority = ThreadPriority.Highest;
 
-        var game = new BoidWorld();
+        var boidWorld = new BoidWorld();
 
         var watch = Stopwatch.StartNew();
-        for (int i = 0; i < 3000; i++) BoidWorld.Update(game, 20);
+        for (int i = 0; i < 3000; i++) boidWorld.Update(20);
         watch.Stop();
 
         System.Console.Write("Boids_C#");
         System.Console.Write(" ");
-        game.boids[0].Print();
+        boidWorld.boids[0].Print();
         System.Console.Write(" ");
         System.Console.Write(watch.ElapsedMilliseconds);
         System.Console.Write(" \n");
