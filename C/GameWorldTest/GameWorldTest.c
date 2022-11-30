@@ -11,7 +11,7 @@ int main(void)
 
     printf("Boids_C");
     printf("  ");
-    PrintBoid(&gameWorld.boids[0]);
+    Boid_PrintBoid(&gameWorld.boids[0]);
     printf(" ");
     printf("%li",time2-time1);
     printf(" \n");

@@ -1,9 +1,11 @@
 @echo off
 
+set cmdFileName=GameWorldTest
+
 cd C
-call BoidWorldTest
+call %cmdFileName%
 cd ..
 
 cd C#
-call BoidWorldTest
+call %cmdFileName%
 cd ..

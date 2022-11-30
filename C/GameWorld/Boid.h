@@ -26,7 +26,7 @@ const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
 
-void InitCatche(Boid* boid)
+void Boid_InitCatche(Boid* boid)
 {
     boid->vec_1 = MyVector2_Zero();
     boid->vec_2 = MyVector2_Zero();
@@ -34,7 +34,7 @@ void InitCatche(Boid* boid)
     boid->count_1 = 0;
     boid->count_2 = 0;
 }
-Boid CreateBoidRand(AABB* aabb, Subgen* subgen)
+Boid Boid_Create(AABB* aabb, Subgen* subgen)
 {
     float randSpeed = Subgen_Range(subgen,minSpeed,maxSpeed);
     MyVector2 randDirection = MyVector2_RandNormDir(subgen);
@@ -46,11 +46,11 @@ Boid CreateBoidRand(AABB* aabb, Subgen* subgen)
     boid.pos = pos;
     boid.vel = vel;
 
-    InitCatche(&boid);
+    Boid_InitCatche(&boid);
 
     return boid;
 }
-void UpdateVelocity_1(Boid* boid1, Boid* boid2)
+void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
 {
     MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
     float distSquared = diff.x*diff.x + diff.y*diff.y;
@@ -79,7 +79,7 @@ void UpdateVelocity_1(Boid* boid1, Boid* boid2)
     boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
     boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
 }
-void UpdateVelocity_2(Boid* boid)
+void Boid_UpdateVelocity_2(Boid* boid)
 {
     if (boid->count_1 != 0)
     {
@@ -102,9 +102,9 @@ void UpdateVelocity_2(Boid* boid)
 
     boid->vel = MyVector2_ClampLength(boid->vel,minSpeed,maxSpeed);
 
-    InitCatche(boid);
+    Boid_InitCatche(boid);
 }
-void UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
 {
     MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
@@ -117,15 +117,15 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     // ALL UNIQUE PAIRS
     for (int i = 0;   i < length; i++)
     for (int j = i+1; j < length; j++)
-        UpdateVelocity_1(&boids[i], &boids[j]);
+        Boid_UpdateVelocity_1(&boids[i], &boids[j]);
 
     for (int i = 0;   i < length; i++)
-        UpdateVelocity_2(&boids[i]);
+        Boid_UpdateVelocity_2(&boids[i]);
 
     for (int i = 0; i < length; i++)
-        UpdatePosition(&boids[i],aabb,deltaTime);
+        Boid_UpdatePosition(&boids[i],aabb,deltaTime);
 }
-void PrintBoid(Boid* boid)
+void Boid_PrintBoid(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
     MyVector2_PrintVector2Hex(boid->vel);
