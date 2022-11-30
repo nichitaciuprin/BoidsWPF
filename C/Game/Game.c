@@ -1,6 +1,6 @@
 #include <time.h>
-#include "../BoidWorld/BoidWorld.h"
-#include "../BoidWorldRender/BoidWorldRender.h"
+#include "../GameWorld/GameWorld.h"
+#include "../GameWorldWindow/GameWorldWindow.h"
 
 void Wait(long milliseconds)
 {
@@ -10,19 +10,19 @@ void Wait(long milliseconds)
 }
 int main(void)
 {
-    BoidWorld game = BoidWorld_Init();
-    BoidWorldRender_Init(&game);
+    GameWorld gameWorld = GameWorld_Init();
+    GameWorldWindow_Init(&gameWorld);
     long timeStep = 20;
-    while (!BoidWorldRender_ShouldExit())
+    while (!GameWorldWindow_ShouldExit())
     {
         long time1 = clock();
-        BoidWorld_Update(&game,timeStep);
-        BoidWorldRender_Update(&game);
+        GameWorld_Update(&gameWorld,timeStep);
+        GameWorldWindow_Update(&gameWorld);
         long time2 = clock();
         long diff = time2 - time1;
         long waitTime = timeStep - diff;
         Wait(waitTime);
     }
-    BoidWorld_End(&game);
+    GameWorld_End(&gameWorld);
 	return 0;
 }
