@@ -10,8 +10,8 @@
 
 <ItemGroup>
     <!-- <ProjectReference Include="..\Base\Base.csproj" /> -->
-    <ProjectReference Include="..\BoidWorld\BoidWorld.csproj" />
-    <ProjectReference Include="..\BoidWorldRender\BoidWorldRender.csproj" />
+    <ProjectReference Include="..\GameWorld\GameWorld.csproj" />
+    <ProjectReference Include="..\GameWorldWindow\GameWorldWindow.csproj" />
 </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
-public class BoidWorld
+public class GameWorld
 {
     public AABB aabb;
     public Boid[] boids = new Boid[300];
 
-    public BoidWorld()
+    public GameWorld()
     {
         var subgen = new Subgen(0);
         aabb = new AABB(MyVector2.Zero, new MyVector2(50,50));

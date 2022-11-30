@@ -2,28 +2,28 @@
 using System.Windows.Media;
 using System.Windows.Input;
 
-public class BoidWorldRender : Application
+public class GameWorldWindow : Application
 {
-    private BoidWorld game;
+    private GameWorld game;
     private MyWindow myWindow;
     private MyVector2 boidPoint_1 = new MyVector2 ( 0.00f, 0.00f);
     private MyVector2 boidPoint_2 = new MyVector2 (-0.25f,-0.25f);
     private MyVector2 boidPoint_3 = new MyVector2 ( 0.00f, 0.50f);
     private MyVector2 boidPoint_4 = new MyVector2 ( 0.25f,-0.25f);
 
-    public static Thread Start(BoidWorld game)
+    public static Thread Start(GameWorld game)
     {
         var windowThread = new Thread(_ =>
         {
-            Thread.CurrentThread.Name = "GameRender";
-            var windowProcess = new BoidWorldRender(game);
+            Thread.CurrentThread.Name = "GameWorldWindow";
+            var windowProcess = new GameWorldWindow(game);
             windowProcess.Run();
         });
         windowThread.SetApartmentState(ApartmentState.STA);
         windowThread.Start();
         return windowThread;
     }
-    private BoidWorldRender(BoidWorld game)
+    private GameWorldWindow(GameWorld game)
     {
         this.game = game;
         this.myWindow = new MyWindow("BOIDS_C#");
@@ -36,7 +36,7 @@ public class BoidWorldRender : Application
             boidPoint_4,
         };
 
-        Render();
+        Draw();
 
         Startup += OnStartup;
         Exit += OnExit;
@@ -64,7 +64,7 @@ public class BoidWorldRender : Application
     {
         try
         {
-            Render();
+            Draw();
         }
         catch (System.Exception exc)
         {
@@ -72,29 +72,29 @@ public class BoidWorldRender : Application
             Application.Current.Shutdown();
         }
     }
-    private void Render()
+    private void Draw()
     {
         myWindow.BeginDraw();
 
         var boids = game.boids;
         if (boids.Length > 0)
         {
-            Render(ref boids[0],Brushes.Red);
+            Draw(ref boids[0],Brushes.Red);
             for (int i = 1; i < boids.Length; i++)
-                Render(ref boids[i],Brushes.White);
+                Draw(ref boids[i],Brushes.White);
         }
 
-        Render(ref game.aabb);
+        Draw(ref game.aabb);
 
         myWindow.EndDraw();
     }
-    private void Render(ref AABB aabb)
+    private void Draw(ref AABB aabb)
     {
         var pos = new MyVector2(aabb.MinX, aabb.MinY);
         var size = aabb.Size;
         myWindow.DrawRectangleLines((int)pos.x,(int)pos.y,(int)size.x,(int)size.y);
     }
-    private void Render(ref Boid boid, Brush brush)
+    private void Draw(ref Boid boid, Brush brush)
     {
         MyVector2 v1 = boidPoint_1;
         MyVector2 v2 = boidPoint_2;
