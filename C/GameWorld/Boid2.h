@@ -4,8 +4,8 @@
 #include "../Base/AABB.h"
 
 #define BOID2_BOIDSCOUNT 300
-#define BOID2_PAIRSCOUNT_LEFT GAMEWORLD_BOIDSCOUNT * GAMEWORLD_BOIDSCOUNT - GAMEWORLD_BOIDSCOUNT
-#define BOID2_PAIRSCOUNT GAMEWORLD_PAIRSCOUNT_LEFT / 2
+#define BOID2_PAIRSCOUNT_LEFT BOID2_BOIDSCOUNT * BOID2_BOIDSCOUNT - BOID2_BOIDSCOUNT
+#define BOID2_PAIRSCOUNT BOID2_PAIRSCOUNT_LEFT / 2
 
 const float minSpeed = 9;
 const float maxSpeed = 15;
@@ -38,7 +38,7 @@ typedef struct BoidPair
 
 typedef struct BoidsState
 {
-    Boid boids[GAMEWORLD_BOIDSCOUNT];
+    Boid boids[BOID2_BOIDSCOUNT];
     BoidPair boidsPair[BOID2_PAIRSCOUNT];
 } BoidsState;
 
@@ -71,54 +71,23 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
 
     return boid;
 }
-
-BoidsState* Boid_Create(AABB* aabb)
+BoidsState* BoidsState_Create(AABB* aabb)
 {
+    BoidsState* boidsState = (BoidsState*)malloc(sizeof(BoidsState));
+
     Subgen subgen = Subgen_Init(0);
-
-    BoidsState* boidsState = (BoidState*)malloc(sizeof(BoidState));
     for (int i = 0; i < BOID2_BOIDSCOUNT; i++)
-		boidsState->boids = Boid_Create(&gameWorld->aabb,&subgen);//boids[i] = Boid_Create(&gameWorld->aabb,&subgen);
+		boidsState->boids[i] = Boid_Create(aabb,&subgen);
 
-    float randSpeed = Subgen_Range(subgen,minSpeed,maxSpeed);
-    MyVector2 randDirection = MyVector2_RandNormDir(subgen);
-
-    MyVector2 pos = AABB_RandPointInside(subgen,aabb);
-    MyVector2 vel = MyVector2_Mul(randDirection,randSpeed);
-
-    Boid boid;
-    boid.pos = pos;
-    boid.vel = vel;
-
-    Boid_InitCatche(&boid);
-
-    return boid;
+    return boidsState;
 }
-
-void Boid_Update_1(Boid* boid)
+void Boid_Add(Boid* left, Boid* right)
 {
-    if (boid->count_1 != 0)
-    {
-        boid->vec_1 = MyVector2_Div(boid->vec_1,boid->count_1);
-        boid->vec_1 = MyVector2_Sub(boid->vec_1,boid->pos);
-    }
-    if (boid->count_2 != 0)
-    {
-        boid->vec_2 = MyVector2_Div(boid->vec_2,boid->count_2);
-        boid->vec_2 = MyVector2_Sub(boid->vec_2,boid->vel);
-    }
-
-    boid->vec_1 = MyVector2_Mul(boid->vec_1,power1);
-    boid->vec_2 = MyVector2_Mul(boid->vec_2,power2);
-    boid->vec_3 = MyVector2_Mul(boid->vec_3,power3);
-
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_1);
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_2);
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_3);
-
-    boid->vel = MyVector2_ClampLength(boid->vel,minSpeed,maxSpeed);
-
-    Boid_InitCatche(boid);
+    left->count_1 += right->count_1;
+    left->count_2 += right->count_2;
+    left->vec_1 = MyVector2_Add(left->vec_1,right->vec_1);
+    left->vec_2 = MyVector2_Add(left->vec_2,right->vec_2);
+    left->vec_3 = MyVector2_Add(left->vec_3,right->vec_3);
 }
 void Boid_Update_0(BoidPair* boidPair)
 {
@@ -152,18 +121,30 @@ void Boid_Update_0(BoidPair* boidPair)
     boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
     boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
 }
-void Boid_Update2(BoidPair* boidPair, int length)
+void Boid_Update_1(Boid* boid)
 {
-    for (int i = 0; i < length; i++)
-        Boid_Update_0(boidPair);
-}
-void Boid_Add(Boid* left, Boid* right)
-{
-    left->count_1 += right->count_1;
-    left->count_2 += right->count_2;
-    left->vec_1 = MyVector2_Add(left->vec_1,right->vec_1);
-    left->vec_2 = MyVector2_Add(left->vec_2,right->vec_2);
-    left->vec_3 = MyVector2_Add(left->vec_3,right->vec_3);
+    if (boid->count_1 != 0)
+    {
+        boid->vec_1 = MyVector2_Div(boid->vec_1,boid->count_1);
+        boid->vec_1 = MyVector2_Sub(boid->vec_1,boid->pos);
+    }
+    if (boid->count_2 != 0)
+    {
+        boid->vec_2 = MyVector2_Div(boid->vec_2,boid->count_2);
+        boid->vec_2 = MyVector2_Sub(boid->vec_2,boid->vel);
+    }
+
+    boid->vec_1 = MyVector2_Mul(boid->vec_1,power1);
+    boid->vec_2 = MyVector2_Mul(boid->vec_2,power2);
+    boid->vec_3 = MyVector2_Mul(boid->vec_3,power3);
+
+    boid->vel = MyVector2_Add(boid->vel,boid->vec_1);
+    boid->vel = MyVector2_Add(boid->vel,boid->vec_2);
+    boid->vel = MyVector2_Add(boid->vel,boid->vec_3);
+
+    boid->vel = MyVector2_ClampLength(boid->vel,minSpeed,maxSpeed);
+
+    Boid_InitCatche(boid);
 }
 void Boid_Update_2(Boid* boid, AABB* aabb, float deltaTime)
 {
@@ -171,36 +152,38 @@ void Boid_Update_2(Boid* boid, AABB* aabb, float deltaTime)
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
-void Boid_Update(Boid* boids, BoidPair* boidPairs, int boidsCount, AABB* aabb, float deltaTime)
+void Boid_Update(BoidsState* boidsState, AABB* aabb, float deltaTime)
 {
     int boidPairsIndex;
+
+    Boid* boids = boidsState->boids;
+    BoidPair* boidPairs = boidsState->boidsPair;
+
     boidPairsIndex = 0;
-    for (int i = 0;   i < GAMEWORLD_BOIDSCOUNT; i++)
-    for (int j = i+1; j < GAMEWORLD_BOIDSCOUNT; j++)
+    for (int i = 0;   i < BOID2_BOIDSCOUNT; i++)
+    for (int j = i+1; j < BOID2_BOIDSCOUNT; j++, boidPairsIndex++)
     {
         boidPairs[0] = (BoidPair) { boids[i],boids[j] };
-        boidPairsIndex++;
     }
 
     // NEED PARALLEL CALC
-    for (int i = 0; i < pairsCount; i++)
+    for (int i = 0; i < BOID2_PAIRSCOUNT; i++)
         Boid_Update_0(&boidPairs[i]);
 
     boidPairsIndex = 0;
-    for (int i = 0;   i < boidsLength; i++)
-    for (int j = i+1; j < boidsLength; j++, boidPairsIndex++)
+    for (int i = 0;   i < BOID2_BOIDSCOUNT; i++)
+    for (int j = i+1; j < BOID2_BOIDSCOUNT; j++, boidPairsIndex++)
     {
         Boid_Add(&boids[i],&boidPairs[boidPairsIndex].boid1);
         Boid_Add(&boids[j],&boidPairs[boidPairsIndex].boid2);
     }
 
     // NEED PARALLEL CALC
-    for (int i = 0; i < boidsLength; i++)
+    for (int i = 0; i < BOID2_BOIDSCOUNT; i++)
+    {
         Boid_Update_1(&boids[i]);
-
-    // NEED PARALLEL CALC
-    for (int i = 0; i < boidsLength; i++)
         Boid_Update_2(&boids[i], aabb, deltaTime);
+    }
 }
 
 #endif

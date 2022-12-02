@@ -6,16 +6,17 @@
 typedef struct GameWorld
 {
     AABB aabb;
-    // BoidsState* boidsState;
+    BoidsState* boidsState;
 } GameWorld;
 
 GameWorld* GameWorld_Init()
 {
-    GameWorld* gameWorld = (GameWorld*)malloc(sizeof(GameWorld));
+    GameWorld* gameWorld = (GameWorld*) malloc(sizeof(GameWorld));
 
-    // gameWorld->aabb.p0 = (MyVector2){ 0, 0 };
-    // gameWorld->aabb.p1 = (MyVector2){ 50, 50 };
-    // gameWorld->boidsState = Boid_Create(&gameWorld->aabb);
+    gameWorld->aabb.p0 = (MyVector2){ 0, 0 };
+    gameWorld->aabb.p1 = (MyVector2){ 50, 50 };
+
+    gameWorld->boidsState = BoidsState_Create(&gameWorld->aabb);
 
     return gameWorld;
 }
