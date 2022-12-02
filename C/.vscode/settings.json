@@ -13,7 +13,8 @@
         "myvector2.h": "c",
         "boidworld.h": "c",
         "boidworldrender.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "gameworld.h": "c"
     },
     "editor.minimap.enabled": false
 }

@@ -26,8 +26,8 @@ void GameWorld_End(GameWorld* gameWorld)
 }
 void GameWorld_Update(GameWorld* gameWorld, long realDeltaTimeInMilliseconds)
 {
-    // float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
-    // Boid_Update(gameWorld->boids,GAMEWORLD_BOIDSCOUNT,&gameWorld->aabb,deltaTimeInSeconds);
+    float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
+    Boid_Update(gameWorld->boidsState,&gameWorld->aabb,deltaTimeInSeconds);
 }
 
 #endif
