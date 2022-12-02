@@ -26,6 +26,11 @@ const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
 
+void Boid_PrintBoid(Boid* boid)
+{
+    MyVector2_PrintVector2Hex(boid->pos);
+    MyVector2_PrintVector2Hex(boid->vel);
+}
 void Boid_InitCatche(Boid* boid)
 {
     boid->vec_1 = MyVector2_Zero();
@@ -124,11 +129,6 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 
     for (int i = 0; i < length; i++)
         Boid_UpdatePosition(&boids[i],aabb,deltaTime);
-}
-void Boid_PrintBoid(Boid* boid)
-{
-    MyVector2_PrintVector2Hex(boid->pos);
-    MyVector2_PrintVector2Hex(boid->vel);
 }
 
 #endif
