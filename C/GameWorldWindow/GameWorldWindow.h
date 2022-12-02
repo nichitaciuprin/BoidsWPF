@@ -44,7 +44,7 @@ void GameWorldWindow_Update(GameWorld* game)
     if (GAMEWORLD_BOIDSCOUNT > 0)
     {
         GameWorldWindow_DrawBoid(&game->boids[0], RED);
-        for (int i = 1; i < game->boidsLength; i++)
+        for (int i = 1; i < GAMEWORLD_BOIDSCOUNT; i++)
             GameWorldWindow_DrawBoid(&game->boids[i], WHITE);
     }
     GameWorldWindow_DrawAABB(&game->aabb);

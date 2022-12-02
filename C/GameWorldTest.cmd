@@ -16,3 +16,5 @@ gcc %filePath%.c ^
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 %filePath%.exe
+
+if %errorlevel% neq 0 echo ERROR!!!
