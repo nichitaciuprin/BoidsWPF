@@ -14,7 +14,8 @@
         "boidworld.h": "c",
         "boidworldrender.h": "c",
         "cstdlib": "c",
-        "gameworld.h": "c"
+        "gameworld.h": "c",
+        "pthread.h": "c"
     },
     "editor.minimap.enabled": false
 }
