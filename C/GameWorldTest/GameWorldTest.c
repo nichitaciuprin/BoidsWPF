@@ -1,5 +1,5 @@
 #include <time.h>
-#include "..\GameWorld\GameWorld2.h"
+#include "..\GameWorld\GameWorld.h"
 
 int main(void)
 {
@@ -11,7 +11,7 @@ int main(void)
 
     printf("Boids_C");
     printf("  ");
-    Boid_PrintBoid(&gameWorld->boidsState->boids[0]);
+    Boid_PrintBoid(&gameWorld->boids[0]);
     printf(" ");
     printf("%li",time2-time1);
     printf(" \n");
