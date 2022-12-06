@@ -1,5 +1,5 @@
-#ifndef BOID_H
-#define BOID_H
+#ifndef BOID2_H
+#define BOID2_H
 
 #include "../Base/AABB.h"
 
@@ -124,6 +124,14 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     for (int j = i+1; j < length; j++)
         Boid_UpdateVelocity_1(&boids[i], &boids[j]);
 
+    // // WITH EXTRA PAIRS
+    // for (int i = 0; i < length; i++)
+    // for (int j = 0; j < length; j++)
+    // {
+    //     if (i == j) continue;
+    //     Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+    // }
+
     for (int i = 0;   i < length; i++)
         Boid_UpdateVelocity_2(&boids[i]);
 
@@ -132,3 +140,51 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 }
 
 #endif
+
+
+// float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
+// Boid* boids = gameWorld->boids;
+// AABB* aabb = &gameWorld->aabb;
+// pthread_t thread_1;
+// pthread_t thread_2;
+// ParArg parArg1;
+// ParArg parArg2;
+// parArg1.boids = boids;
+// parArg2.boids = boids;
+// parArg1.startIndex = 0;
+// parArg2.startIndex = 149;
+// parArg1.count = 150;
+// parArg2.count = 150;
+// pthread_create(&thread_1, NULL, ParralelTask, &parArg1 );
+// pthread_create(&thread_2, NULL, ParralelTask, &parArg2 );
+// pthread_join(thread_1, NULL);
+// pthread_join(thread_2, NULL);
+
+// typedef struct ParArg
+// {
+//     Boid* boids;
+//     int startIndex;
+//     int count;
+// } ParArg;
+
+
+// void * ParralelTask(void * arg)
+// {
+//     ParArg* parArg = (ParArg*)arg;
+//     Boid* boids = parArg->boids;
+//     for (int i = parArg->startIndex; i < parArg->count; i++)
+//     for (int j = 0; j < GAMEWORLD_BOIDSCOUNT; j++)
+//     {
+//         if (i == j) continue;
+//         Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+//     }
+//     return 0;
+// }
+
+// // WITH EXTRA PAIRS
+// for (int i = 0; i < length; i++)
+// for (int j = 0; j < length; j++)
+// {
+//     if (i == j) continue;
+//     Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+// }
