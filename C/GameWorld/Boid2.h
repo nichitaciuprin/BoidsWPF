@@ -2,17 +2,8 @@
 #define BOID2_H
 
 #include "../Base/AABB.h"
-
-typedef struct Boid
-{
-    MyVector2 pos;
-    MyVector2 vel;
-    MyVector2 vec_1;
-    MyVector2 vec_2;
-    MyVector2 vec_3;
-    int count_1;
-    int count_2;
-} Boid;
+#include <pthread.h>
+#include <stdio.h>
 
 const float minSpeed = 9;
 const float maxSpeed = 15;
@@ -26,6 +17,50 @@ const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
 
+typedef struct Boid
+{
+    MyVector2 pos;
+    MyVector2 vel;
+    MyVector2 vec_1;
+    MyVector2 vec_2;
+    MyVector2 vec_3;
+    int count_1;
+    int count_2;
+} Boid;
+
+typedef struct BoidTask
+{
+    pthread_t thread;
+    Boid* boids;
+    int boidsCount;
+    int startIndex;
+    int count;
+    volatile bool enabled;
+} BoidTask;
+
+void* Boid_Task(void* arg);
+void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
+void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime);
+void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2);
+void Boid_UpdateVelocity_2(Boid* boid);
+Boid Boid_Create(AABB* aabb, Subgen* subgen);
+void Boid_InitCatche(Boid* boid);
+void Boid_PrintBoid(Boid* boid);
+void Boid_Init();
+
+BoidTask* boidTask1;
+BoidTask* boidTask2;
+
+volatile bool initWas = false;
+void Boid_Init()
+{
+    if (initWas) return;
+    initWas = true;
+    boidTask1 = (BoidTask*)malloc(sizeof(BoidTask));
+    boidTask2 = (BoidTask*)malloc(sizeof(BoidTask));
+    pthread_create(&boidTask1->thread, NULL, Boid_Task, boidTask1);
+    pthread_create(&boidTask2->thread, NULL, Boid_Task, boidTask2);
+}
 void Boid_PrintBoid(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
@@ -65,13 +100,11 @@ void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
     if (distSquared >= rangeSquared_1) return;
 
     boid1->vec_1 = MyVector2_Add(boid1->vec_1,boid2->pos); boid1->count_1++;
-    boid2->vec_1 = MyVector2_Add(boid2->vec_1,boid1->pos); boid2->count_1++;
 
     // ALIGHMENT
     if (distSquared >= rangeSquared_2) return;
 
     boid1->vec_2 = MyVector2_Add(boid1->vec_2,boid2->vel); boid1->count_2++;
-    boid2->vec_2 = MyVector2_Add(boid2->vec_2,boid1->vel); boid2->count_2++;
 
     // SEPARATION
     if (distSquared >= rangeSquared_3) return;
@@ -82,7 +115,6 @@ void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
     normDiff = MyVector2_Mul(normDiff,dist2);
 
     boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
-    boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
 }
 void Boid_UpdateVelocity_2(Boid* boid)
 {
@@ -115,76 +147,43 @@ void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
+void* Boid_Task(void* arg)
+{
+    BoidTask* boidTask = (BoidTask*)arg;
+    while (true)
+    {
+        if (!boidTask->enabled) continue;
+
+        Boid* boids = boidTask->boids;
+        int length = boidTask->startIndex + boidTask->count;
+        for (int i = boidTask->startIndex; i < length; i++)
+        for (int j = 0; j < boidTask->boidsCount; j++)
+        {
+            if (i == j) continue;
+            Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+        }
+
+        boidTask->enabled = false;
+    }
+    return 0;
+}
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
-    int length = boidsLength;
+    Boid_Init();
 
-    // ALL UNIQUE PAIRS
-    for (int i = 0;   i < length; i++)
-    for (int j = i+1; j < length; j++)
-        Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+    boidTask1->boids = boids; boidTask1->boidsCount = boidsLength; boidTask1->startIndex = 0;   boidTask1->count = 150;
+    boidTask2->boids = boids; boidTask2->boidsCount = boidsLength; boidTask2->startIndex = 149; boidTask2->count = 150;
 
-    // // WITH EXTRA PAIRS
-    // for (int i = 0; i < length; i++)
-    // for (int j = 0; j < length; j++)
-    // {
-    //     if (i == j) continue;
-    //     Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-    // }
+    boidTask1->enabled = true;
+    boidTask2->enabled = true;
 
-    for (int i = 0;   i < length; i++)
+    while (boidTask1->enabled || boidTask2->enabled) { }
+
+    for (int i = 0; i < boidsLength; i++)
+    {
         Boid_UpdateVelocity_2(&boids[i]);
-
-    for (int i = 0; i < length; i++)
         Boid_UpdatePosition(&boids[i],aabb,deltaTime);
+    }
 }
 
 #endif
-
-
-// float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
-// Boid* boids = gameWorld->boids;
-// AABB* aabb = &gameWorld->aabb;
-// pthread_t thread_1;
-// pthread_t thread_2;
-// ParArg parArg1;
-// ParArg parArg2;
-// parArg1.boids = boids;
-// parArg2.boids = boids;
-// parArg1.startIndex = 0;
-// parArg2.startIndex = 149;
-// parArg1.count = 150;
-// parArg2.count = 150;
-// pthread_create(&thread_1, NULL, ParralelTask, &parArg1 );
-// pthread_create(&thread_2, NULL, ParralelTask, &parArg2 );
-// pthread_join(thread_1, NULL);
-// pthread_join(thread_2, NULL);
-
-// typedef struct ParArg
-// {
-//     Boid* boids;
-//     int startIndex;
-//     int count;
-// } ParArg;
-
-
-// void * ParralelTask(void * arg)
-// {
-//     ParArg* parArg = (ParArg*)arg;
-//     Boid* boids = parArg->boids;
-//     for (int i = parArg->startIndex; i < parArg->count; i++)
-//     for (int j = 0; j < GAMEWORLD_BOIDSCOUNT; j++)
-//     {
-//         if (i == j) continue;
-//         Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-//     }
-//     return 0;
-// }
-
-// // WITH EXTRA PAIRS
-// for (int i = 0; i < length; i++)
-// for (int j = 0; j < length; j++)
-// {
-//     if (i == j) continue;
-//     Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-// }

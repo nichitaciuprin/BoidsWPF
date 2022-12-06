@@ -15,7 +15,10 @@
         "boidworldrender.h": "c",
         "cstdlib": "c",
         "gameworld.h": "c",
-        "pthread.h": "c"
+        "pthread.h": "c",
+        "sched.h": "c",
+        "time.h": "c",
+        "boid2.h": "c"
     },
     "editor.minimap.enabled": false
 }

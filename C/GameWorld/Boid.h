@@ -65,13 +65,13 @@ void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
     if (distSquared >= rangeSquared_1) return;
 
     boid1->vec_1 = MyVector2_Add(boid1->vec_1,boid2->pos); boid1->count_1++;
-    boid2->vec_1 = MyVector2_Add(boid2->vec_1,boid1->pos); boid2->count_1++;
+    // boid2->vec_1 = MyVector2_Add(boid2->vec_1,boid1->pos); boid2->count_1++;
 
     // ALIGHMENT
     if (distSquared >= rangeSquared_2) return;
 
     boid1->vec_2 = MyVector2_Add(boid1->vec_2,boid2->vel); boid1->count_2++;
-    boid2->vec_2 = MyVector2_Add(boid2->vec_2,boid1->vel); boid2->count_2++;
+    // boid2->vec_2 = MyVector2_Add(boid2->vec_2,boid1->vel); boid2->count_2++;
 
     // SEPARATION
     if (distSquared >= rangeSquared_3) return;
@@ -82,7 +82,7 @@ void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
     normDiff = MyVector2_Mul(normDiff,dist2);
 
     boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
-    boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
+    // boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
 }
 void Boid_UpdateVelocity_2(Boid* boid)
 {
@@ -120,9 +120,16 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     int length = boidsLength;
 
     // ALL UNIQUE PAIRS
-    for (int i = 0;   i < length; i++)
-    for (int j = i+1; j < length; j++)
+    // for (int i = 0;   i < length; i++)
+    // for (int j = i+1; j < length; j++)
+    //     Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+
+    for (int i = 0; i < length; i++)
+    for (int j = 0; j < length; j++)
+    {
+        if (i == j) continue;;
         Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+    }
 
     for (int i = 0;   i < length; i++)
         Boid_UpdateVelocity_2(&boids[i]);

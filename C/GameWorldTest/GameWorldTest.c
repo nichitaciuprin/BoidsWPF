@@ -6,7 +6,7 @@ int main(void)
     GameWorld* gameWorld = GameWorld_Init();
 
     long time1 = clock();
-    for (int i = 0; i < 3000; i++) GameWorld_Update(gameWorld,20);
+    for (int i = 0; i < 59; i++) GameWorld_Update(gameWorld,20);
     long time2 = clock();
 
     printf("Boids_C");
