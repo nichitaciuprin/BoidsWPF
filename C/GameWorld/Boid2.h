@@ -119,15 +119,10 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
     int length = boidsLength;
 
-    // ALL UNIQUE PAIRS
-    // for (int i = 0;   i < length; i++)
-    // for (int j = i+1; j < length; j++)
-    //     Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-
     for (int i = 0; i < length; i++)
     for (int j = 0; j < length; j++)
     {
-        if (i == j) continue;;
+        if (i == j) continue;
         Boid_UpdateVelocity_1(&boids[i], &boids[j]);
     }
 

@@ -41,7 +41,7 @@ typedef struct BoidTask
 void* Boid_Task(void* arg);
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
 void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime);
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2, bool debug);
+void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2);
 void Boid_UpdateVelocity_2(Boid* boid);
 Boid Boid_Create(AABB* aabb, Subgen* subgen);
 void Boid_InitCatche(Boid* boid);
@@ -90,14 +90,8 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
 
     return boid;
 }
-bool verbose;
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2, bool debug)
+void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
 {
-    if (verbose && debug)
-    {
-        printf("HI!");
-    }
-
     MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
     float distSquared = diff.x*diff.x + diff.y*diff.y;
     float dist = sqrtf(distSquared);
@@ -166,7 +160,7 @@ void* Boid_Task(void* arg)
         for (int j = 0; j < boidTask->boidsCount; j++)
         {
             if (i == j) continue;
-            Boid_UpdateVelocity_1(&boids[i], &boids[j], i == 0);
+            Boid_UpdateVelocity_1(&boids[i], &boids[j]);
         }
 
         boidTask->enabled = false;

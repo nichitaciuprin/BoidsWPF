@@ -18,7 +18,8 @@
         "pthread.h": "c",
         "sched.h": "c",
         "time.h": "c",
-        "boid2.h": "c"
+        "boid2.h": "c",
+        "boid3.h": "c"
     },
     "editor.minimap.enabled": false
 }
