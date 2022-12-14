@@ -7,6 +7,7 @@ typedef struct Boid
 {
     MyVector2 pos;
     MyVector2 vel;
+    MyVector2 velNew;
 } Boid;
 
 const float minSpeed = 9;
@@ -38,95 +39,86 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
     boid.pos = pos;
     boid.vel = vel;
 
-    Boid_InitCatche(&boid);
-
     return boid;
 }
-void Boid_UpdateVelocity(Boid* boid, Boid* boids, int boidsCount)
-{
-    for (int i = 0; i < boidsCount; i++)
-    {
-        if (i == j) continue;
-        Boid* otherBoid = boids[i];
-        Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-    }
-}
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
-{
-    MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
-    float distSquared = diff.x*diff.x + diff.y*diff.y;
-    float dist = sqrtf(distSquared);
-
-    // COHESION
-    if (distSquared >= rangeSquared_1) return;
-
-    boid1->vec_1 = MyVector2_Add(boid1->vec_1,boid2->pos); boid1->count_1++;
-    // boid2->vec_1 = MyVector2_Add(boid2->vec_1,boid1->pos); boid2->count_1++;
-
-    // ALIGHMENT
-    if (distSquared >= rangeSquared_2) return;
-
-    boid1->vec_2 = MyVector2_Add(boid1->vec_2,boid2->vel); boid1->count_2++;
-    // boid2->vec_2 = MyVector2_Add(boid2->vec_2,boid1->vel); boid2->count_2++;
-
-    // SEPARATION
-    if (distSquared >= rangeSquared_3) return;
-
-    float normFraction = 1.0f/dist;
-    MyVector2 normDiff = (MyVector2) { diff.x*normFraction, diff.y*normFraction };
-    float dist2 = range_3 - dist;
-    normDiff = MyVector2_Mul(normDiff,dist2);
-
-    boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
-    // boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
-}
-void Boid_UpdateVelocity_2(Boid* boid)
-{
-    if (boid->count_1 != 0)
-    {
-        boid->vec_1 = MyVector2_Div(boid->vec_1,boid->count_1);
-        boid->vec_1 = MyVector2_Sub(boid->vec_1,boid->pos);
-    }
-    if (boid->count_2 != 0)
-    {
-        boid->vec_2 = MyVector2_Div(boid->vec_2,boid->count_2);
-        boid->vec_2 = MyVector2_Sub(boid->vec_2,boid->vel);
-    }
-
-    boid->vec_1 = MyVector2_Mul(boid->vec_1,power1);
-    boid->vec_2 = MyVector2_Mul(boid->vec_2,power2);
-    boid->vec_3 = MyVector2_Mul(boid->vec_3,power3);
-
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_1);
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_2);
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_3);
-
-    boid->vel = MyVector2_ClampLength(boid->vel,minSpeed,maxSpeed);
-
-    Boid_InitCatche(boid);
-}
-void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
     MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
+}
+void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount)
+{
+    Boid* boid = &boids[boidIndex];
+    MyVector2 vec_1 = MyVector2_Zero();
+    MyVector2 vec_2 = MyVector2_Zero();
+    MyVector2 vec_3 = MyVector2_Zero();
+    int count_1 = 0;
+    int count_2 = 0;
+
+    for (int boidIndexOther = 0; boidIndexOther < boidsCount; boidIndexOther++)
+    {
+        if (boidIndex == boidIndexOther) continue;
+        Boid* boidOther = &boids[boidIndexOther];
+
+        MyVector2 diff = MyVector2_Sub(boid->pos,boidOther->pos);
+        float distSquared = diff.x*diff.x + diff.y*diff.y;
+        float dist = sqrtf(distSquared);
+
+        // COHESION
+        if (distSquared >= rangeSquared_1) continue;
+
+        vec_1 = MyVector2_Add(vec_1,boidOther->pos); count_1++;
+
+        // ALIGHMENT
+        if (distSquared >= rangeSquared_2) continue;
+
+        vec_2 = MyVector2_Add(vec_2,boidOther->vel); count_2++;
+
+        // SEPARATION
+        if (distSquared >= rangeSquared_3) continue;
+
+        float normFraction = 1.0f/dist;
+        MyVector2 normDiff = (MyVector2) { diff.x*normFraction, diff.y*normFraction };
+        float dist2 = range_3 - dist;
+        normDiff = MyVector2_Mul(normDiff,dist2);
+
+        vec_3 = MyVector2_Add(vec_3,normDiff);
+    }
+
+    if (count_1 != 0)
+    {
+        vec_1 = MyVector2_Div(vec_1,count_1);
+        vec_1 = MyVector2_Sub(vec_1,boid->pos);
+    }
+    if (count_2 != 0)
+    {
+        vec_2 = MyVector2_Div(vec_2,count_2);
+        vec_2 = MyVector2_Sub(vec_2,boid->vel);
+    }
+
+    vec_1 = MyVector2_Mul(vec_1,power1);
+    vec_2 = MyVector2_Mul(vec_2,power2);
+    vec_3 = MyVector2_Mul(vec_3,power3);
+
+    boid->velNew = boid->vel;
+    boid->velNew = MyVector2_Add(boid->velNew,vec_1);
+    boid->velNew = MyVector2_Add(boid->velNew,vec_2);
+    boid->velNew = MyVector2_Add(boid->velNew,vec_3);
+    boid->velNew = MyVector2_ClampLength(boid->velNew,minSpeed,maxSpeed);
 }
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
     int length = boidsLength;
 
     for (int i = 0; i < length; i++)
-    for (int j = 0; j < length; j++)
-    {
-        if (i == j) continue;
-        Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-    }
-
-    for (int i = 0;   i < length; i++)
-        Boid_UpdateVelocity_2(&boids[i]);
+        Boid_Update_Velocity(i,boids,boidsLength);
 
     for (int i = 0; i < length; i++)
-        Boid_UpdatePosition(&boids[i],aabb,deltaTime);
+        boids[i].vel = boids[i].velNew;
+
+    for (int i = 0; i < length; i++)
+        Boid_Update_Position(&boids[i],aabb,deltaTime);
 }
 
 #endif

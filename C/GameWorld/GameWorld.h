@@ -1,7 +1,7 @@
 #ifndef GAMEWORLD_H
 #define GAMEWORLD_H
 
-#include "Boid4.h"
+#include "Boid1.h"
 
 #define GAMEWORLD_BOIDSCOUNT 300
 
