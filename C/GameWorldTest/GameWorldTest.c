@@ -3,6 +3,10 @@
 
 int main(void)
 {
+    printf("%lli",sizeof(Boid) * 300);
+
+    return 0;
+
     GameWorld* gameWorld = GameWorld_Init();
 
     long time1 = clock();
