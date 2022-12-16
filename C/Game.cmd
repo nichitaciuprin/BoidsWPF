@@ -10,7 +10,7 @@ gcc %filePath%.c ^
 -lopengl32 ^
 -lgdi32 ^
 -lwinmm ^
--o %filePath%.exe -g3 -O3 -Wall -std=c99 -Wno-missing-braces -pthread
+-o %filePath%.exe -g3 -O3 -Wall -std=c99 -Wno-missing-braces -pthread -m64
 
 @REM Stop cmd if build failed
 if %errorlevel% neq 0 exit /b %errorlevel%

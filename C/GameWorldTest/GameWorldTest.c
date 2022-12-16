@@ -2,26 +2,8 @@
 #include "..\GameWorld\GameWorld.h"
 
 
-struct student
-{
-    int a;
-    char b;
-    char c;
-};
 int main(void)
 {
-    printf("%lli", 10*sizeof(double));
-    return 0;
-    //asm
-    struct student stud1;
-    // Displaying the size of the structure student.
-    printf("%lli", sizeof(stud1));
-    return 0;
-
-    printf("%lli",sizeof(Boid) * 300);
-
-    return 0;
-
     GameWorld* gameWorld = GameWorld_Init();
 
     long time1 = clock();
