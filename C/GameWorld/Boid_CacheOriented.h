@@ -3,13 +3,6 @@
 
 #include "../Base/AABB.h"
 
-typedef struct Boid
-{
-    MyVector2 pos;
-    MyVector2 vel;
-    MyVector2 velNew;
-} Boid;
-
 const float minSpeed = 9;
 const float maxSpeed = 15;
 const float range_1 = 5;
@@ -21,6 +14,14 @@ const float rangeSquared_3 = range_3*range_3;
 const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
+
+typedef struct Boid // 4xWORD
+{
+    MyVector2 pos;
+    MyVector2 vel;
+    MyVector2 velNew;
+    MyVector2 padding;
+} Boid;
 
 void Boid_PrintBoid(Boid* boid)
 {

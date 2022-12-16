@@ -23,7 +23,6 @@ void MyVector2_PrintVector2Hex(MyVector2 v1)
     Helper_PrintFloatHex(v1.x);
     Helper_PrintFloatHex(v1.y);
 }
-// void MyVector2_AddRef(MyVector2* v1, MyVector2* v2) { v1->x += v2->x; v1->y += v2->y };
 float MyVector2_Length(MyVector2 v)
 {
     float distSquared = v.x*v.x + v.y*v.y;
