@@ -1,8 +1,7 @@
 #ifndef GAMEWORLD_H
 #define GAMEWORLD_H
 
-// #include "Boid_UniquePairs.h"
-#include "Boid_CacheOriented.h"
+#include "Boid_Parallel3.h"
 
 #define GAMEWORLD_BOIDSCOUNT 300
 
@@ -12,15 +11,15 @@ typedef struct GameWorld
     Boid boids[GAMEWORLD_BOIDSCOUNT];
 } GameWorld;
 
-GameWorld* GameWorld_Init()
+GameWorld GameWorld_Init()
 {
-    GameWorld* gameWorld = (GameWorld*)malloc(sizeof(GameWorld));
+    GameWorld gameWorld;
 
     Subgen subgen = Subgen_Init(0);
-    gameWorld->aabb.p0 = (MyVector2){ 0, 0 };
-    gameWorld->aabb.p1 = (MyVector2){ 50, 50 };
+    gameWorld.aabb.p0 = (MyVector2){ 0, 0 };
+    gameWorld.aabb.p1 = (MyVector2){ 50, 50 };
 	for (int i = 0; i < GAMEWORLD_BOIDSCOUNT; i++)
-		gameWorld->boids[i] = Boid_Create(&gameWorld->aabb,&subgen);
+		gameWorld.boids[i] = Boid_Create(&gameWorld.aabb,&subgen);
 
     return gameWorld;
 }

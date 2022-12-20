@@ -21,7 +21,8 @@
         "boid2.h": "c",
         "boid3.h": "c",
         "boid_uniquepairs.h": "c",
-        "boid_cacheoriented.h": "c"
+        "boid_cacheoriented.h": "c",
+        "boid_parallel2.h": "c"
     },
     "editor.minimap.enabled": false
 }

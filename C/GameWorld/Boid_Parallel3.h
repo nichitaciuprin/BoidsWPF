@@ -2,6 +2,8 @@
 #define BOID_H
 
 #include "../Base/AABB.h"
+#include <pthread.h>
+#include <stdio.h>
 
 const float minSpeed = 9;
 const float maxSpeed = 15;
@@ -15,14 +17,61 @@ const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
 
-typedef struct Boid // 4xWORD
+typedef struct Boid
 {
     MyVector2 pos;
     MyVector2 vel;
     MyVector2 velNew;
-    MyVector2 padding;
 } Boid;
 
+typedef struct BoidTask
+{
+    pthread_t thread;
+    Boid* boids;
+    int boidsCount;
+    int startIndex;
+    int count;
+    volatile bool enabled;
+} BoidTask;
+
+void* Boid_Task(void* arg);
+void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount);
+void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime);
+void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
+Boid Boid_Create(AABB* aabb, Subgen* subgen);
+void Boid_PrintBoid(Boid* boid);
+void Boid_MaybeInit();
+
+BoidTask boidTask1;
+BoidTask boidTask2;
+BoidTask boidTask3;
+BoidTask boidTask4;
+
+volatile bool initWas = false;
+void BoidTask_InitThread(BoidTask* boidTask)
+{
+    pthread_create(&boidTask->thread, NULL, Boid_Task, boidTask);
+}
+void Boid_MaybeInit()
+{
+    if (initWas) return;
+    initWas = true;
+    BoidTask_InitThread(&boidTask1);
+    BoidTask_InitThread(&boidTask2);
+    BoidTask_InitThread(&boidTask3);
+    BoidTask_InitThread(&boidTask4);
+}
+void BoidTask_Start(BoidTask* boidTask, int index, Boid* boids, int boidsCount)
+{
+    boidTask->enabled = true;
+    boidTask->startIndex = index;
+    boidTask->boids = boids;
+    boidTask->boidsCount = boidsCount;
+}
+void BoidTask_Wait(BoidTask* boidTask)
+{
+    while (boidTask->enabled) {}
+}
 void Boid_PrintBoid(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
@@ -41,12 +90,6 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
     boid.vel = vel;
 
     return boid;
-}
-void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
-{
-    MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
-    boid->pos = MyVector2_Add(boid->pos,velocityDelta);
-    boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
 void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount)
 {
@@ -108,18 +151,45 @@ void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount)
     boid->velNew = MyVector2_Add(boid->velNew,vec_3);
     boid->velNew = MyVector2_ClampLength(boid->velNew,minSpeed,maxSpeed);
 }
+void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+{
+    MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
+    boid->pos = MyVector2_Add(boid->pos,velocityDelta);
+    boid->pos = AABB_WrapAround(aabb,boid->pos);
+}
+void* Boid_Task(void* arg)
+{
+    BoidTask* boidTask = (BoidTask*)arg;
+    while (true)
+    {
+        if (!boidTask->enabled) continue;
+
+        Boid* boids = boidTask->boids;
+        int length = boidTask->startIndex + boidTask->count;
+        for (int i = boidTask->startIndex; i < length; i++)
+            Boid_Update_Velocity(i,boids,boidTask->boidsCount);
+        boidTask->enabled = false;
+    }
+    return 0;
+}
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
-    int length = boidsLength;
+    Boid_MaybeInit();
 
-    for (int i = 0; i < length; i++)
-        Boid_Update_Velocity(i,boids,boidsLength);
+    BoidTask_Start(&boidTask1,0,boids,300);
+    BoidTask_Start(&boidTask2,75,boids,300);
+    BoidTask_Start(&boidTask3,150,boids,300);
+    BoidTask_Start(&boidTask4,225,boids,300);
+    BoidTask_Wait(&boidTask1);
+    BoidTask_Wait(&boidTask2);
+    BoidTask_Wait(&boidTask3);
+    BoidTask_Wait(&boidTask4);
 
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < boidsLength; i++)
         boids[i].vel = boids[i].velNew;
 
-    for (int i = 0; i < length; i++)
-        Boid_Update_Position(&boids[i],aabb,deltaTime);
+    for (int i = 0; i < boidsLength; i++)
+        Boid_UpdatePosition(&boids[i],aabb,deltaTime);
 }
 
 #endif
