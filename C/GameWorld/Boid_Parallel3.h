@@ -27,31 +27,62 @@ typedef struct Boid
 typedef struct BoidTask
 {
     pthread_t thread;
+    pthread_mutex_t lock;
+    pthread_cond_t cond;
     Boid* boids;
     int boidsCount;
     int startIndex;
     int count;
-    volatile bool enabled;
 } BoidTask;
 
-void* Boid_Task(void* arg);
+void* BoidTask_Thread(void* arg);
 void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount);
-void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime);
+void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime);
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
 Boid Boid_Create(AABB* aabb, Subgen* subgen);
 void Boid_PrintBoid(Boid* boid);
 void Boid_MaybeInit();
 
+void BoidTask_InitThread(BoidTask* boidTask);
+void BoidTask_Start(BoidTask* boidTask, Boid* boids, int boidsCount, int index, int count);
+void BoidTask_Wait(BoidTask* boidTask);
+void* BoidTask_Thread(void* arg);
+
+volatile bool initWas = false;
 BoidTask boidTask1;
 BoidTask boidTask2;
 BoidTask boidTask3;
 BoidTask boidTask4;
 
-volatile bool initWas = false;
 void BoidTask_InitThread(BoidTask* boidTask)
 {
-    pthread_create(&boidTask->thread, NULL, Boid_Task, boidTask);
+    pthread_mutex_init(&boidTask->lock, NULL);
+    pthread_cond_init(&boidTask->cond, NULL);
+    pthread_create(&boidTask->thread, NULL, BoidTask_Thread, boidTask);
 }
+void BoidTask_Start(BoidTask* boidTask, Boid* boids, int boidsCount, int index, int count)
+{
+    boidTask->boids = boids;
+    boidTask->boidsCount = boidsCount;
+    boidTask->startIndex = index;
+    boidTask->count = count;
+}
+void BoidTask_Wait(BoidTask* boidTask)
+{
+}
+void* BoidTask_Thread(void* arg)
+{
+    BoidTask* boidTask = (BoidTask*)arg;
+    while (true)
+    {
+        Boid* boids = boidTask->boids;
+        int length = boidTask->startIndex + boidTask->count;
+        for (int i = boidTask->startIndex; i < length; i++)
+            Boid_Update_Velocity(i,boids,boidTask->boidsCount);
+    }
+    return 0;
+}
+
 void Boid_MaybeInit()
 {
     if (initWas) return;
@@ -60,17 +91,6 @@ void Boid_MaybeInit()
     BoidTask_InitThread(&boidTask2);
     BoidTask_InitThread(&boidTask3);
     BoidTask_InitThread(&boidTask4);
-}
-void BoidTask_Start(BoidTask* boidTask, int index, Boid* boids, int boidsCount)
-{
-    boidTask->enabled = true;
-    boidTask->startIndex = index;
-    boidTask->boids = boids;
-    boidTask->boidsCount = boidsCount;
-}
-void BoidTask_Wait(BoidTask* boidTask)
-{
-    while (boidTask->enabled) {}
 }
 void Boid_PrintBoid(Boid* boid)
 {
@@ -151,35 +171,20 @@ void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount)
     boid->velNew = MyVector2_Add(boid->velNew,vec_3);
     boid->velNew = MyVector2_ClampLength(boid->velNew,minSpeed,maxSpeed);
 }
-void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
     MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
-void* Boid_Task(void* arg)
-{
-    BoidTask* boidTask = (BoidTask*)arg;
-    while (true)
-    {
-        if (!boidTask->enabled) continue;
-
-        Boid* boids = boidTask->boids;
-        int length = boidTask->startIndex + boidTask->count;
-        for (int i = boidTask->startIndex; i < length; i++)
-            Boid_Update_Velocity(i,boids,boidTask->boidsCount);
-        boidTask->enabled = false;
-    }
-    return 0;
-}
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
     Boid_MaybeInit();
 
-    BoidTask_Start(&boidTask1,0,boids,300);
-    BoidTask_Start(&boidTask2,75,boids,300);
-    BoidTask_Start(&boidTask3,150,boids,300);
-    BoidTask_Start(&boidTask4,225,boids,300);
+    BoidTask_Start(&boidTask1,boids,300,0,75);
+    BoidTask_Start(&boidTask2,boids,300,75,75);
+    BoidTask_Start(&boidTask3,boids,300,150,75);
+    BoidTask_Start(&boidTask4,boids,300,225,75);
     BoidTask_Wait(&boidTask1);
     BoidTask_Wait(&boidTask2);
     BoidTask_Wait(&boidTask3);
@@ -189,7 +194,8 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
         boids[i].vel = boids[i].velNew;
 
     for (int i = 0; i < boidsLength; i++)
-        Boid_UpdatePosition(&boids[i],aabb,deltaTime);
+        Boid_Update_Position(&boids[i],aabb,deltaTime);
 }
+
 
 #endif

@@ -38,9 +38,9 @@ typedef struct BoidTask
     volatile bool enabled;
 } BoidTask;
 
-void* Boid_Task(void* arg);
+void* BoidTask_Thread(void* arg);
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
-void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime);
+void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime);
 void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2);
 void Boid_UpdateVelocity_2(Boid* boid);
 Boid Boid_Create(AABB* aabb, Subgen* subgen);
@@ -58,8 +58,8 @@ void Boid_MaybeInit()
     initWas = true;
     boidTask1 = (BoidTask*)malloc(sizeof(BoidTask));
     boidTask2 = (BoidTask*)malloc(sizeof(BoidTask));
-    pthread_create(&boidTask1->thread, NULL, Boid_Task, boidTask1);
-    pthread_create(&boidTask2->thread, NULL, Boid_Task, boidTask2);
+    pthread_create(&boidTask1->thread, NULL, BoidTask_Thread, boidTask1);
+    pthread_create(&boidTask2->thread, NULL, BoidTask_Thread, boidTask2);
 }
 void Boid_PrintBoid(Boid* boid)
 {
@@ -141,13 +141,13 @@ void Boid_UpdateVelocity_2(Boid* boid)
 
     Boid_InitCatche(boid);
 }
-void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
     MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
-void* Boid_Task(void* arg)
+void* BoidTask_Thread(void* arg)
 {
     BoidTask* boidTask = (BoidTask*)arg;
     while (true)
@@ -182,7 +182,7 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     for (int i = 0; i < boidsLength; i++)
     {
         Boid_UpdateVelocity_2(&boids[i]);
-        Boid_UpdatePosition(&boids[i],aabb,deltaTime);
+        Boid_Update_Position(&boids[i],aabb,deltaTime);
     }
 }
 

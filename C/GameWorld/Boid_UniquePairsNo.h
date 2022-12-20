@@ -106,7 +106,7 @@ void Boid_UpdateVelocity_2(Boid* boid)
 
     Boid_InitCatche(boid);
 }
-void Boid_UpdatePosition(Boid* boid, AABB* aabb, float deltaTime)
+void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
     MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
@@ -127,7 +127,7 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
         Boid_UpdateVelocity_2(&boids[i]);
 
     for (int i = 0; i < length; i++)
-        Boid_UpdatePosition(&boids[i],aabb,deltaTime);
+        Boid_Update_Position(&boids[i],aabb,deltaTime);
 }
 
 #endif
