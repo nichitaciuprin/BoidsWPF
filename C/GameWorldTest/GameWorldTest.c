@@ -1,14 +1,17 @@
 #include <time.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <windows.h>
+
+#include <time.h>
 #include "..\GameWorld\GameWorld.h"
-
-// #define KB32 32768
-// #define L1SIZE KB32
-
+#define KB32 32768
+#define L1SIZE KB32
 int main(void)
 {
     GameWorld gameWorld = GameWorld_Init();
-
-    // printf("%lli\n",sizeof(GameWorld));
 
     long time1 = clock();
     for (int i = 0; i < 3000; i++) GameWorld_Update(&gameWorld,20);

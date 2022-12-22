@@ -1,28 +1,5 @@
 {
     "files.associations": {
-        "game.h": "c",
-        "draw.h": "c",
-        "boid.h": "c",
-        "aabb.h": "c",
-        "vector2.h": "c",
-        "math.h": "c",
-        "stdlib.h": "c",
-        "stdbool.h": "c",
-        "mywindow.h": "c",
-        "rlgl.h": "c",
-        "myvector2.h": "c",
-        "boidworld.h": "c",
-        "boidworldrender.h": "c",
-        "cstdlib": "c",
-        "gameworld.h": "c",
-        "pthread.h": "c",
-        "sched.h": "c",
-        "time.h": "c",
-        "boid2.h": "c",
-        "boid3.h": "c",
-        "boid_uniquepairs.h": "c",
-        "boid_cacheoriented.h": "c",
-        "boid_parallel2.h": "c"
-    },
-    "editor.minimap.enabled": false
+        "boid_parallel3.h": "c"
+    }
 }
