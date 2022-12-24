@@ -21,11 +21,7 @@ typedef struct Boid
 {
     MyVector2 pos;
     MyVector2 vel;
-    MyVector2 vec_1;
-    MyVector2 vec_2;
-    MyVector2 vec_3;
-    int count_1;
-    int count_2;
+    MyVector2 velNew;
 } Boid;
 
 typedef struct BoidTask
@@ -39,40 +35,73 @@ typedef struct BoidTask
 } BoidTask;
 
 void* BoidTask_Thread(void* arg);
-void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
+void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount);
 void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime);
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2);
-void Boid_UpdateVelocity_2(Boid* boid);
+void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
 Boid Boid_Create(AABB* aabb, Subgen* subgen);
-void Boid_InitCatche(Boid* boid);
 void Boid_PrintBoid(Boid* boid);
 void Boid_MaybeInit();
 
-BoidTask* boidTask1;
-BoidTask* boidTask2;
+void BoidTask_InitThread(BoidTask* boidTask);
+void BoidTask_Start(BoidTask* boidTask, Boid* boids, int boidsCount, int index, int count);
+void BoidTask_Wait(BoidTask* boidTask);
+void* BoidTask_Thread(void* arg);
 
 volatile bool initWas = false;
+BoidTask boidTask1;
+BoidTask boidTask2;
+BoidTask boidTask3;
+BoidTask boidTask4;
+
+void BoidTask_InitThread(BoidTask* boidTask)
+{
+    // pthread_mutex_init(&boidTask->lock, NULL);
+    // pthread_cond_init(&boidTask->cond, NULL);
+    pthread_create(&boidTask->thread, NULL, BoidTask_Thread, boidTask);
+}
+void BoidTask_Start(BoidTask* boidTask, Boid* boids, int boidsCount, int index, int count)
+{
+    boidTask->boids = boids;
+    boidTask->boidsCount = boidsCount;
+    boidTask->startIndex = index;
+    boidTask->count = count;
+    boidTask->enabled = true;
+}
+void BoidTask_Wait(BoidTask* boidTask)
+{
+    // while (boidTask->enabled) { Sleep(10); }
+    while (boidTask->enabled) { }
+}
+void* BoidTask_Thread(void* arg)
+{
+    BoidTask* boidTask = (BoidTask*)arg;
+    while (true)
+    {
+        while (!boidTask->enabled) { }
+
+        Boid* boids = boidTask->boids;
+        int length = boidTask->startIndex + boidTask->count;
+        for (int i = boidTask->startIndex; i < length; i++)
+            Boid_Update_Velocity(i,boids,boidTask->boidsCount);
+
+        boidTask->enabled = false;
+    }
+    return 0;
+}
+
 void Boid_MaybeInit()
 {
     if (initWas) return;
     initWas = true;
-    boidTask1 = (BoidTask*)malloc(sizeof(BoidTask));
-    boidTask2 = (BoidTask*)malloc(sizeof(BoidTask));
-    pthread_create(&boidTask1->thread, NULL, BoidTask_Thread, boidTask1);
-    pthread_create(&boidTask2->thread, NULL, BoidTask_Thread, boidTask2);
+    BoidTask_InitThread(&boidTask1);
+    BoidTask_InitThread(&boidTask2);
+    BoidTask_InitThread(&boidTask3);
+    BoidTask_InitThread(&boidTask4);
 }
 void Boid_PrintBoid(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
     MyVector2_PrintVector2Hex(boid->vel);
-}
-void Boid_InitCatche(Boid* boid)
-{
-    boid->vec_1 = MyVector2_Zero();
-    boid->vec_2 = MyVector2_Zero();
-    boid->vec_3 = MyVector2_Zero();
-    boid->count_1 = 0;
-    boid->count_2 = 0;
 }
 Boid Boid_Create(AABB* aabb, Subgen* subgen)
 {
@@ -86,60 +115,67 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
     boid.pos = pos;
     boid.vel = vel;
 
-    Boid_InitCatche(&boid);
-
     return boid;
 }
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
+void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount)
 {
-    MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
-    float distSquared = diff.x*diff.x + diff.y*diff.y;
-    float dist = sqrtf(distSquared);
+    Boid* boid = &boids[boidIndex];
+    MyVector2 vec_1 = MyVector2_Zero();
+    MyVector2 vec_2 = MyVector2_Zero();
+    MyVector2 vec_3 = MyVector2_Zero();
+    int count_1 = 0;
+    int count_2 = 0;
 
-    // COHESION
-    if (distSquared >= rangeSquared_1) return;
-
-    boid1->vec_1 = MyVector2_Add(boid1->vec_1,boid2->pos); boid1->count_1++;
-
-    // ALIGHMENT
-    if (distSquared >= rangeSquared_2) return;
-
-    boid1->vec_2 = MyVector2_Add(boid1->vec_2,boid2->vel); boid1->count_2++;
-
-    // SEPARATION
-    if (distSquared >= rangeSquared_3) return;
-
-    float normFraction = 1.0f/dist;
-    MyVector2 normDiff = (MyVector2) { diff.x*normFraction, diff.y*normFraction };
-    float dist2 = range_3 - dist;
-    normDiff = MyVector2_Mul(normDiff,dist2);
-
-    boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
-}
-void Boid_UpdateVelocity_2(Boid* boid)
-{
-    if (boid->count_1 != 0)
+    for (int boidIndexOther = 0; boidIndexOther < boidsCount; boidIndexOther++)
     {
-        boid->vec_1 = MyVector2_Div(boid->vec_1,boid->count_1);
-        boid->vec_1 = MyVector2_Sub(boid->vec_1,boid->pos);
+        if (boidIndex == boidIndexOther) continue;
+        Boid* boidOther = &boids[boidIndexOther];
+
+        MyVector2 diff = MyVector2_Sub(boid->pos,boidOther->pos);
+        float distSquared = diff.x*diff.x + diff.y*diff.y;
+        float dist = sqrtf(distSquared);
+
+        // COHESION
+        if (distSquared >= rangeSquared_1) continue;
+
+        vec_1 = MyVector2_Add(vec_1,boidOther->pos); count_1++;
+
+        // ALIGHMENT
+        if (distSquared >= rangeSquared_2) continue;
+
+        vec_2 = MyVector2_Add(vec_2,boidOther->vel); count_2++;
+
+        // SEPARATION
+        if (distSquared >= rangeSquared_3) continue;
+
+        float normFraction = 1.0f/dist;
+        MyVector2 normDiff = (MyVector2) { diff.x*normFraction, diff.y*normFraction };
+        float dist2 = range_3 - dist;
+        normDiff = MyVector2_Mul(normDiff,dist2);
+
+        vec_3 = MyVector2_Add(vec_3,normDiff);
     }
-    if (boid->count_2 != 0)
+
+    if (count_1 != 0)
     {
-        boid->vec_2 = MyVector2_Div(boid->vec_2,boid->count_2);
-        boid->vec_2 = MyVector2_Sub(boid->vec_2,boid->vel);
+        vec_1 = MyVector2_Div(vec_1,count_1);
+        vec_1 = MyVector2_Sub(vec_1,boid->pos);
+    }
+    if (count_2 != 0)
+    {
+        vec_2 = MyVector2_Div(vec_2,count_2);
+        vec_2 = MyVector2_Sub(vec_2,boid->vel);
     }
 
-    boid->vec_1 = MyVector2_Mul(boid->vec_1,power1);
-    boid->vec_2 = MyVector2_Mul(boid->vec_2,power2);
-    boid->vec_3 = MyVector2_Mul(boid->vec_3,power3);
+    vec_1 = MyVector2_Mul(vec_1,power1);
+    vec_2 = MyVector2_Mul(vec_2,power2);
+    vec_3 = MyVector2_Mul(vec_3,power3);
 
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_1);
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_2);
-    boid->vel = MyVector2_Add(boid->vel,boid->vec_3);
-
-    boid->vel = MyVector2_ClampLength(boid->vel,minSpeed,maxSpeed);
-
-    Boid_InitCatche(boid);
+    boid->velNew = boid->vel;
+    boid->velNew = MyVector2_Add(boid->velNew,vec_1);
+    boid->velNew = MyVector2_Add(boid->velNew,vec_2);
+    boid->velNew = MyVector2_Add(boid->velNew,vec_3);
+    boid->velNew = MyVector2_ClampLength(boid->velNew,minSpeed,maxSpeed);
 }
 void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
@@ -147,43 +183,25 @@ void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
-void* BoidTask_Thread(void* arg)
-{
-    BoidTask* boidTask = (BoidTask*)arg;
-    while (true)
-    {
-        if (!boidTask->enabled) continue;
-
-        Boid* boids = boidTask->boids;
-        int length = boidTask->startIndex + boidTask->count;
-        for (int i = boidTask->startIndex; i < length; i++)
-        for (int j = 0; j < boidTask->boidsCount; j++)
-        {
-            if (i == j) continue;
-            Boid_UpdateVelocity_1(&boids[i], &boids[j]);
-        }
-
-        boidTask->enabled = false;
-    }
-    return 0;
-}
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
     Boid_MaybeInit();
 
-    boidTask1->boids = boids; boidTask1->boidsCount = boidsLength; boidTask1->startIndex = 0;   boidTask1->count = 150;
-    boidTask2->boids = boids; boidTask2->boidsCount = boidsLength; boidTask2->startIndex = 150; boidTask2->count = 150;
-
-    boidTask1->enabled = true;
-    boidTask2->enabled = true;
-
-    while (boidTask1->enabled || boidTask2->enabled) { }
+    BoidTask_Start(&boidTask1,boids,300,0,75);
+    BoidTask_Start(&boidTask2,boids,300,75,75);
+    BoidTask_Start(&boidTask3,boids,300,150,75);
+    BoidTask_Start(&boidTask4,boids,300,225,75);
+    BoidTask_Wait(&boidTask1);
+    BoidTask_Wait(&boidTask2);
+    BoidTask_Wait(&boidTask3);
+    BoidTask_Wait(&boidTask4);
 
     for (int i = 0; i < boidsLength; i++)
-    {
-        Boid_UpdateVelocity_2(&boids[i]);
+        boids[i].vel = boids[i].velNew;
+
+    for (int i = 0; i < boidsLength; i++)
         Boid_Update_Position(&boids[i],aabb,deltaTime);
-    }
 }
+
 
 #endif

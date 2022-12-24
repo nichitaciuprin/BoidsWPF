@@ -18,6 +18,10 @@ bool MyVector2_IsZero(MyVector2 v1)
 {
     return v1.x == 0 && v1.y == 0;
 }
+bool MyVector2_Equal(MyVector2 v1, MyVector2 v2)
+{
+    return v1.x == v2.x && v1.y == v2.y;
+}
 void MyVector2_PrintVector2Hex(MyVector2 v1)
 {
     Helper_PrintFloatHex(v1.x);
@@ -79,6 +83,16 @@ MyVector2 MyVector2_Rotate(MyVector2 v, float angle)
     result.x = v.x*cosres - v.y*sinres;
     result.y = v.x*sinres + v.y*cosres;
     return result;
+}
+MyVector2 MyVector2_MoveTowards(MyVector2 fromVec, MyVector2 toVec, float delta)
+{
+    if (MyVector2_Equal(fromVec,toVec)) return fromVec;
+    MyVector2 diff = MyVector2_Sub(toVec,fromVec);
+    float dist = MyVector2_Length(diff);
+    if (dist <= delta) return toVec;
+    MyVector2 dir = MyVector2_Normalized(diff);
+    MyVector2 moveVec = MyVector2_Mul(dir,delta);
+    return MyVector2_Add(fromVec,moveVec);
 }
 
 #endif

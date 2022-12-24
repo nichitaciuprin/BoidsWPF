@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "boid_parallel3.h": "c"
+        "boid_parallel3.h": "c",
+        "boid_uniquepairsno.h": "c",
+        "boid_uniquepairsno2.h": "c",
+        "gameworld.h": "c",
+        "boid.h": "c"
     }
 }

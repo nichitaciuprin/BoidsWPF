@@ -1,8 +1,11 @@
 #ifndef GAMEWORLD_H
 #define GAMEWORLD_H
 
-#include "Boid_Parallel3.h"
+#include "Boid.h"
 // #include "Boid_UniquePairs.h"
+// #include "Boid_NoUniquePairs.h"
+// #include "Boid_NoUniquePairs2.h"
+// #include "Boid_Parallel.h"
 
 #define GAMEWORLD_BOIDSCOUNT 300
 
@@ -14,6 +17,8 @@ typedef struct GameWorld
 
 GameWorld GameWorld_Init()
 {
+    // printf("%lli\n",sizeof(GameWorld));
+
     GameWorld gameWorld;
 
     Subgen subgen = Subgen_Init(0);
