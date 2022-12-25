@@ -126,19 +126,12 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     for (int i = 0; i < length; i++)
     {
         Boid* boid = &boids[i];
-        MyVector2 vel1 = boid->vel;
         MyVector2 targetVelocity = Boid_TargetVelocity(boid);
-        MyVector2 vel2 = MyVector2_MoveTowards(vel1,targetVelocity,acc*deltaTime);
-        boid->pos = MyVector2_Add(boid->pos,MyVector2_Mul(MyVector2_Div(MyVector2_Sub(vel2,vel1),2),deltaTime));
-        boid->vel = vel2;
-        // A.pos = Snap(A.pos,B.pos);
-        boid->pos = AABB_WrapAround(aabb,boid->pos);
 
-        // Boid* boid = &boids[i];
-        // boid->vel = Boid_TargetVelocity(boid);
-        // MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
-        // boid->pos = MyVector2_Add(boid->pos,velocityDelta);
-        // boid->pos = AABB_WrapAround(aabb,boid->pos);
+        // MyVector2_Move_1(&boid->pos,&boid->vel,targetVelocity,deltaTime);
+        MyVector2_Move_2(&boid->pos,&boid->vel,acc,targetVelocity,deltaTime);
+
+        boid->pos = AABB_WrapAround(aabb,boid->pos);
     }
 }
 
