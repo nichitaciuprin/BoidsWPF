@@ -22,7 +22,7 @@ const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
 
-void Boid_PrintBoid(Boid* boid)
+void Boid_Print(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
     MyVector2_PrintVector2Hex(boid->vel);

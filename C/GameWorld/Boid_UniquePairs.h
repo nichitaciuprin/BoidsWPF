@@ -55,7 +55,7 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
 
     return boid;
 }
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
+void Boid_CalculatePair(Boid* boid1, Boid* boid2)
 {
     MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
     float distSquared = diff.x*diff.x + diff.y*diff.y;
@@ -122,7 +122,7 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     // ALL UNIQUE PAIRS
     for (int i = 0;   i < length; i++)
     for (int j = i+1; j < length; j++)
-        Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+        Boid_CalculatePair(&boids[i], &boids[j]);
 
     for (int i = 0; i < length; i++)
         Boid_UpdateVelocity_2(&boids[i]);

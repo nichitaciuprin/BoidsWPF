@@ -19,7 +19,7 @@ int main(void)
 
     printf("Boids_C");
     printf("  ");
-    Boid_PrintBoid(&gameWorld.boids[0]);
+    Boid_Print(&gameWorld.boids[0]);
     printf(" ");
     printf("%li",time2-time1);
     printf(" \n");

@@ -39,7 +39,7 @@ void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount);
 void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime);
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
 Boid Boid_Create(AABB* aabb, Subgen* subgen);
-void Boid_PrintBoid(Boid* boid);
+void Boid_Print(Boid* boid);
 void Boid_MaybeInit();
 
 void BoidTask_InitThread(BoidTask* boidTask);
@@ -98,7 +98,7 @@ void Boid_MaybeInit()
     BoidTask_InitThread(&boidTask3);
     BoidTask_InitThread(&boidTask4);
 }
-void Boid_PrintBoid(Boid* boid)
+void Boid_Print(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
     MyVector2_PrintVector2Hex(boid->vel);

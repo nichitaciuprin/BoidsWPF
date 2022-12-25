@@ -26,12 +26,12 @@ const float power1 = 0.01;
 const float power2 = 0.01;
 const float power3 = 0.04;
 
-void Boid_PrintBoid(Boid* boid)
+void Boid_Print(Boid* boid)
 {
     MyVector2_PrintVector2Hex(boid->pos);
     MyVector2_PrintVector2Hex(boid->vel);
 }
-void Boid_InitCatche(Boid* boid)
+void Boid_Init(Boid* boid)
 {
     boid->vec_1 = MyVector2_Zero();
     boid->vec_2 = MyVector2_Zero();
@@ -51,11 +51,11 @@ Boid Boid_Create(AABB* aabb, Subgen* subgen)
     boid.pos = pos;
     boid.vel = vel;
 
-    Boid_InitCatche(&boid);
+    Boid_Init(&boid);
 
     return boid;
 }
-void Boid_UpdateVelocity_1(Boid* boid1, Boid* boid2)
+void Boid_CalculatePair(Boid* boid1, Boid* boid2)
 {
     MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
     float distSquared = diff.x*diff.x + diff.y*diff.y;
@@ -104,7 +104,7 @@ void Boid_UpdateVelocity_2(Boid* boid)
 
     boid->vel = MyVector2_ClampLength(boid->vel,minSpeed,maxSpeed);
 
-    Boid_InitCatche(boid);
+    Boid_Init(boid);
 }
 void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
@@ -120,7 +120,7 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     for (int j = 0; j < length; j++)
     {
         if (i == j) continue;
-        Boid_UpdateVelocity_1(&boids[i], &boids[j]);
+        Boid_CalculatePair(&boids[i], &boids[j]);
     }
 
     for (int i = 0;   i < length; i++)
