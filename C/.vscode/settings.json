@@ -4,6 +4,7 @@
         "boid_uniquepairsno.h": "c",
         "boid_uniquepairsno2.h": "c",
         "gameworld.h": "c",
-        "boid.h": "c"
+        "boid.h": "c",
+        "time.h": "c"
     }
 }
