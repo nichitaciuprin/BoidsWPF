@@ -5,6 +5,9 @@
         "boid_uniquepairsno2.h": "c",
         "gameworld.h": "c",
         "boid.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "math.h": "c",
+        "raymath.h": "c",
+        "stdbool.h": "c"
     }
 }
