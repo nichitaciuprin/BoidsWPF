@@ -2,6 +2,7 @@
 #define GAMEWORLD_H
 
 #include "Boid.h"
+#include "../Base/Movement.h"
 // #include "Boid_UniquePairs.h"
 // #include "Boid_NoUniquePairs.h"
 // #include "Boid_NoUniquePairs2.h"
