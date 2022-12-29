@@ -14,31 +14,6 @@ typedef struct MyVector2
     float y;
 } MyVector2;
 
-void MyVector2_PrintVector2Hex(MyVector2 v1);
-bool MyVector2_IsZero(MyVector2 v1);
-bool MyVector2_Equal(MyVector2 v1, MyVector2 v2);
-float MyVector2_Length(MyVector2 v);
-float MyVector2_LengthSquared(MyVector2 v);
-float MyVector2_Angle(MyVector2 v);
-float MyVector2_Distance(MyVector2 v1, MyVector2 v2);
-MyVector2 MyVector2_Zero();
-MyVector2 MyVector2_Add(MyVector2 v1, MyVector2 v2);
-MyVector2 MyVector2_Sub(MyVector2 v1, MyVector2 v2);
-MyVector2 MyVector2_Mul(MyVector2 v1, float value);
-MyVector2 MyVector2_Div(MyVector2 v1, float value);
-MyVector2 MyVector2_Abs(MyVector2 v1);
-MyVector2 MyVector2_Negate(MyVector2 v1);
-MyVector2 MyVector2_Normalized(MyVector2 v);
-MyVector2 MyVector2_RandNormDir(Subgen* subgen);
-MyVector2 MyVector2_ClampLength(MyVector2 v1, float min, float max);
-MyVector2 MyVector2_Rotate(MyVector2 v, float angle);
-MyVector2 MyVector2_MoveTowards(MyVector2 fromVec, MyVector2 toVec, float delta);
-MyVector2 Snap(MyVector2 a, MyVector2 b, float range);
-
-void MyVector2_Move_2(MyVector2* position, MyVector2* velocity, float acc, MyVector2 targetVelocity, float deltaTime);
-MyVector2 MyVector2_PositionUpdate_1(MyVector2 position, MyVector2 velocity, float deltaTime);
-MyVector2 MyVector2_PositionUpdate_2(MyVector2 position, MyVector2 oldVelocity, MyVector2 newVelocity, float deltaTime);
-
 void MyVector2_PrintVector2Hex(MyVector2 v1)
 {
     Helper_PrintFloatHex(v1.x);
@@ -52,6 +27,13 @@ bool MyVector2_Equal(MyVector2 v1, MyVector2 v2)
 {
     return v1.x == v2.x && v1.y == v2.y;
 }
+MyVector2 MyVector2_Zero()                           { return (MyVector2) { 0.0f, 0.0f }; }
+MyVector2 MyVector2_Add(MyVector2 v1, MyVector2 v2)  { return (MyVector2) { v1.x + v2.x , v1.y + v2.y }; }
+MyVector2 MyVector2_Sub(MyVector2 v1, MyVector2 v2)  { return (MyVector2) { v1.x - v2.x , v1.y - v2.y }; }
+MyVector2 MyVector2_Mul(MyVector2 v1, float value)   { return (MyVector2) { v1.x * value, v1.y * value }; }
+MyVector2 MyVector2_Div(MyVector2 v1, float value)   { return (MyVector2) { v1.x / value, v1.y / value }; }
+MyVector2 MyVector2_Abs(MyVector2 v1)                { return (MyVector2) { fabs(v1.x), fabs(v1.y) }; }
+MyVector2 MyVector2_Negate(MyVector2 v1)             { return (MyVector2) { -v1.x,-v1.y }; }
 float MyVector2_Length(MyVector2 v)
 {
     float distSquared = v.x*v.x + v.y*v.y;
@@ -76,13 +58,6 @@ float MyVector2_Distance(MyVector2 v1, MyVector2 v2)
     MyVector2 diff = MyVector2_Sub(v1,v2);
     return MyVector2_Length(diff);
 }
-MyVector2 MyVector2_Zero() { return (MyVector2) { 0.0f, 0.0f }; }
-MyVector2 MyVector2_Add(MyVector2 v1, MyVector2 v2)  { return (MyVector2) { v1.x + v2.x , v1.y + v2.y }; }
-MyVector2 MyVector2_Sub(MyVector2 v1, MyVector2 v2)  { return (MyVector2) { v1.x - v2.x , v1.y - v2.y }; }
-MyVector2 MyVector2_Mul(MyVector2 v1, float value)   { return (MyVector2) { v1.x * value, v1.y * value }; }
-MyVector2 MyVector2_Div(MyVector2 v1, float value)   { return (MyVector2) { v1.x / value, v1.y / value }; }
-MyVector2 MyVector2_Abs(MyVector2 v1)                { return (MyVector2) { fabs(v1.x), fabs(v1.y) }; }
-MyVector2 MyVector2_Negate(MyVector2 v1)             { return (MyVector2) { -v1.x,-v1.y }; }
 MyVector2 MyVector2_Normalized(MyVector2 v)
 {
     float dist = MyVector2_Length(v);
@@ -124,38 +99,26 @@ MyVector2 MyVector2_MoveTowards(MyVector2 fromVec, MyVector2 toVec, float delta)
     MyVector2 moveVec = MyVector2_Mul(dir,delta);
     return MyVector2_Add(fromVec,moveVec);
 }
-MyVector2 Snap(MyVector2 a, MyVector2 b, float range) { return MyVector2_Distance(a,b) > range ? a : b; } //1E-2f
-
-void MyVector2_Move_1(MyVector2* position, MyVector2* velocity, MyVector2 targetVelocity, float deltaTime)
+MyVector2 MyVector2_Snap(MyVector2 a, MyVector2 b, float range) { return MyVector2_Distance(a,b) > range ? a : b; } //1E-2f
+MyVector2 MyVector2_PositionUpdate_Simple(MyVector2 position, MyVector2 velocity, float deltaTime)
 {
-    MyVector2 oldVelocity = *velocity;
-    MyVector2 newVelocity = targetVelocity;
-    *position = MyVector2_PositionUpdate_1(*position,oldVelocity,deltaTime);
-    *velocity = newVelocity;
-}
-void MyVector2_Move_2(MyVector2* position, MyVector2* velocity, float acc, MyVector2 targetVelocity, float deltaTime)
-{
-    MyVector2 oldVelocity = *velocity;
-    MyVector2 newVelocity = MyVector2_MoveTowards(oldVelocity,targetVelocity,acc*deltaTime);
-    *position = MyVector2_PositionUpdate_2(*position,oldVelocity,newVelocity,deltaTime);
-    *velocity = newVelocity;
-}
-MyVector2 MyVector2_PositionUpdate_1(MyVector2 position, MyVector2 velocity, float deltaTime)
-{
+    // result = velocity * deltaTime + position
     MyVector2 result;
-    result = MyVector2_Mul(velocity,deltaTime);
-    result = MyVector2_Add(position,result);
+    result = velocity;
+    result = MyVector2_Mul(result,deltaTime);
+    result = MyVector2_Add(result,position);
     return result;
 }
-MyVector2 MyVector2_PositionUpdate_2(MyVector2 position, MyVector2 oldVelocity, MyVector2 newVelocity, float deltaTime)
+MyVector2 MyVector2_PositionUpdate_Advanced(MyVector2 position, MyVector2 velocity, MyVector2 newVelocity, float deltaTime)
 {
-    position = MyVector2_PositionUpdate_1(position,oldVelocity,deltaTime);
+    // result = (velocity + velocityNew) / 2 * deltaTime + position
     MyVector2 result;
-    result = MyVector2_Sub(newVelocity,oldVelocity);
+    result = velocity;
+    result = MyVector2_Add(result,newVelocity);
     result = MyVector2_Div(result,2);
     result = MyVector2_Mul(result,deltaTime);
-    result = MyVector2_Add(position,result);
-    return result;
+    result = MyVector2_Add(result,position);
+    return position;
 }
 
 #endif
