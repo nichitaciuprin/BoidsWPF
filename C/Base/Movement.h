@@ -7,7 +7,6 @@ void Movement_Catchup(float* AposP, float* AvelP, float Aacc, float Bpos, float 
 {
     float Apos = *AposP;
     float Avel = *AvelP;
-
     float velDiff = Bvel - Avel;
     float matchTime = abs(velDiff)/Aacc;
     float Apos2 = Apos + Avel * matchTime + Math_Sign(velDiff)*Aacc*matchTime*matchTime/2;
@@ -58,7 +57,6 @@ void Movement_Catchup(float* AposP, float* AvelP, float Aacc, float Bpos, float 
         if (deltaTime == 0) return;
     }
     Apos += Avel*deltaTime;
-
     *AposP = Apos;
     *AvelP = Avel;
 }
