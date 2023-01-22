@@ -102,7 +102,7 @@ MyVector2 MyVector2_MoveTowards(MyVector2 fromVec, MyVector2 toVec, float delta)
 MyVector2 MyVector2_Snap(MyVector2 a, MyVector2 b, float range) { return MyVector2_Distance(a,b) > range ? a : b; } //1E-2f
 MyVector2 MyVector2_PositionUpdate_Simple(MyVector2 position, MyVector2 velocity, float deltaTime)
 {
-    // result = velocity * deltaTime + position
+    // result = position + velocity * deltaTime
     MyVector2 result;
     result = velocity;
     result = MyVector2_Mul(result,deltaTime);
@@ -111,7 +111,7 @@ MyVector2 MyVector2_PositionUpdate_Simple(MyVector2 position, MyVector2 velocity
 }
 MyVector2 MyVector2_PositionUpdate_Advanced(MyVector2 position, MyVector2 velocity, MyVector2 newVelocity, float deltaTime)
 {
-    // result = (velocity + velocityNew) / 2 * deltaTime + position
+    // result = position + (velocity+velocityNew)/2 * deltaTime
     MyVector2 result;
     result = velocity;
     result = MyVector2_Add(result,newVelocity);
