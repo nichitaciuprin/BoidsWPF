@@ -109,11 +109,11 @@ MyVector2 MyVector2_PositionUpdate_Simple(MyVector2 position, MyVector2 velocity
     result = MyVector2_Add(result,position);
     return result;
 }
-MyVector2 MyVector2_PositionUpdate_Advanced(MyVector2 position, MyVector2 velocity, MyVector2 newVelocity, float deltaTime)
+MyVector2 MyVector2_PositionUpdate_Advanced(MyVector2 position, MyVector2 oldVelocity, MyVector2 newVelocity, float deltaTime)
 {
-    // result = position + (velocity+velocityNew)/2 * deltaTime
+    // result = position + (oldVelocity+velocityNew)/2 * deltaTime
     MyVector2 result;
-    result = velocity;
+    result = oldVelocity;
     result = MyVector2_Add(result,newVelocity);
     result = MyVector2_Div(result,2);
     result = MyVector2_Mul(result,deltaTime);
