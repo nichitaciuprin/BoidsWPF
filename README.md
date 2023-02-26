@@ -18,3 +18,5 @@
 7. Move libraylib.a to C:\mingw64\x86_64-w64-mingw32\lib
 8. Move raylib.h    to C:\mingw64\x86_64-w64-mingw32\include
 9. run RunBoids_C.cmd
+
+test
