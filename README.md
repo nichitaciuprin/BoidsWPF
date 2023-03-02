@@ -20,3 +20,4 @@
 9. run RunBoids_C.cmd
 
 test
+test
