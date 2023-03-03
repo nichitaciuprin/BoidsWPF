@@ -138,13 +138,9 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     {
         Boid* boid = &boids[i];
 
-        // MyVector2 targetVelocity = Boid_TargetVelocity(boid);
-        // boid->pos = MyVector2_PositionUpdate_Simple(boid->pos,boid->vel,deltaTime);
-        // boid->vel = targetVelocity;
-
         MyVector2 targetVelocity = Boid_TargetVelocity(boid);
         MyVector2 newVelocity = MyVector2_MoveTowards(boid->vel,targetVelocity,acc*deltaTime);
-        boid->pos = MyVector2_PositionUpdate_Advanced(boid->pos,boid->vel,newVelocity,deltaTime);
+        boid->pos = MyVector2_PositionUpdate_Advanced(boid->pos,boid->vel,boid->vel,deltaTime);
         boid->vel = newVelocity;
 
         boid->pos = AABB_WrapAround(aabb,boid->pos);
