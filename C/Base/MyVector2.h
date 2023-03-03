@@ -118,7 +118,7 @@ MyVector2 MyVector2_PositionUpdate_Advanced(MyVector2 position, MyVector2 oldVel
     result = MyVector2_Div(result,2);
     result = MyVector2_Mul(result,deltaTime);
     result = MyVector2_Add(result,position);
-    return position;
+    return result;
 }
 
 #endif
