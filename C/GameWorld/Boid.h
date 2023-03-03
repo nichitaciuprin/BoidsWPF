@@ -93,12 +93,12 @@ MyVector2 Boid_TargetVelocity(Boid* boid)
     int count_1 = boid->count_1;
     int count_2 = boid->count_2;
 
-    if (boid->count_1 != 0)
+    if (count_1 != 0)
     {
         vec_1 = MyVector2_Div(vec_1,count_1);
         vec_1 = MyVector2_Sub(vec_1,boid->pos);
     }
-    if (boid->count_2 != 0)
+    if (count_2 != 0)
     {
         vec_2 = MyVector2_Div(vec_2,count_2);
         vec_2 = MyVector2_Sub(vec_2,boid->vel);
