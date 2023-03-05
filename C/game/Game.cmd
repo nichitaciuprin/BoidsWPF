@@ -1,9 +1,9 @@
 @echo off
-echo %~f0
+set filelocation=%~f0
 set cmdFileName=%~n0
 set workspace=%cd%
 set filePath=%cmdFileName%\%cmdFileName%
-deps\mingw64\bin\gcc.exe %filePath%.c ^
+..\mingw64\bin\gcc.exe %filePath%.c ^
 -lraylib ^
 -ldloadhelper ^
 -lglmf32 ^
