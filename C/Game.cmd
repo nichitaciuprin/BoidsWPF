@@ -1,8 +1,9 @@
 @echo off
+echo %~f0
 set cmdFileName=%~n0
+set workspace=%cd%
 set filePath=%cmdFileName%\%cmdFileName%
-@REM del %filePath%.exe
-gcc %filePath%.c ^
+deps\mingw64\bin\gcc.exe %filePath%.c ^
 -lraylib ^
 -ldloadhelper ^
 -lglmf32 ^
