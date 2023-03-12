@@ -7,7 +7,11 @@ set srcFile=%root%\src\%thisFileName%.c
 set exeFile=%root%\build\%thisFileName%.exe
 set include=%root%\include
 set libs=-lraylib -ldloadhelper -lglmf32 -lm -lopengl32 -lgdi32 -lwinmm
-set cfiles=%root%\src\MyVector.c %root%\src\AABB.c
+set cfiles=^
+%root%\src\Subgen.c ^
+%root%\src\MyVector2.c ^
+%root%\src\AABB.c ^
+%root%\src\Helper.c
 set flags=-g3 -O3 -Wall -std=c99 -Wno-missing-braces -pthread -m64
 
 %gcc% %srcFile% %cfiles% -I%include%\ %libs% -o %exeFile% %flags%

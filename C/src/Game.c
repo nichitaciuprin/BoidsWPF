@@ -1,6 +1,7 @@
 #include <time.h>
 #include "GameWorld.h"
 #include "GameWorldWindow.h"
+#include "MyVector2.h"
 
 void Wait(long milliseconds)
 {
@@ -13,8 +14,9 @@ int main(void)
     GameWorld gameWorld = GameWorld_Init();
     GameWorldWindow_Init(&gameWorld);
     long timeStep = 20;
-    while (!GameWorldWindow_ShouldExit())
+    while (true)
     {
+        if (GameWorldWindow_ShouldExit()) break;
         long time1 = clock();
         GameWorld_Update(&gameWorld,timeStep);
         GameWorldWindow_Update(&gameWorld);
