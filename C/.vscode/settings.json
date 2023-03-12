@@ -10,6 +10,8 @@
         "raymath.h": "c",
         "stdbool.h": "c",
         "movement.h": "c",
-        "helper.h": "c"
+        "helper.h": "c",
+        "aabb.h": "c",
+        "gameworldwindow.h": "c"
     }
 }
