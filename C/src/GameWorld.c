@@ -12,7 +12,7 @@ GameWorld GameWorld_Create()
 {
     GameWorld gameWorld;
 
-    Subgen subgen = Subgen_Init(0);
+    Subgen subgen = Subgen_Create(0);
     gameWorld.aabb.p0 = (MyVector2){ 0, 0 };
     gameWorld.aabb.p1 = (MyVector2){ 50, 50 };
 	for (int i = 0; i < GAMEWORLD_BOIDSCOUNT; i++)

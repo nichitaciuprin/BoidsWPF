@@ -10,7 +10,7 @@ int Subgen_Next(Subgen* subgen)
 	if (x < 0) x += MAX;
 	return subgen->state[subgen->si] = x;
 }
-Subgen Subgen_Init(int seed)
+Subgen Subgen_Create(int seed)
 {
     Subgen subgen;
 

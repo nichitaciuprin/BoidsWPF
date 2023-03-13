@@ -8,7 +8,7 @@ typedef struct Subgen
     int seed;
 } Subgen;
 
-Subgen Subgen_Init(int seed);
+Subgen Subgen_Create(int seed);
 float Subgen_FractionUnsigned(Subgen* subgen);
 float Subgen_FractionSigned(Subgen* subgen);
 float Subgen_Range(Subgen* subgen, float min, float max);
