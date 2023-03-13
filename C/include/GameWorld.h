@@ -12,4 +12,4 @@ typedef struct GameWorld
 } GameWorld;
 
 GameWorld GameWorld_Create();
-void GameWorld_Update(GameWorld* gameWorld, long realDeltaTimeInMilliseconds);
+void GameWorld_Update(GameWorld* gameWorld, long deltaTimeInMilliseconds);

@@ -1,7 +1,6 @@
 #include <time.h>
 #include "GameWorld.h"
 #include "GameWorldWindow.h"
-// #include "MyVector2.h"
 #include "Raylib.h"
 
 void Wait(long milliseconds)

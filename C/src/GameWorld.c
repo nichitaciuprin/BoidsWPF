@@ -1,8 +1,4 @@
 #include "Boid.h"
-// #include "Boid_UniquePairs.h"
-// #include "Boid_NoUniquePairs.h"
-// #include "Boid_NoUniquePairs2.h"
-// #include "Boid_Parallel.h"
 
 #define GAMEWORLD_BOIDSCOUNT 300
 
@@ -24,8 +20,8 @@ GameWorld GameWorld_Create()
 
     return gameWorld;
 }
-void GameWorld_Update(GameWorld* gameWorld, long realDeltaTimeInMilliseconds)
+void GameWorld_Update(GameWorld* gameWorld, long deltaTimeInMilliseconds)
 {
-    float deltaTimeInSeconds = ((float)realDeltaTimeInMilliseconds)/1000;
+    float deltaTimeInSeconds = ((float)deltaTimeInMilliseconds)/1000;
     Boid_Update(gameWorld->boids,GAMEWORLD_BOIDSCOUNT,&gameWorld->aabb,deltaTimeInSeconds);
 }

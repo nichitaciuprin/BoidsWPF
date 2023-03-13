@@ -1,17 +1,6 @@
+#include "Boid.h"
 #include "AABB.h"
-// #include "stdlib.h"
 #include <math.h>
-
-typedef struct Boid
-{
-    MyVector2 pos;
-    MyVector2 vel;
-    MyVector2 vec_1;
-    MyVector2 vec_2;
-    MyVector2 vec_3;
-    int count_1;
-    int count_2;
-} Boid;
 
 const float minSpeed = 9;
 const float maxSpeed = 15;
