@@ -12,10 +12,8 @@ typedef struct GameWorld
     Boid boids[GAMEWORLD_BOIDSCOUNT];
 } GameWorld;
 
-GameWorld GameWorld_Init()
+GameWorld GameWorld_Create()
 {
-    // printf("%lli\n",sizeof(GameWorld));
-
     GameWorld gameWorld;
 
     Subgen subgen = Subgen_Init(0);
@@ -25,9 +23,6 @@ GameWorld GameWorld_Init()
 		gameWorld.boids[i] = Boid_Create(&gameWorld.aabb,&subgen);
 
     return gameWorld;
-}
-void GameWorld_End(GameWorld* gameWorld)
-{
 }
 void GameWorld_Update(GameWorld* gameWorld, long realDeltaTimeInMilliseconds)
 {

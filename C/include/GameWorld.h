@@ -11,6 +11,5 @@ typedef struct GameWorld
     Boid boids[GAMEWORLD_BOIDSCOUNT];
 } GameWorld;
 
-GameWorld GameWorld_Init();
+GameWorld GameWorld_Create();
 void GameWorld_Update(GameWorld* gameWorld, long realDeltaTimeInMilliseconds);
-void GameWorld_End(GameWorld* gameWorld);

@@ -12,7 +12,7 @@ void Wait(long milliseconds)
 }
 int main(void)
 {
-    GameWorld gameWorld = GameWorld_Init();
+    GameWorld gameWorld = GameWorld_Create();
     GameWorldWindow_Init(&gameWorld);
     long timeStep = 20;
     while (true)
@@ -26,6 +26,5 @@ int main(void)
         long waitTime = timeStep - diff;
         Wait(waitTime);
     }
-    GameWorld_End(&gameWorld);
 	return 0;
 }

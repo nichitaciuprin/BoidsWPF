@@ -12,7 +12,7 @@
 
 int main(void)
 {
-    GameWorld gameWorld = GameWorld_Init();
+    GameWorld gameWorld = GameWorld_Create();
 
     long time1 = clock();
     for (int i = 0; i < 3000; i++) GameWorld_Update(&gameWorld,20);
