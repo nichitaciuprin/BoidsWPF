@@ -25,7 +25,5 @@ int main(void)
     printf("%li",time2-time1);
     printf(" \n");
 
-    GameWorld_End(&gameWorld);
-
 	return 0;
 }

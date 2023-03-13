@@ -1,6 +1,7 @@
 #include "Boid.h"
 #include "AABB.h"
 #include <math.h>
+#include <memory.h>
 
 const float minSpeed = 9;
 const float maxSpeed = 15;
@@ -15,35 +16,23 @@ const float power2 = 0.01;
 const float power3 = 0.04;
 const float acc = 10;
 
-void Boid_Print(Boid* boid)
+typedef struct BoidCache
 {
-    MyVector2_PrintVector2Hex(boid->pos);
-    MyVector2_PrintVector2Hex(boid->vel);
-}
-void Boid_Init(Boid* boid)
-{
-    boid->vec_1 = MyVector2_Zero();
-    boid->vec_2 = MyVector2_Zero();
-    boid->vec_3 = MyVector2_Zero();
-    boid->count_1 = 0;
-    boid->count_2 = 0;
-}
-Boid Boid_Create(AABB* aabb, Subgen* subgen)
-{
-    float randSpeed = Subgen_Range(subgen,minSpeed,maxSpeed);
-    MyVector2 randDirection = MyVector2_RandNormDir(subgen);
+    MyVector2 vec_1;
+    MyVector2 vec_2;
+    MyVector2 vec_3;
+    int count_1;
+    int count_2;
+} BoidCache;
 
-    MyVector2 pos = AABB_RandPointInside(subgen,aabb);
-    MyVector2 vel = MyVector2_Mul(randDirection,randSpeed);
 
-    Boid boid;
-    boid.pos = pos;
-    boid.vel = vel;
-
-    return boid;
-}
-void Boid_CalculatePair(Boid* boid1, Boid* boid2)
+void Boid_CalculatePair(int boidIndex1, int boidIndex2, Boid* boids, BoidCache* boidCaches)
 {
+    Boid* boid1 = &boids[boidIndex1];
+    Boid* boid2 = &boids[boidIndex2];
+    BoidCache* boidCache1 = &boidCaches[boidIndex1];
+    BoidCache* boidCache2 = &boidCaches[boidIndex2];
+
     MyVector2 diff = MyVector2_Sub(boid1->pos,boid2->pos);
     float distSquared = diff.x*diff.x + diff.y*diff.y;
     float dist = sqrtf(distSquared);
@@ -51,14 +40,14 @@ void Boid_CalculatePair(Boid* boid1, Boid* boid2)
     // COHESION
     if (distSquared >= rangeSquared_1) return;
 
-    boid1->vec_1 = MyVector2_Add(boid1->vec_1,boid2->pos); boid1->count_1++;
-    boid2->vec_1 = MyVector2_Add(boid2->vec_1,boid1->pos); boid2->count_1++;
+    boidCache1->vec_1 = MyVector2_Add(boidCache1->vec_1,boid2->pos); boidCache1->count_1++;
+    boidCache2->vec_1 = MyVector2_Add(boidCache2->vec_1,boid1->pos); boidCache2->count_1++;
 
     // ALIGHMENT
     if (distSquared >= rangeSquared_2) return;
 
-    boid1->vec_2 = MyVector2_Add(boid1->vec_2,boid2->vel); boid1->count_2++;
-    boid2->vec_2 = MyVector2_Add(boid2->vec_2,boid1->vel); boid2->count_2++;
+    boidCache1->vec_2 = MyVector2_Add(boidCache1->vec_2,boid2->vel); boidCache1->count_2++;
+    boidCache2->vec_2 = MyVector2_Add(boidCache2->vec_2,boid1->vel); boidCache2->count_2++;
 
     // SEPARATION
     if (distSquared >= rangeSquared_3) return;
@@ -68,18 +57,18 @@ void Boid_CalculatePair(Boid* boid1, Boid* boid2)
     float dist2 = range_3 - dist;
     normDiff = MyVector2_Mul(normDiff,dist2);
 
-    boid1->vec_3 = MyVector2_Add(boid1->vec_3,normDiff);
-    boid2->vec_3 = MyVector2_Add(boid2->vec_3, MyVector2_Negate(normDiff));
+    boidCache1->vec_3 = MyVector2_Add(boidCache1->vec_3,normDiff);
+    boidCache2->vec_3 = MyVector2_Add(boidCache2->vec_3, MyVector2_Negate(normDiff));
 }
-MyVector2 Boid_TargetVelocity(Boid* boid)
+MyVector2 Boid_TargetVelocity(Boid* boid, BoidCache* boidCache)
 {
     MyVector2 result = boid->vel;
 
-    MyVector2 vec_1 = boid->vec_1;
-    MyVector2 vec_2 = boid->vec_2;
-    MyVector2 vec_3 = boid->vec_3;
-    int count_1 = boid->count_1;
-    int count_2 = boid->count_2;
+    MyVector2 vec_1 = boidCache->vec_1;
+    MyVector2 vec_2 = boidCache->vec_2;
+    MyVector2 vec_3 = boidCache->vec_3;
+    int count_1 = boidCache->count_1;
+    int count_2 = boidCache->count_2;
 
     if (count_1 != 0)
     {
@@ -110,27 +99,48 @@ void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
     boid->pos = AABB_WrapAround(aabb,boid->pos);
 }
+
+Boid Boid_Create(AABB* aabb, Subgen* subgen)
+{
+    float randSpeed = Subgen_Range(subgen,minSpeed,maxSpeed);
+    MyVector2 randDirection = MyVector2_RandNormDir(subgen);
+
+    MyVector2 pos = AABB_RandPointInside(subgen,aabb);
+    MyVector2 vel = MyVector2_Mul(randDirection,randSpeed);
+
+    Boid boid;
+    boid.pos = pos;
+    boid.vel = vel;
+
+    return boid;
+}
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
 {
     int length = boidsLength;
 
-    for (int i = 0; i < length; i++)
-        Boid_Init(&boids[i]);
+    BoidCache boidCaches[length];
+    memset(boidCaches, 0, sizeof boidCaches);
 
     // ALL UNIQUE PAIRS
     for (int i = 0;   i < length; i++)
     for (int j = i+1; j < length; j++)
-        Boid_CalculatePair(&boids[i], &boids[j]);
+        Boid_CalculatePair(i,j,boids,boidCaches);
 
     for (int i = 0; i < length; i++)
     {
         Boid* boid = &boids[i];
+        BoidCache* boidCache = &boidCaches[i];
 
-        MyVector2 targetVelocity = Boid_TargetVelocity(boid);
+        MyVector2 targetVelocity = Boid_TargetVelocity(boid,boidCache);
         MyVector2 newVelocity = MyVector2_MoveTowards(boid->vel,targetVelocity,acc*deltaTime);
         boid->pos = MyVector2_PositionUpdate_Advanced(boid->pos,boid->vel,boid->vel,deltaTime);
         boid->vel = newVelocity;
 
         boid->pos = AABB_WrapAround(aabb,boid->pos);
     }
+}
+void Boid_Print(Boid* boid)
+{
+    MyVector2_PrintVector2Hex(boid->pos);
+    MyVector2_PrintVector2Hex(boid->vel);
 }

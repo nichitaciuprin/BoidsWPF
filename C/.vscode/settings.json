@@ -18,6 +18,7 @@
         "mywindow.h": "c",
         "mymath.h": "c",
         "raylib.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "memory.h": "c"
     }
 }

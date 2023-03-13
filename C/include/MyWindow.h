@@ -2,7 +2,6 @@
 
 #include "MyVector2.h"
 #include <raylib.h>
-#include <rlgl.h>
 #include <stdbool.h>
 
 Vector2 MyWindow_ToWindowSpace(MyVector2 v);
