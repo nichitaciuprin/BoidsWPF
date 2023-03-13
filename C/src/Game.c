@@ -12,14 +12,14 @@ void Wait(long milliseconds)
 int main(void)
 {
     GameWorld gameWorld = GameWorld_Create();
-    GameWorldWindow_Init(&gameWorld);
+    GameWorldWindow_Create(&gameWorld);
     long timeStep = 20;
     while (true)
     {
         if (GameWorldWindow_ShouldExit()) break;
         long time1 = clock();
         GameWorld_Update(&gameWorld,timeStep);
-        GameWorldWindow_Update(&gameWorld);
+        GameWorldWindow_Render(&gameWorld);
         long time2 = clock();
         long diff = time2 - time1;
         long waitTime = timeStep - diff;

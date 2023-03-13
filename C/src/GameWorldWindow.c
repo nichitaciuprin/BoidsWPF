@@ -1,10 +1,10 @@
 #include "GameWorld.h"
 #include "MyWindow.h"
 
-MyVector2 GameWorldWindow_boidPoint_1 = (MyVector2) { 0.00f, 0.00f};
-MyVector2 GameWorldWindow_boidPoint_2 = (MyVector2) {-0.25f,-0.25f};
-MyVector2 GameWorldWindow_boidPoint_3 = (MyVector2) { 0.00f, 0.50f};
-MyVector2 GameWorldWindow_boidPoint_4 = (MyVector2) { 0.25f,-0.25f};
+MyVector2 point_1 = (MyVector2) { 0.00f, 0.00f};
+MyVector2 point_2 = (MyVector2) {-0.25f,-0.25f};
+MyVector2 point_3 = (MyVector2) { 0.00f, 0.50f};
+MyVector2 point_4 = (MyVector2) { 0.25f,-0.25f};
 
 void GameWorldWindow_DrawAABB(AABB* aabb)
 {
@@ -14,10 +14,10 @@ void GameWorldWindow_DrawAABB(AABB* aabb)
 }
 void GameWorldWindow_DrawBoid(Boid* boid, Color color)
 {
-    MyVector2 v1 = GameWorldWindow_boidPoint_1;
-    MyVector2 v2 = GameWorldWindow_boidPoint_2;
-    MyVector2 v3 = GameWorldWindow_boidPoint_3;
-    MyVector2 v4 = GameWorldWindow_boidPoint_4;
+    MyVector2 v1 = point_1;
+    MyVector2 v2 = point_2;
+    MyVector2 v3 = point_3;
+    MyVector2 v4 = point_4;
 
     float angle = MyVector2_Angle(boid->vel);
 
@@ -34,7 +34,8 @@ void GameWorldWindow_DrawBoid(Boid* boid, Color color)
     MyWindow_DrawTriangle(v1, v2, v3, color);
     MyWindow_DrawTriangle(v1, v4, v3, color);
 }
-void GameWorldWindow_Update(GameWorld* game)
+
+void GameWorldWindow_Render(GameWorld* game)
 {
     MyWindow_BeginDrawing();
 
@@ -48,16 +49,16 @@ void GameWorldWindow_Update(GameWorld* game)
 
     MyWindow_EndDrawing();
 }
-void GameWorldWindow_Init(GameWorld* game)
+void GameWorldWindow_Create(GameWorld* game)
 {
     MyWindow_Init();
-    GameWorldWindow_Update(game);
-}
-void GameWorldWindow_End()
-{
-    CloseWindow();
+    GameWorldWindow_Render(game);
 }
 bool GameWorldWindow_ShouldExit()
 {
     return MyWindow_ShouldClose();
+}
+void GameWorldWindow_Destroy()
+{
+    CloseWindow();
 }
