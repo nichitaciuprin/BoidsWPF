@@ -16,7 +16,7 @@ set cfiles=^
 %root%\src\MyMath.c ^
 %root%\src\MyVector2.c ^
 %root%\src\MyWindow.c ^
-%root%\src\Subgen.c ^
+%root%\src\Subgen.c
 set flags=-g3 -O3 -Wall -std=c99 -Wno-missing-braces -pthread -m64
 
 if not exist %root%\build mkdir %root%\build
