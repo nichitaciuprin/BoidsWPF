@@ -1,4 +1,5 @@
 #pragma once
+
 #include "MyVector2.h"
 
 typedef struct AABB

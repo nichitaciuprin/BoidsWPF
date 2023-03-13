@@ -14,6 +14,10 @@
         "aabb.h": "c",
         "gameworldwindow.h": "c",
         "myvector2.h": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "mywindow.h": "c",
+        "mymath.h": "c",
+        "raylib.h": "c",
+        "stdlib.h": "c"
     }
 }
