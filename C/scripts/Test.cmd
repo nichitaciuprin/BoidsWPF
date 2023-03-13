@@ -14,6 +14,8 @@ set cfiles=^
 %root%\src\Helper.c
 set flags=-g3 -O3 -Wall -std=c99 -Wno-missing-braces -pthread -m64
 
+if not exist %root%\build mkdir %root%\build
+
 %gcc% %srcFile% %cfiles% -I%include%\ %libs% -o %exeFile% %flags%
 
 @REM Stop cmd if build failed

@@ -10,6 +10,8 @@ set libs=-lraylib -ldloadhelper -lglmf32 -lm -lopengl32 -lgdi32 -lwinmm
 set cfiles=%root%\src\MyVector.c %root%\src\AABB.c
 set flags=-g3 -O3 -Wall -std=c99 -Wno-missing-braces -pthread -m64
 
+mkdir %root%\build
+
 %gcc% %srcFile% %cfiles% -I%include%\ %libs% -o %exeFile% %flags%
 
 @REM Stop cmd if build failed
