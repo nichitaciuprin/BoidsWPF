@@ -42,14 +42,14 @@ void MyWindow_EndDrawing()
 {
     EndDrawing();
 }
-void MyWindow_Init()
+void MyWindow_Create()
 {
     InitWindow(MyWindow_Width, MyWindow_Height, "BOIDS_C");
     printf("\n"); // padding from Raylib print
     SetWindowPosition(0,0);
 	rlDisableBackfaceCulling();
 }
-void MyWindow_End()
+void MyWindow_Destroy()
 {
     CloseWindow();
 }

@@ -9,6 +9,6 @@ void MyWindow_DrawRectangleLines(int posX, int posY, int width, int height, Colo
 void MyWindow_DrawTriangle(MyVector2 v1, MyVector2 v2, MyVector2 v3, Color color);
 void MyWindow_BeginDrawing();
 void MyWindow_EndDrawing();
-void MyWindow_Init();
-void MyWindow_End();
+void MyWindow_Create();
+void MyWindow_Destroy();
 bool MyWindow_ShouldClose();

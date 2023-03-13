@@ -25,8 +25,7 @@ typedef struct BoidCache
     int count_2;
 } BoidCache;
 
-
-void Boid_CalculatePair(int boidIndex1, int boidIndex2, Boid* boids, BoidCache* boidCaches)
+void CalculatePair(int boidIndex1, int boidIndex2, Boid* boids, BoidCache* boidCaches)
 {
     Boid* boid1 = &boids[boidIndex1];
     Boid* boid2 = &boids[boidIndex2];
@@ -60,7 +59,7 @@ void Boid_CalculatePair(int boidIndex1, int boidIndex2, Boid* boids, BoidCache* 
     boidCache1->vec_3 = MyVector2_Add(boidCache1->vec_3,normDiff);
     boidCache2->vec_3 = MyVector2_Add(boidCache2->vec_3, MyVector2_Negate(normDiff));
 }
-MyVector2 Boid_TargetVelocity(Boid* boid, BoidCache* boidCache)
+MyVector2 TargetVelocity(Boid* boid, BoidCache* boidCache)
 {
     MyVector2 result = boid->vel;
 
@@ -93,12 +92,6 @@ MyVector2 Boid_TargetVelocity(Boid* boid, BoidCache* boidCache)
 
     return result;
 }
-void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
-{
-    MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
-    boid->pos = MyVector2_Add(boid->pos,velocityDelta);
-    boid->pos = AABB_WrapAround(aabb,boid->pos);
-}
 
 Boid Boid_Create(AABB* aabb, Subgen* subgen)
 {
@@ -124,14 +117,14 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
     // ALL UNIQUE PAIRS
     for (int i = 0;   i < length; i++)
     for (int j = i+1; j < length; j++)
-        Boid_CalculatePair(i,j,boids,boidCaches);
+        CalculatePair(i,j,boids,boidCaches);
 
     for (int i = 0; i < length; i++)
     {
         Boid* boid = &boids[i];
         BoidCache* boidCache = &boidCaches[i];
 
-        MyVector2 targetVelocity = Boid_TargetVelocity(boid,boidCache);
+        MyVector2 targetVelocity = TargetVelocity(boid,boidCache);
         MyVector2 newVelocity = MyVector2_MoveTowards(boid->vel,targetVelocity,acc*deltaTime);
         boid->pos = MyVector2_PositionUpdate_Advanced(boid->pos,boid->vel,boid->vel,deltaTime);
         boid->vel = newVelocity;

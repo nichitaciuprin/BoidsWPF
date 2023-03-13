@@ -33,7 +33,7 @@ typedef struct BoidTask
 
 void* BoidTask_Thread(void* arg);
 void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount);
-void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime);
+void Update_Position(Boid* boid, AABB* aabb, float deltaTime);
 void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime);
 Boid Boid_Create(AABB* aabb, Subgen* subgen);
 void Boid_Print(Boid* boid);
@@ -174,7 +174,7 @@ void Boid_Update_Velocity(int boidIndex, Boid* boids, int boidsCount)
     boid->velNew = MyVector2_Add(boid->velNew,vec_3);
     boid->velNew = MyVector2_ClampLength(boid->velNew,minSpeed,maxSpeed);
 }
-void Boid_Update_Position(Boid* boid, AABB* aabb, float deltaTime)
+void Update_Position(Boid* boid, AABB* aabb, float deltaTime)
 {
     MyVector2 velocityDelta = MyVector2_Mul(boid->vel,deltaTime);
     boid->pos = MyVector2_Add(boid->pos,velocityDelta);
@@ -197,5 +197,5 @@ void Boid_Update(Boid* boids, int boidsLength, AABB* aabb, float deltaTime)
         boids[i].vel = boids[i].velNew;
 
     for (int i = 0; i < boidsLength; i++)
-        Boid_Update_Position(&boids[i],aabb,deltaTime);
+        Update_Position(&boids[i],aabb,deltaTime);
 }

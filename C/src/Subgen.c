@@ -28,7 +28,8 @@ Subgen Subgen_Create(int seed)
 		if (p2 < 0) p2 += MAX;
 		seed = subgen.state[j];
 	}
-	for (int i = 0; i < 165; i++) Subgen_Next(&subgen);
+	for (int i = 0; i < 165; i++)
+        Subgen_Next(&subgen);
 
     return subgen;
 }

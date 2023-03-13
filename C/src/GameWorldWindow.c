@@ -6,13 +6,13 @@ MyVector2 point_2 = (MyVector2) {-0.25f,-0.25f};
 MyVector2 point_3 = (MyVector2) { 0.00f, 0.50f};
 MyVector2 point_4 = (MyVector2) { 0.25f,-0.25f};
 
-void GameWorldWindow_DrawAABB(AABB* aabb)
+void DrawAABB(AABB* aabb)
 {
     MyVector2 pos = (MyVector2) { AABB_MinX(aabb), AABB_MinY(aabb) };
     MyVector2 size = AABB_Size(aabb);
     MyWindow_DrawRectangleLines(pos.x,pos.y,size.x,size.y,DARKGREEN);
 }
-void GameWorldWindow_DrawBoid(Boid* boid, Color color)
+void DrawBoid(Boid* boid, Color color)
 {
     MyVector2 v1 = point_1;
     MyVector2 v2 = point_2;
@@ -41,17 +41,17 @@ void GameWorldWindow_Render(GameWorld* game)
 
     if (GAMEWORLD_BOIDSCOUNT > 0)
     {
-        GameWorldWindow_DrawBoid(&game->boids[0], RED);
+        DrawBoid(&game->boids[0], RED);
         for (int i = 1; i < GAMEWORLD_BOIDSCOUNT; i++)
-            GameWorldWindow_DrawBoid(&game->boids[i], WHITE);
+            DrawBoid(&game->boids[i], WHITE);
     }
-    GameWorldWindow_DrawAABB(&game->aabb);
+    DrawAABB(&game->aabb);
 
     MyWindow_EndDrawing();
 }
 void GameWorldWindow_Create(GameWorld* game)
 {
-    MyWindow_Init();
+    MyWindow_Create();
     GameWorldWindow_Render(game);
 }
 bool GameWorldWindow_ShouldExit()
